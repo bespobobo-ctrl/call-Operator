@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "prebuild": "node create_icons.js && node generate_zip_bundle.js",
-    "build": "npm run prebuild && vite build",
+    "build": "npm run prebuild && vite build && node bundle_single_file.js",
     "preview": "vite preview"
   },
   "devDependencies": {

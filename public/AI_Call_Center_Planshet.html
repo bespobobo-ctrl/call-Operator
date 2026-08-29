@@ -1,0 +1,1234 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Call Center — O'zbekcha AI Operator (Gemini Live)</title>
+  <meta name="description" content="Google AI Studio Gemini Live texnologiyasiga asoslangan O'zbekcha AI Call-Center operatori va boshqaruv paneli.">
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- PWA & Mobile Tablet Install Meta Tags -->
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#0b0f19">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="AI Call Center">
+  <link rel="apple-touch-icon" href="/icons/icon-192.png">
+
+  <script type="module">(function(){const t=document.createElement("link").relList;if(t&&t.supports&&t.supports("modulepreload"))return;for(const r of document.querySelectorAll('link[rel="modulepreload"]'))u(r);new MutationObserver(r=>{for(const l of r)if(l.type==="childList")for(const p of l.addedNodes)p.tagName==="LINK"&&p.rel==="modulepreload"&&u(p)}).observe(document,{childList:!0,subtree:!0});function s(r){const l={};return r.integrity&&(l.integrity=r.integrity),r.referrerPolicy&&(l.referrerPolicy=r.referrerPolicy),r.crossOrigin==="use-credentials"?l.credentials="include":r.crossOrigin==="anonymous"?l.credentials="omit":l.credentials="same-origin",l}function u(r){if(r.ep)return;r.ep=!0;const l=s(r);fetch(r.href,l)}})();const a={apiKey:localStorage.getItem("gemini_api_key")||"",isCallActive:!1,isMuted:!1,callDurationSeconds:0,timerInterval:null,totalCalls:parseInt(localStorage.getItem("total_calls")||"0",10),audioCtx:null,analyser:null,animFrameId:null,recognition:null,speechSynth:window.speechSynthesis,currentAudio:null,sharedAudioPlayer:null,voiceQueue:[],isPlayingQueue:!1,voiceEngine:"gemini-neural",sentiment:"neutral",companyName:"Admiral Group Official",currentOperatorId:"op1",systemPrompt:"",chatHistory:[],inputTokens:0,outputTokens:0,totalTokens:0,totalCostUSD:0,currentSessionCostUSD:0,USD_TO_UZS:12850},y={op1:{id:"op1",name:"Malika",role:"Sotuv Liniyasi 1",phone:"+998 (71) 200-01-01",prompt:`Siz "Admiral Group Official" kompaniyasining Sotuv va Buyurtma bo'limi #1 operatorisiz. Ismingiz: Malika.
+Telefon liniyangiz: +998 (71) 200-01-01. Instagram: @admiral_group_official
+
+INSONIY MULOQOT QOIDASI:
+- O'zingizni robot yoki AI demang. Jonli inson operatordek tabiiy va xushmuomala gapiring.
+
+XARAJATLARNI NAZORAT QILISH VA MAVZU CHEGARASI (CRITICAL):
+- Siz FAQAT Admiral Group mahsulotlari, narxlari va O'zbekiston bo'ylab yetkazib berish haqida gapirasiz.
+- Agar mijoz mavzudan chetlashsa (dasturlash, tarix, matematika yoki boshqa keraksiz narsalar haqida so'rasa), darhol quyidagicha rad eting va mavzuga qaytaring: "Kechirasiz, men faqat sotuv bo'limi operatoriman. Keraksiz xarajatlarni tejash maqsadida ushbu mavzuda suhbatlasholmayman. Sizni mahsulotlarimiz qiziqtiradimi?"
+
+SUHBAT OXIRIDA BUYURTMA SO'RASH:
+- Suhbat oxirida har doim mijozdan "Sizni mahsulotlarimiz qiziqtiradimi?" deb so'rang va zakaz qilishini aniqlashtiring.`},op2:{id:"op2",name:"Jasur",role:"Sotuv Liniyasi 2",phone:"+998 (71) 200-01-02",prompt:`Siz "Admiral Group Official" kompaniyasining Sotuv va Buyurtma bo'limi #2 operatorisiz. Ismingiz: Jasur.
+Telefon liniyangiz: +998 (71) 200-01-02. Instagram: @admiral_group_official
+
+INSONIY MULOQOT QOIDASI:
+- Jonli inson operatordek samimiy va muomalali gapiring. O'zingizni AI yoki bot deb atamang.
+
+XARAJATLARNI NAZORAT QILISH VA MAVZU CHEGARASI (CRITICAL):
+- FAQAT kompaniya mahsulotlari sotuvi va yetkazib berish bo'yicha gapiring.
+- Chetlanish bo'lsa, suhbatni rad eting: "Kechirasiz, men faqat sotuv bo'limi operatoriman. Keraksiz xarajatlarni tejash maqsadida ushbu mavzuda suhbatlasholmayman. Sizni mahsulotlarimiz qiziqtiradimi?"`},op3:{id:"op3",name:"Nigora",role:"Sotuv Liniyasi 3",phone:"+998 (71) 200-01-03",prompt:`Siz "Admiral Group Official" kompaniyasining Sotuv va Buyurtma bo'limi #3 operatorisiz. Ismingiz: Nigora.
+Telefon liniyangiz: +998 (71) 200-01-03. Instagram: @admiral_group_official
+
+INSONIY MULOQOT QOIDASI:
+- Jonli inson operatordek o'ta yumshoq va xushfe'l so'zlashing.
+
+XARAJATLARNI NAZORAT QILISH VA MAVZU CHEGARASI (CRITICAL):
+- FAQAT kompaniya mahsulotlari sotuvi va yetkazib berish bo'yicha gapiring.
+- Chetlanish bo'lsa, suhbatni rad eting: "Kechirasiz, men faqat sotuv bo'limi operatoriman. Keraksiz xarajatlarni tejash maqsadida ushbu mavzuda suhbatlasholmayman. Sizni mahsulotlarimiz qiziqtiradimi?"`},op4:{id:"op4",name:"Farruh",role:"Sotuv Liniyasi 4",phone:"+998 (71) 200-01-04",prompt:`Siz "Admiral Group Official" kompaniyasining Sotuv va Buyurtma bo'limi #4 operatorisiz. Ismingiz: Farruh.
+Telefon liniyangiz: +998 (71) 200-01-04. Instagram: @admiral_group_official
+
+INSONIY MULOQOT QOIDASI:
+- Jonli inson operatordek quvnoq va faol sotuvchi sifatida so'zlashing.
+
+XARAJATLARNI NAZORAT QILISH VA MAVZU CHEGARASI (CRITICAL):
+- FAQAT kompaniya mahsulotlari sotuvi va yetkazib berish bo'yicha gapiring.
+- Chetlanish bo'lsa, suhbatni rad eting: "Kechirasiz, men faqat sotuv bo'limi operatoriman. Keraksiz xarajatlarni tejash maqsadida ushbu mavzuda suhbatlasholmayman. Sizni mahsulotlarimiz qiziqtiradimi?"`},op_head:{id:"op_head",name:"Kamola",role:"Bo'lim Boshlig'i",phone:"+998 (71) 200-01-00",prompt:`Siz "Admiral Group Official" kompaniyasi AI Call Center bo'limining Boshlig'i va Supervisorisiz. Ismingiz: Kamola.
+Telefon liniyangiz: +998 (71) 200-01-00.
+
+Siz faqat RAHBAR (BOSS / USER) bilan gaplashasiz.
+Asosiy vazifalaringiz:
+1. Rahbarga call-markaz operatorlarining (Malika, Jasur, Nigora, Farruh) ishini hisobot qilish.
+2. Xarajatlarni tejash va AI ovozlariga ketadigan budjetni faqat kerakli ishlarga yo'naltirish bo'yicha hisobot berish.
+3. Operatorlarda muammo bo'lsa (mijoz asbiylashsa yoki suhbat keraksiz oqimga ketsa), vaziyatni boshqarish va ularga topshiriq berish haqida gapirish.
+4. Muloqot uslubini takomillashtirish rejalarini taqdim etish.
+
+RAHBAR BILAN MULOQOT SHAKLI:
+- Rahbar bilan o'ta hurmat va professionalizm bilan so'zlashing.
+- Har doim jamoangizdagi 4 ta operator ishini nazorat qilishingizni va call-markazdagi barcha muammolarni bartaraf etishingizni eslatib turing.`}},e={apiKeyInput:document.getElementById("api-key-input"),saveKeyBtn:document.getElementById("save-key-btn"),connectionChip:document.getElementById("connection-chip"),chipText:document.getElementById("chip-text"),startCallBtn:document.getElementById("start-call-btn"),endCallBtn:document.getElementById("end-call-btn"),muteBtn:document.getElementById("mute-btn"),testVoiceBtn:document.getElementById("test-voice-btn"),avatarRing:document.getElementById("avatar-ring"),callTimer:document.getElementById("call-timer"),callStatus:document.getElementById("call-status"),sentimentTag:document.getElementById("sentiment-tag"),chatLog:document.getElementById("chat-log"),clearLogBtn:document.getElementById("clear-log-btn"),manualTextInput:document.getElementById("manual-text-input"),sendTextBtn:document.getElementById("send-text-btn"),companyNameInput:document.getElementById("company-name-input"),systemInstructionInput:document.getElementById("system-instruction-input"),savePromptBtn:document.getElementById("save-prompt-btn"),statTotalCalls:document.getElementById("stat-total-calls"),statAvgDuration:document.getElementById("stat-avg-duration"),statLatency:document.getElementById("stat-latency"),handoffAlert:document.getElementById("handoff-alert"),statTotalCost:document.getElementById("stat-total-cost"),statInputTokens:document.getElementById("stat-input-tokens"),statOutputTokens:document.getElementById("stat-output-tokens"),statTotalTokens:document.getElementById("stat-total-tokens"),statTotalUzs:document.getElementById("stat-total-uzs"),statPerMinRate:document.getElementById("stat-per-min-rate"),liveMinuteRate:document.getElementById("live-minute-rate"),liveSessionCost:document.getElementById("live-session-cost"),liveSessionUzs:document.getElementById("live-session-uzs"),canvas:document.getElementById("audio-wave-canvas"),tabBtns:document.querySelectorAll(".tab-btn"),tabContents:document.querySelectorAll(".tab-content"),simChips:document.querySelectorAll(".sim-chip"),instaUrlInput:document.getElementById("insta-url-input"),syncInstaBtn:document.getElementById("sync-insta-btn"),operatorSelect:document.getElementById("operator-select"),activePhoneDisplay:document.getElementById("active-phone-display"),tgBotTokenInput:document.getElementById("tg-bot-token-input"),tgChatIdInput:document.getElementById("tg-chat-id-input"),agent3dCore:document.getElementById("agent-3d-core"),agentNameDisplay:document.getElementById("agent-name-display"),voiceEngineSelect:document.getElementById("voice-engine-select"),elevenKeyInput:document.getElementById("eleven-key-input"),openaiKeyInput:document.getElementById("openai-key-input"),autoCostGuardSwitch:document.getElementById("auto-cost-guard-switch"),costGuardTopicBadge:document.getElementById("cost-guard-topic-badge"),costGuardAlertMsg:document.getElementById("cost-guard-alert-msg"),supervisorWarnBtn:document.getElementById("supervisor-warn-btn"),supervisorHangupBtn:document.getElementById("supervisor-hangup-btn"),supervisorNotes:document.getElementById("supervisor-notes"),greetingModal:document.getElementById("greeting-modal"),modalOpAvatar:document.getElementById("modal-op-avatar"),modalOpName:document.getElementById("modal-op-name"),modalOpRole:document.getElementById("modal-op-role"),modalGreetingTextarea:document.getElementById("modal-greeting-textarea"),modalCloseBtn:document.getElementById("modal-close-btn"),modalCancelBtn:document.getElementById("modal-cancel-btn"),modalSaveBtn:document.getElementById("modal-save-btn"),modalResetBtn:document.getElementById("modal-reset-btn"),modalTestVoiceBtn:document.getElementById("modal-test-voice-btn"),qaRulesModal:document.getElementById("qa-rules-modal"),qaModalOpAvatar:document.getElementById("qa-modal-op-avatar"),qaModalOpName:document.getElementById("qa-modal-op-name"),qaRulesContainer:document.getElementById("qa-rules-container"),qaAddRuleBtn:document.getElementById("qa-add-rule-btn"),qaModalCloseBtn:document.getElementById("qa-modal-close-btn"),qaModalCancelBtn:document.getElementById("qa-modal-cancel-btn"),qaModalSaveBtn:document.getElementById("qa-modal-save-btn"),qaGuideToggleBtn:document.getElementById("qa-guide-toggle-btn"),qaGuideBox:document.getElementById("qa-guide-box"),downloadAppBtn:document.getElementById("download-app-btn"),downloadModal:document.getElementById("download-modal"),downloadModalCloseBtn:document.getElementById("download-modal-close-btn"),downloadModalCancelBtn:document.getElementById("download-modal-cancel-btn"),pwaInstallTriggerBtn:document.getElementById("pwa-install-trigger-btn"),pwaInstallStatusText:document.getElementById("pwa-install-status-text")};function j(){Q(!0,"🔒 Gemini 2.0 API Ulangan (Maxfiy)"),e.elevenKeyInput&&(e.elevenKeyInput.value=localStorage.getItem("elevenlabs_api_key")||""),e.openaiKeyInput&&(e.openaiKeyInput.value=localStorage.getItem("openai_api_key")||"");const n={op1:"+998 (71) 200-01-01",op2:"+998 (71) 200-01-02",op3:"+998 (71) 200-01-03",op4:"+998 (71) 200-01-04",op_head:"+998 (71) 200-01-00"};a.operatorPhones=JSON.parse(localStorage.getItem("operator_phones")||"{}");for(const o in n)a.operatorPhones[o]||(a.operatorPhones[o]=n[o]),y[o]&&(y[o].phone=a.operatorPhones[o]);document.querySelectorAll(".op-phone-input").forEach(o=>{const i=o.getAttribute("data-op");o.value=a.operatorPhones[i]||"",o.addEventListener("input",c=>{const m=c.target.value.trim();a.operatorPhones[i]=m,localStorage.setItem("operator_phones",JSON.stringify(a.operatorPhones)),y[i]&&(y[i].phone=m);const h=document.querySelector(`#operator-select option[value="${i}"]`);if(h){y[i];const L={op1:"🟢 Liniya 1: Malika — Sotuv Liniyasi 1",op2:"🔵 Liniya 2: Jasur — Sotuv Liniyasi 2",op3:"🟣 Liniya 3: Nigora — Sotuv Liniyasi 3",op4:"🟠 Liniya 4: Farruh — Sotuv Liniyasi 4",op_head:"👑 Liniya 0: Kamola — Bo'lim Boshlig'i"};h.textContent=`${L[i]} (${m})`}a.currentOperatorId===i&&e.activePhoneDisplay&&(e.activePhoneDisplay.textContent=m);const A=document.querySelector(`.rule-manage-btn[data-op="${i}"]`);if(A){const L=A.closest("tr");if(L){const N=L.querySelector(".code-pill");N&&(N.textContent=m)}}const b=y[a.currentOperatorId]||y.op1,z=document.querySelector(".room-pill.glow-green");z&&a.currentOperatorId===i&&(z.textContent=`🟢 Liniya ${i==="op_head"?"0":i.replace("op","")}: ${b.name} — ${m}`)})}),e.elevenKeyInput&&e.elevenKeyInput.addEventListener("input",o=>{localStorage.setItem("elevenlabs_api_key",o.target.value.trim())}),e.openaiKeyInput&&e.openaiKeyInput.addEventListener("input",o=>{localStorage.setItem("openai_api_key",o.target.value.trim())});const t={op1:"Assalomu alaykum! Men Malika. Sotuv va buyurtmalar bo'limi bosh operatoriman. Admiral Group mahsulotlari narxlari va zakaz berishda sizga qanday yordam bera olaman?",op2:"Assalomu alaykum! Men Jasur. Sotuv bo'limi operatoriman. Admiral Group xizmatlarining texnik masalalarida va buyurtmalarda qanday yordam kerak?",op3:"Assalomu alaykum! Men Nigora. Sotuv bo'limi operatoriman. Taklifingiz yoki zakaz berish bo'yicha savolingiz bo'lsa, mamnuniyat bilan yordam beraman.",op4:"Assalomu alaykum! Men Farruh. Sotuv bo'limi operatoriman. Admiral Group loyihalari va buyurtma qilish bo'yicha qanday masalada yordam beray?",op_head:"Assalomu alaykum! Men Kamola. Sotuv bo'limi boshlig'iman. Operatorlarimiz muloqoti bo'yicha yoki yirik buyurtmalar bo'yicha qanday yordam bera olaman?"};a.greetingPhrases=JSON.parse(localStorage.getItem("operator_greeting_phrases")||"{}");for(const o in t)a.greetingPhrases[o]||(a.greetingPhrases[o]=t[o]);for(const o in a.greetingPhrases){const i=document.getElementById(`preview-${o}`);i&&(i.textContent=a.greetingPhrases[o])}document.querySelectorAll(".greeting-edit-badge").forEach(o=>{o.addEventListener("click",()=>{const i=o.getAttribute("data-op"),c=y[i]||y.op1;if(a.editingOpId=i,e.modalOpName&&(e.modalOpName.textContent=c.name),e.modalOpRole&&(e.modalOpRole.textContent=c.role),e.modalGreetingTextarea&&(e.modalGreetingTextarea.value=a.greetingPhrases[i]||""),e.modalOpAvatar)if(i==="op_head")e.modalOpAvatar.innerHTML='<i class="fa-solid fa-crown"></i>',e.modalOpAvatar.style.background="linear-gradient(135deg, #a855f7, #7c3aed)";else{e.modalOpAvatar.innerHTML='<i class="fa-solid fa-user-tie"></i>';const m={op1:"var(--success-green)",op2:"var(--accent-cyan)",op3:"var(--purple-accent)",op4:"var(--warning-amber)"};e.modalOpAvatar.style.background=m[i]||"var(--accent-cyan)"}e.greetingModal&&e.greetingModal.classList.add("active")})});const s=()=>{e.greetingModal&&e.greetingModal.classList.remove("active"),a.editingOpId=null,R()};e.modalCloseBtn&&e.modalCloseBtn.addEventListener("click",s),e.modalCancelBtn&&e.modalCancelBtn.addEventListener("click",s),e.modalSaveBtn&&e.modalSaveBtn.addEventListener("click",()=>{if(a.editingOpId&&e.modalGreetingTextarea){const o=a.editingOpId,i=e.modalGreetingTextarea.value.trim();a.greetingPhrases[o]=i,localStorage.setItem("operator_greeting_phrases",JSON.stringify(a.greetingPhrases));const c=document.getElementById(`preview-${o}`);c&&(c.textContent=i)}s()}),e.modalResetBtn&&e.modalResetBtn.addEventListener("click",()=>{a.editingOpId&&e.modalGreetingTextarea&&(e.modalGreetingTextarea.value=t[a.editingOpId]||"")}),e.modalTestVoiceBtn&&e.modalTestVoiceBtn.addEventListener("click",()=>{var o;if(a.editingOpId&&e.modalGreetingTextarea){const i=a.editingOpId,c=e.modalGreetingTextarea.value.trim();v(`🎙️ ${((o=y[i])==null?void 0:o.name)||"Operator"} ovozi sinanmoqda...`),I(c,i)}});const u={op1:[{trigger:"kafolat, garantiya",response:"Admiral Group barcha mahsulotlariga 1 yillik rasmiy kafolat beradi."},{trigger:"dostavka, yetkazib",response:"O'zbekiston bo'ylab barcha 12 ta viloyatga yetkazib berish xizmati 24 soat ichida mutlaqo bepul amalga oshiriladi."}],op2:[{trigger:"narxi, qancha",response:"Xizmatlarimiz narxi loyihaning murakkabligiga qarab 500 AQSh dollaridan boshlanadi. Bepul hisob-kitob qilishimiz mumkin."}],op3:[{trigger:"manzil, ofis",response:"Bosh ofisimiz Toshkent shahri, Amir Temur ko'chasi 45-uy manzilida joylashgan. Mo'ljal: Oloy bozori ro'parasida."}],op4:[{trigger:"chegirma, skidka",response:"Hozirda Admiral Group-da maxsus bayram chegirmalari ketyapti! Xarid qilsangiz 15 foiz chegirma qilib beramiz."}],op_head:[{trigger:"hamkorlik, sherik",response:"Hamkorlik masalalari bo'yicha taklifingizni elektron pochtamizga yuboring yoki men sizni bosh direktor bilan bog'layman."}]};a.operatorQA=JSON.parse(localStorage.getItem("operator_qa_rules")||"{}");for(const o in u)a.operatorQA[o]||(a.operatorQA[o]=u[o]);const r=()=>{for(const o in a.operatorQA){const i=document.getElementById(`rule-count-${o}`);i&&(i.textContent=(a.operatorQA[o]||[]).length)}};r();let l=[];document.querySelectorAll(".rule-manage-btn").forEach(o=>{o.addEventListener("click",i=>{i.stopPropagation();const c=o.getAttribute("data-op"),m=y[c]||y.op1;if(a.editingQAOpId=c,l=JSON.parse(JSON.stringify(a.operatorQA[c]||[])),e.qaModalOpName&&(e.qaModalOpName.textContent=m.name),e.qaModalOpAvatar)if(c==="op_head")e.qaModalOpAvatar.innerHTML='<i class="fa-solid fa-crown"></i>',e.qaModalOpAvatar.style.background="linear-gradient(135deg, #a855f7, #7c3aed)";else{e.qaModalOpAvatar.innerHTML='<i class="fa-solid fa-network-wired"></i>';const h={op1:"var(--success-green)",op2:"var(--accent-cyan)",op3:"var(--purple-accent)",op4:"var(--warning-amber)"};e.modalOpAvatar.style.background=h[c]||"var(--accent-cyan)"}p(),e.qaRulesModal&&e.qaRulesModal.classList.add("active")})});const p=()=>{if(e.qaRulesContainer){if(e.qaRulesContainer.innerHTML="",l.length===0){e.qaRulesContainer.innerHTML=`<div style="text-align: center; padding: 20px; color: var(--text-muted); font-size: 11px; border: 1px dashed rgba(255,255,255,0.08); border-radius: 4px;">Hali hech qanday qoidalar yo'q. Yangi qoida qo'shish tugmasini bosing.</div>`;return}l.forEach((o,i)=>{const c=document.createElement("div");c.className="workflow-rule-card",c.innerHTML=`
+        <div class="rule-delete-btn" data-index="${i}">&times;</div>
+        
+        <div class="flow-node">
+          <span class="flow-badge badge-if">IF Trigger</span>
+          <div class="flow-input-container">
+            <input type="text" class="rule-input qa-trigger-input" data-index="${i}" value="${o.trigger}" placeholder="Kalit so'zlar (vergul bilan ajratilgan: chegirma, skidka)">
+          </div>
+        </div>
+        
+        <div class="flow-arrow"><i class="fa-solid fa-arrow-down-long"></i></div>
+        
+        <div class="flow-node">
+          <span class="flow-badge badge-then">THEN Reply</span>
+          <div class="flow-input-container">
+            <textarea class="rule-input qa-response-input" data-index="${i}" rows="2" style="resize: vertical; padding: 8px 10px;" placeholder="Mijozga qaytariladigan aniq javob...">${o.response}</textarea>
+          </div>
+        </div>
+      `,c.querySelector(".rule-delete-btn").addEventListener("click",()=>{l.splice(i,1),p()}),c.querySelector(".qa-trigger-input").addEventListener("input",m=>{l[i].trigger=m.target.value}),c.querySelector(".qa-response-input").addEventListener("input",m=>{l[i].response=m.target.value}),e.qaRulesContainer.appendChild(c)})}};e.qaAddRuleBtn&&e.qaAddRuleBtn.addEventListener("click",()=>{l.push({trigger:"",response:""}),p(),e.qaRulesContainer&&setTimeout(()=>{e.qaRulesContainer.parentElement.scrollTop=e.qaRulesContainer.parentElement.scrollHeight},50)}),e.qaGuideToggleBtn&&e.qaGuideBox&&e.qaGuideToggleBtn.addEventListener("click",()=>{const o=e.qaGuideBox.style.display==="block";e.qaGuideBox.style.display=o?"none":"block",e.qaGuideToggleBtn.innerHTML=o?`<i class="fa-solid fa-book-open" style="margin-right: 6px;"></i> Qo'llanma`:'<i class="fa-solid fa-xmark" style="margin-right: 6px;"></i> Yopish'});const d=()=>{e.qaRulesModal&&e.qaRulesModal.classList.remove("active"),a.editingQAOpId=null,l=[],e.qaGuideBox&&(e.qaGuideBox.style.display="none"),e.qaGuideToggleBtn&&(e.qaGuideToggleBtn.innerHTML=`<i class="fa-solid fa-book-open" style="margin-right: 6px;"></i> Qo'llanma`)};e.qaModalCloseBtn&&e.qaModalCloseBtn.addEventListener("click",d),e.qaModalCancelBtn&&e.qaModalCancelBtn.addEventListener("click",d),e.qaModalSaveBtn&&e.qaModalSaveBtn.addEventListener("click",()=>{if(a.editingQAOpId){const o=a.editingQAOpId;a.operatorQA[o]=l.filter(i=>i.trigger.trim()&&i.response.trim()),localStorage.setItem("operator_qa_rules",JSON.stringify(a.operatorQA)),r()}d(),v("Qoidalar muvaffaqiyatli saqlandi! ⚡")}),a.systemPrompt=e.systemInstructionInput.value,e.statTotalCalls.textContent=a.totalCalls,e.startCallBtn.addEventListener("click",x),e.endCallBtn.addEventListener("click",O),e.muteBtn.addEventListener("click",J),e.testVoiceBtn.addEventListener("click",()=>{const o=a.currentOperatorId||"op1",i=y[o]||y.op1,c=a.greetingPhrases[o]||`Assalomu alaykum! Men ${i.name}man. Qanday yordam bera olaman?`;v(`🎙️ ${i.name} (${i.role}) Neiron AI Ovozi Sinanmoqda...`),I(c,o)}),e.sendTextBtn.addEventListener("click",G),e.manualTextInput.addEventListener("keypress",o=>{o.key==="Enter"&&G()}),e.clearLogBtn.addEventListener("click",te),e.savePromptBtn.addEventListener("click",U),e.syncInstaBtn&&e.syncInstaBtn.addEventListener("click",D),e.operatorSelect&&e.operatorSelect.addEventListener("change",Y),e.voiceEngineSelect&&e.voiceEngineSelect.addEventListener("change",o=>{a.voiceEngine=o.target.value,v(`Ovoz tizimi almashdi: ${o.target.options[o.target.selectedIndex].text}`)}),document.querySelectorAll(".voice-test-btn").forEach(o=>{o.addEventListener("click",i=>{var h;i.preventDefault();const c=o.getAttribute("data-op"),m=a.greetingPhrases[c]||`Assalomu alaykum! Men ${((h=y[c])==null?void 0:h.name)||"operator"}man. Qanday yordam bera olaman?`;I(m,c)})}),H("op1"),e.supervisorWarnBtn&&e.supervisorWarnBtn.addEventListener("click",()=>{if(!a.isCallActive){v("Faol qo'ng'iroq yo'q!");return}v("Kamola: Mijozni mavzuga qaytarish bo'yicha ko'rsatma berildi."),E("[Bo'lim Boshlig'i Kamola Ogohlantirishi: Hurmatli operator, mijoz mavzudan chetlashmoqda. Diqqatni tezroq kompaniya sotuviga qarating!]")}),e.supervisorHangupBtn&&e.supervisorHangupBtn.addEventListener("click",()=>{if(!a.isCallActive){v("Faol qo'ng'iroq yo'q!");return}v("Kamola: Qo'ng'iroq majburiy yakunlandi.");const o="Bo'lim Boshlig'i Kamola: Aloqa to'xtatildi. Keraksiz harajatlar oldini olish maqsadida ushbu suhbatni yakunlaymiz.";S("ai",o),I(o),setTimeout(O,4e3)});const g=document.querySelectorAll(".main-nav-btn");g.forEach(o=>{o.addEventListener("click",()=>{g.forEach(m=>m.classList.remove("active")),o.classList.add("active");const i=o.getAttribute("data-target");document.querySelectorAll(".view-section").forEach(m=>m.style.display="none");const c=document.getElementById(i);c&&(c.style.display=i==="terminal-view"||i==="settings-view"?"grid":"block")})});const f=document.querySelectorAll(".mode-btn");f.forEach(o=>{o.addEventListener("click",()=>{f.forEach(m=>m.classList.remove("active")),o.classList.add("active");const i=o.getAttribute("data-mode");document.querySelectorAll(".op-mode-content").forEach(m=>m.style.display="none");const c=document.getElementById(i);c&&(c.style.display="block")})});const k=document.querySelectorAll(".room-tab");k.forEach(o=>{o.addEventListener("click",()=>{k.forEach(z=>z.classList.remove("active")),o.classList.add("active");const i=o.getAttribute("data-room"),c=document.getElementById("room-screen-content"),m=document.getElementById("room-title"),h=document.getElementById("room-avatar-3d"),A=document.getElementById("room-3d-box");A&&(A.className=`room-3d-box theme-${i}`);const b=document.getElementById("room-stat-pills");i==="room-malika"?(m&&(m.textContent="Malika — Sotuv Xonasi 1"),h&&(h.innerHTML='<i class="fa-solid fa-user-tie"></i>'),c&&(c.innerHTML=`<span class="code-line">SYS_CALL_CENTER_v2.0</span><span class="code-line glow">LINIYA: +998 (71) 200-01-01</span><span class="code-line">BO'LIM: SOTUV LINIYASI 1</span>`),b&&(b.innerHTML=`
+            <span class="room-pill">📍 Toshkent HQ</span>
+            <span class="room-pill glow-green" style="background: rgba(16, 185, 129, 0.15); color: #10b981;">🟢 Liniya 1 (+998 71 200-01-01)</span>
+            <span class="room-pill">📦 Bugungi Buyurtmalar: 34 ta</span>
+          `)):i==="room-jasur"?(m&&(m.textContent="Jasur — Sotuv Xonasi 2"),h&&(h.innerHTML='<i class="fa-solid fa-user-tie"></i>'),c&&(c.innerHTML=`<span class="code-line">SYS_CALL_CENTER_v2.0</span><span class="code-line glow">LINIYA: +998 (71) 200-01-02</span><span class="code-line">BO'LIM: SOTUV LINIYASI 2</span>`),b&&(b.innerHTML=`
+            <span class="room-pill">📍 Samarqand Office</span>
+            <span class="room-pill glow-green" style="background: rgba(59, 130, 246, 0.15); color: #3b82f6;">🔵 Liniya 2 (+998 71 200-01-02)</span>
+            <span class="room-pill">📦 Bugungi Buyurtmalar: 26 ta</span>
+          `)):i==="room-nigora"?(m&&(m.textContent="Nigora — Sotuv Xonasi 3"),h&&(h.innerHTML='<i class="fa-solid fa-user-tie"></i>'),c&&(c.innerHTML=`<span class="code-line">SYS_CALL_CENTER_v2.0</span><span class="code-line glow">LINIYA: +998 (71) 200-01-03</span><span class="code-line">BO'LIM: SOTUV LINIYASI 3</span>`),b&&(b.innerHTML=`
+            <span class="room-pill">📍 Buxoro Office</span>
+            <span class="room-pill glow-green" style="background: rgba(6, 182, 212, 0.15); color: #06b6d4;">🟣 Liniya 3 (+998 71 200-01-03)</span>
+            <span class="room-pill">📦 Bugungi Buyurtmalar: 21 ta</span>
+          `)):i==="room-farruh"?(m&&(m.textContent="Farruh — Sotuv Xonasi 4"),h&&(h.innerHTML='<i class="fa-solid fa-user-tie"></i>'),c&&(c.innerHTML=`<span class="code-line">SYS_CALL_CENTER_v2.0</span><span class="code-line glow">LINIYA: +998 (71) 200-01-04</span><span class="code-line">BO'LIM: SOTUV LINIYASI 4</span>`),b&&(b.innerHTML=`
+            <span class="room-pill">📍 Farg'ona Office</span>
+            <span class="room-pill glow-green" style="background: rgba(245, 158, 11, 0.15); color: #f59e0b;">🟠 Liniya 4 (+998 71 200-01-04)</span>
+            <span class="room-pill">📦 Bugungi Buyurtmalar: 18 ta</span>
+          `)):i==="room-kamola"&&(m&&(m.textContent="Kamola — Supervisor Boshliq Suite"),h&&(h.innerHTML='<i class="fa-solid fa-crown"></i>'),c&&(c.innerHTML='<span class="code-line">SYS_SUPERVISOR_v2.0</span><span class="code-line glow" style="color:#c084fc;">LINIYA: +998 (71) 200-01-00</span><span class="code-line">STATUS: AUTOPILOT ACTIVE</span>'),b&&(b.innerHTML=`
+            <span class="room-pill" style="border: 1px solid rgba(168, 85, 247, 0.3); color: #c084fc;">👑 HQ Executive Suite</span>
+            <span class="room-pill glow-green" style="background: rgba(168, 85, 247, 0.15); color: #c084fc;">👑 Liniya 0 (+998 71 200-01-00)</span>
+            <span class="room-pill">🛡️ Jamoa: 4 ta sotuv stansiyalari</span>
+          `))})});const T=document.querySelector(".room-stage-3d"),C=document.getElementById("room-3d-box");T&&C&&(T.addEventListener("mousemove",o=>{const i=T.getBoundingClientRect(),c=o.clientX-i.left-i.width/2,h=25-(o.clientY-i.top-i.height/2)/i.height*20,A=-30+c/i.width*30;C.style.transform=`rotateX(${h}deg) rotateY(${A}deg) translateZ(-20px)`}),T.addEventListener("mouseleave",()=>{C.style.transform="rotateX(25deg) rotateY(-30deg) translateZ(-20px)",C.style.transition="transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275)"}),T.addEventListener("mouseenter",()=>{C.style.transition="none"})),e.tabBtns.forEach(o=>{o.addEventListener("click",()=>{e.tabBtns.forEach(i=>i.classList.remove("active")),e.tabContents.forEach(i=>i.classList.remove("active")),o.classList.add("active"),document.getElementById(o.dataset.tab).classList.add("active")})}),e.simChips.forEach(o=>{o.addEventListener("click",()=>{const i=o.dataset.msg;a.isCallActive||x(),setTimeout(()=>{E(i)},500)})}),K(),F(),ne()}let B=null;function K(){"serviceWorker"in navigator&&window.addEventListener("load",()=>{navigator.serviceWorker.register("/sw.js").then(s=>{console.log("[PWA] ServiceWorker successfully registered:",s.scope)}).catch(s=>{console.warn("[PWA] ServiceWorker registration failed:",s)})}),window.addEventListener("beforeinstallprompt",s=>{s.preventDefault(),B=s,e.pwaInstallStatusText&&(e.pwaInstallStatusText.innerHTML=`<i class="fa-solid fa-bolt" style="color:#00f2fe;"></i> Planshetga 1-bosishda o'rnatish tayyor!`)}),window.addEventListener("appinstalled",()=>{B=null,v("🎉 AI Call Center ilovasi planshetingizga muvaffaqiyatli o'rnatildi!"),e.pwaInstallStatusText&&(e.pwaInstallStatusText.innerHTML=`<i class="fa-solid fa-circle-check" style="color:#10b981;"></i> Ilova planshetga o'rnatilgan`)});const n=()=>{e.downloadModal&&e.downloadModal.classList.add("active")},t=()=>{e.downloadModal&&e.downloadModal.classList.remove("active")};e.downloadAppBtn&&e.downloadAppBtn.addEventListener("click",n),e.downloadModalCloseBtn&&e.downloadModalCloseBtn.addEventListener("click",t),e.downloadModalCancelBtn&&e.downloadModalCancelBtn.addEventListener("click",t),e.pwaInstallTriggerBtn&&e.pwaInstallTriggerBtn.addEventListener("click",async()=>{if(B){B.prompt();const{outcome:s}=await B.userChoice;s==="accepted"&&v("Planshetga o'rnatish tasdiqlandi! 📲"),B=null}else/iPad|iPhone|iPod/.test(navigator.userAgent)&&!window.MSStream?alert(`iPad iPad-da o'rnatish uchun:
+Safari pastki menyusidagi Ulashish (Share ⎋) tugmasini bosing va 'Bosh ekranga qo'shish (Add to Home Screen)'ni tanlang.`):v("💡 Planshet brauzeringiz menyusidan (⋮) 'Bosh ekranga qo'shish' yoki 'Ilovani o'rnatish' tugmasini bosing.")})}function Q(n,t){e.chipText.textContent=t,e.connectionChip.className="status-chip online"}function U(){a.companyName=e.companyNameInput.value.trim(),a.systemPrompt=e.systemInstructionInput.value.trim(),v("AI Operator sozlamalari va Instagram bilimlari yangilandi!")}function D(){const t=(e.instaUrlInput?e.instaUrlInput.value.trim():"").match(/instagram\.com\/([a-zA-Z0-9_.]+)/),s=t?t[1]:"admiral_group_official";v(`Instagram @${s} ma'lumotlari muvaffaqiyatli sinxronlandi! AI Bilimlar Bazasi yangilandi.`),e.companyNameInput&&(e.companyNameInput.value="Admiral Group Official"),e.systemInstructionInput&&(e.systemInstructionInput.value=`Siz "Admiral Group Official" (@${s}) kompaniyasining malakali va xushmuomala AI Call-markaz operatorisiz.
+Ismingiz: Malika.
+Instagram sahifa: https://www.instagram.com/${s}
+
+Kompaniya Faoliyati va Bilimlar Bazasi:
+- Kompaniya nomi: Admiral Group Official
+- Asosiy faoliyat: Sifatli mahsulot va xizmatlarni taqdim etish (O'zbekiston bo'ylab yetkazib berish va professional konsultatsiya).
+- Ish vaqti: Dushanba - Shanba, 09:00 dan 18:00 gacha. Yakshanba — dam olish kuni.
+- Murojaatlar: Mahsulotlar narxi, buyurtma berish, yetkazib berish shartlari va savollar bo'yicha to'liq yordam berish.
+- Inson operatorga uzatish: Agar mijoz operatorni so'rasa, "Sizni inson operatorimizga ulashimga ruxsat bering" deb ayting.
+- Qoida: Har doim O'zbek tilida samimiy, xushmuomala va aniq javob bering!`),U()}function F(){const n=window.SpeechRecognition||window.webkitSpeechRecognition;if(!n){console.warn("Web Speech API ushbu brauzerda qo'llab-quvvatlanmaydi. Matnli rejimdan foydalaning.");return}a.recognition=new n,a.recognition.continuous=!0,a.recognition.interimResults=!1,a.recognition.lang="uz-UZ",a.recognition.onresult=t=>{if(!a.isCallActive||a.isMuted)return;const s=t.results.length-1,u=t.results[s][0].transcript.trim();u&&E(u)},a.recognition.onerror=t=>{console.log("Speech recognition error:",t.error)},a.recognition.onend=()=>{if(a.isCallActive&&!a.isMuted)try{a.recognition.start()}catch{}}}function x(){if(a.isCallActive)return;a.isCallActive=!0,a.callDurationSeconds=0,a.currentSessionCostUSD=0,a.totalCalls++,localStorage.setItem("total_calls",a.totalCalls),e.statTotalCalls.textContent=a.totalCalls,e.startCallBtn.disabled=!0,e.endCallBtn.disabled=!1,e.muteBtn.disabled=!1,e.avatarRing.className="avatar-ring active",e.callStatus.textContent="Muloqot ulangan. O'zbek tilida gapirishingiz mumkin...",e.handoffAlert.style.display="none";const n=3e-6;if(a.timerInterval=setInterval(()=>{a.callDurationSeconds++,a.currentSessionCostUSD+=n,a.totalCostUSD+=n;const t=String(Math.floor(a.callDurationSeconds/60)).padStart(2,"0"),s=String(a.callDurationSeconds%60).padStart(2,"0");e.callTimer.textContent=`${t}:${s}`,e.statAvgDuration.textContent=`${a.callDurationSeconds}s`,$(n*60)},1e3),a.recognition)try{a.recognition.start()}catch(t){console.log(t)}setTimeout(()=>{var u;const t=a.currentOperatorId||"op1",s=a.greetingPhrases[t]||`Assalomu alaykum! Men ${((u=y[t])==null?void 0:u.name)||"operator"}man. Qanday yordam bera olaman?`;S("ai",s),I(s,t)},600)}function Y(n){const t=n.target.value;H(t)}function H(n){const t=y[n]||y.op1;a.currentOperatorId=n,a.systemPrompt=t.prompt,e.activePhoneDisplay&&(e.activePhoneDisplay.textContent=t.phone),e.systemInstructionInput&&(e.systemInstructionInput.value=t.prompt),e.agentNameDisplay&&(e.agentNameDisplay.textContent=`${t.name} (${t.role})`),e.agent3dCore&&(e.agent3dCore.className=`sphere-3d-core ${n}-theme`),M(`Liniya almashdi: ${t.phone} (AI Operator: ${t.name} — ${t.role})`)}function O(){if(a.isCallActive){if(a.isCallActive=!1,clearInterval(a.timerInterval),e.startCallBtn.disabled=!1,e.endCallBtn.disabled=!0,e.muteBtn.disabled=!0,e.avatarRing.className="avatar-ring",e.callStatus.textContent="Qo'ng'iroq yakunlandi.",a.recognition)try{a.recognition.stop()}catch{}R(),M("Qo'ng'iroq yakunlandi. Muloqot vaqti: "+e.callTimer.textContent)}}function J(){if(a.isMuted=!a.isMuted,a.isMuted){if(e.muteBtn.innerHTML='<i class="fa-solid fa-microphone-slash"></i>',e.muteBtn.style.color="var(--danger-red)",e.callStatus.textContent="Mikrofon o'chirilgan (Muted)",a.recognition)try{a.recognition.stop()}catch{}}else if(e.muteBtn.innerHTML='<i class="fa-solid fa-microphone"></i>',e.muteBtn.style.color="var(--text-main)",e.callStatus.textContent="Muloqot ulangan...",a.recognition&&a.isCallActive)try{a.recognition.start()}catch{}}async function E(n){if(S("client",n),ae(n),["operator","inson","odam","xodim","boshqasi bilan","jonli odam"].some(d=>n.toLowerCase().includes(d))&&(e.handoffAlert.style.display="flex"),["dastur yoz","javascript","python","html","css","kod yoz","coding","program","tarix","geografiya","fizika","kimyo","matematika","algebra","she'r yoz","ertak","hikoya","kino tavsiya","ob-havo","dollar kursi"].some(d=>n.toLowerCase().includes(d))&&a.currentOperatorId!=="op_head"){if(e.costGuardTopicBadge&&(e.costGuardTopicBadge.textContent="⚠️ Chetlanish (Off-Topic)",e.costGuardTopicBadge.style.background="rgba(239, 68, 68, 0.15)",e.costGuardTopicBadge.style.color="#ef4444",e.costGuardTopicBadge.style.borderColor="rgba(239, 68, 68, 0.3)"),e.costGuardAlertMsg&&(e.costGuardAlertMsg.innerHTML=`⚠️ <strong>Chetlanish aniqlandi:</strong> Mijoz mavzudan tashqari savol berdi ("${n}"). AI ovoz xarajatlari tejalmoqda.`,e.costGuardAlertMsg.style.color="#f87171"),e.autoCostGuardSwitch?e.autoCostGuardSwitch.checked:!0){const g="Kechirasiz, bu liniya faqat sotuv bo'limi uchun. Keraksiz AI ovoz xarajatlarini tejash maqsadida aloqa bo'lim boshlig'i tomonidan to'xtatildi.";S("ai",g),I(g),setTimeout(O,4500);return}}else a.isCallActive&&(e.costGuardTopicBadge&&(e.costGuardTopicBadge.textContent="🟢 Normal (Sotuvda)",e.costGuardTopicBadge.style.background="rgba(16, 185, 129, 0.15)",e.costGuardTopicBadge.style.color="#10b981",e.costGuardTopicBadge.style.borderColor="rgba(16, 185, 129, 0.3)"),e.costGuardAlertMsg&&(e.costGuardAlertMsg.textContent="Kamola operatorlar suhbatini nazorat qilmoqda. Mavzudan tashqari (off-topic) savollar berilganda, u xarajatlarni tejash uchun ogohlantirish beradi yoki suhbatni tugatadi.",e.costGuardAlertMsg.style.color="var(--text-muted)"));const r=a.currentOperatorId||"op1",l=a.operatorQA[r]||[];let p=null;for(const d of l){if(!d.trigger||!d.response)continue;if(d.trigger.toLowerCase().split(",").map(f=>f.trim()).filter(Boolean).some(f=>n.toLowerCase().includes(f))){p=d;break}}if(p){const d=p.response;e.statLatency.textContent="~0ms (⚡ QA Rule)",e.callStatus.textContent="AI javob bermoqda...",S("ai",d),v("⚡ Avtomatik Qoida Faollashdi (Tejamkorlik!)"),M(`[TEJAMKORLIK]: "${n}" savoliga QA Qoidasi bo'yicha javob qaytarildi.`),I(d,r),P(n,d);return}e.callStatus.textContent="AI o'ylamoqda va javob tayyorlamoqda...",e.avatarRing&&(e.avatarRing.className="avatar-ring active speaking"),e.agent3dCore&&e.agent3dCore.classList.add("speaking");try{const d=Date.now(),g=await V(n),f=Date.now()-d;e.statLatency.textContent=`~${f}ms`,e.callStatus.textContent="AI javob bermoqda...",S("ai",g),I(g),P(n,g)}catch(d){console.error("Gemini API Error:",d);const g="Kechirasiz, javob tayyorlashda texnik uzilish bo'ldi. Iltimos, savolingizni qayta berib ko'ring.";S("ai",g),I(g)}finally{setTimeout(()=>{a.isCallActive&&(e.avatarRing&&(e.avatarRing.className="avatar-ring active"),e.agent3dCore&&e.agent3dCore.classList.remove("speaking"),e.callStatus.textContent="Muloqot ulangan. Sizni eshitmoqdaman...")},2e3)}}async function V(n){var t,s,u,r,l;try{const p=await fetch("/api/chat",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({userQuery:n,systemPrompt:a.systemPrompt})});if(!p.ok)throw new Error(`Serverless Proxy HTTP Error: ${p.status}`);const d=await p.json();if(d.usageMetadata){const f=d.usageMetadata.promptTokenCount||0,k=d.usageMetadata.candidatesTokenCount||0;w(f,k)}else w(Math.round(n.length/4),60);return((l=(r=(u=(s=(t=d.candidates)==null?void 0:t[0])==null?void 0:s.content)==null?void 0:u.parts)==null?void 0:r[0])==null?void 0:l.text)||"Tushundim, yana qanday savolingiz bor?"}catch(p){console.warn("Backend API call failed, using intelligent fallback:",p);const d=X(n);return w(Math.round(n.length/4),Math.round(d.length/4)),d}}function w(n,t){a.inputTokens+=n,a.outputTokens+=t,a.totalTokens=a.inputTokens+a.outputTokens;const s=n/1e6*.075,u=t/1e6*.3,r=s+u;a.currentSessionCostUSD+=r,a.totalCostUSD+=r,$(18e-5)}function $(n){const t=(a.totalCostUSD*a.USD_TO_UZS).toFixed(2),s=(a.currentSessionCostUSD*a.USD_TO_UZS).toFixed(2),u=a.callDurationSeconds>0?(a.totalCostUSD/a.callDurationSeconds*60).toFixed(5):n.toFixed(5);e.statTotalCost&&(e.statTotalCost.textContent=a.totalCostUSD.toFixed(5)),e.statTotalUzs&&(e.statTotalUzs.textContent=`${t} So'm`),e.statPerMinRate&&(e.statPerMinRate.textContent=`$${u} / min`),e.statInputTokens&&(e.statInputTokens.textContent=a.inputTokens.toLocaleString()),e.statOutputTokens&&(e.statOutputTokens.textContent=a.outputTokens.toLocaleString()),e.statTotalTokens&&(e.statTotalTokens.textContent=a.totalTokens.toLocaleString()),e.liveMinuteRate&&(e.liveMinuteRate.textContent=`$${u} / min`),e.liveSessionCost&&(e.liveSessionCost.textContent=`$${a.currentSessionCostUSD.toFixed(5)}`),e.liveSessionUzs&&(e.liveSessionUzs.textContent=`${s} So'm`)}function X(n){const t=n.toLowerCase();return t.includes("vaqt")||t.includes("ish")||t.includes("soat")||t.includes("qachon")?`${a.companyName} ish vaqti Dushanbadan Shanbagacha soat 09:00 dan 18:00 gacha. Yakshanba — dam olish kuni.`:t.includes("narx")||t.includes("qancha")||t.includes("pul")||t.includes("xizmat")?"Bizning AI va veb-sayt yaratish xizmatlarimiz narxi boshlang'ich 500 AQSh dollaridan boshlanadi. Loyihangizga qarab aniq hisoblab beramiz.":t.includes("manzil")||t.includes("qayer")||t.includes("ofis")||t.includes("joylashgan")?"Bosh ofisimiz Toshkent shahri, Amir Temur ko'chasi 45-uy manzilida joylashgan. Mo'ljal: Oloy bozori qarshisida.":t.includes("operator")||t.includes("inson")||t.includes("odam")?"Ruxsat bersangiz, sizni bo'limimizning jonli inson-operatoriga yo'naltiraman. Iltimos, liniyada kutib qoling...":t.includes("rahmat")||t.includes("tashakkur")||t.includes("sog' bo'ling")?"Arzimaydi! Murojaatingiz uchun tashakkur. Kuningiz xayrli o'tsin!":`Tushundim. "${n}" bo'yicha savolingiz qabul qilindi. Sizga ushbu masalada batafsil yordam berishim uchun qo'shimcha ma'lumot bera olasizmi?`}async function P(n,t){const s=n.toLowerCase(),u=t.toLowerCase();if(u.includes("tasdiqlandi")||u.includes("qabul qilindi")||s.includes("zakaz")||s.includes("sotib olaman")){const l=y[a.currentOperatorId]||y.op1,p={clientName:"Mijoz",clientPhone:l.phone,clientAddress:n,orderDetails:"Admiral Group Mahsulotlari",operatorName:l.name,linePhone:l.phone,telegramToken:e.tgBotTokenInput?e.tgBotTokenInput.value.trim():"",telegramChatId:e.tgChatIdInput?e.tgChatIdInput.value.trim():""};try{await fetch("/api/order",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(p)}),v("📲 Telegram-botga Yangi Buyurtma yuborildi!")}catch(d){console.warn("Order dispatch failed:",d)}}}function Z(){a.sharedAudioPlayer||(a.sharedAudioPlayer=new Audio);try{a.sharedAudioPlayer.play().catch(()=>{})}catch{}}function R(){if(a.sharedAudioPlayer)try{a.sharedAudioPlayer.pause(),a.sharedAudioPlayer.currentTime=0}catch{}if(a.currentAudio=null,a.voiceQueue=[],a.isPlayingQueue=!1,a.speechSynth)try{a.speechSynth.cancel()}catch{}}function I(n,t=null){if(Z(),R(),!n)return;const s=t||a.currentOperatorId||"op1",u=n.replace(/['`ʻ’"]/g,"").replace(/\*\*([^*]+)\*\*/g,"$1").replace(/\*([^*]+)\*/g,"$1").replace(/#+/g,"").replace(/https?:\/\/\S+/g,"").replace(/[\n\r]+/g,". ").replace(/\s+/g," ").trim();u&&W(u,s)}function W(n,t){const s=ee(n,140);a.voiceQueue=s,a.isPlayingQueue=!0,q(t)}async function q(n){if(!a.isPlayingQueue||a.voiceQueue.length===0){a.isPlayingQueue=!1,e.avatarRing&&!a.isCallActive&&(e.avatarRing.className="avatar-ring"),e.agent3dCore&&e.agent3dCore.classList.remove("speaking");return}const t=a.voiceQueue.shift(),s=e.elevenKeyInput?e.elevenKeyInput.value.trim():"",u=e.openaiKeyInput?e.openaiKeyInput.value.trim():"",r=a.apiKey||"";try{e.avatarRing&&(e.avatarRing.className="avatar-ring active speaking"),e.agent3dCore&&e.agent3dCore.classList.add("speaking");const l=await fetch(`/api/tts?text=${encodeURIComponent(t)}&opId=${n}&elevenKey=${encodeURIComponent(s)}&openaiKey=${encodeURIComponent(u)}&geminiKey=${encodeURIComponent(r)}&t=${Date.now()}`);if(!l.ok)throw new Error(`TTS Fetch Failed: ${l.status}`);const p=await l.blob(),d=URL.createObjectURL(p);a.sharedAudioPlayer||(a.sharedAudioPlayer=new Audio);const g=a.sharedAudioPlayer;return g.src=d,a.currentAudio=g,g.playbackRate=1,new Promise(f=>{g.onended=()=>{URL.revokeObjectURL(d),a.currentAudio=null,q(n).then(f)},g.onerror=k=>{console.warn("Audio Blob playback error:",k),URL.revokeObjectURL(d),a.currentAudio=null,q(n).then(f)},g.play().then(f).catch(k=>{console.warn("Audio play error:",k),URL.revokeObjectURL(d),a.currentAudio=null,q(n).then(f)})})}catch(l){console.warn("TTS Fetch/Play Error:",l),a.currentAudio=null,q(n)}}function ee(n,t=140){const s=n.split(new RegExp("(?<=[.!?])\\s+")),u=[];let r="";for(const l of s)if((r+" "+l).length<=t)r=r?r+" "+l:l;else if(r&&u.push(r),l.length>t){const p=l.split(new RegExp("(?<=[,;])\\s+"));for(const d of p)d.length<=t?u.push(d):u.push(d.substring(0,t));r=""}else r=l;return r&&u.push(r),u}function ae(n){const t=["rahmat","zor","yaxshi","super","tushundim","tashakkur"],s=["yomon","xato","tushunmadingiz","jahl","yoqmayapti","muammo"],u=n.toLowerCase();let r=t.filter(p=>u.includes(p)).length,l=s.filter(p=>u.includes(p)).length;r>l?(e.sentimentTag.className="sentiment-tag positive",e.sentimentTag.innerHTML='<i class="fa-solid fa-face-smile"></i> Ijobiy'):l>r?(e.sentimentTag.className="sentiment-tag negative",e.sentimentTag.innerHTML='<i class="fa-solid fa-face-frown"></i> Salbiy'):(e.sentimentTag.className="sentiment-tag neutral",e.sentimentTag.innerHTML='<i class="fa-solid fa-face-meh"></i> Neytral')}function S(n,t){const s=document.createElement("div");s.className=`chat-bubble ${n}`;const r=new Date().toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"}),l=n==="client"?"Mijoz":"AI Operator (Malika)",p=n==="client"?"fa-user":"fa-robot";s.innerHTML=`
+    <div class="bubble-sender">
+      <i class="fa-solid ${p}"></i> ${l} • ${r}
+    </div>
+    <div class="bubble-content">${_(t)}</div>
+  `,e.chatLog.appendChild(s),e.chatLog.scrollTop=e.chatLog.scrollHeight}function M(n){const t=document.createElement("div");t.className="system-msg",t.innerHTML=`<i class="fa-solid fa-circle-info"></i> <span>${_(n)}</span>`,e.chatLog.appendChild(t),e.chatLog.scrollTop=e.chatLog.scrollHeight}function G(){const n=e.manualTextInput.value.trim();n&&(e.manualTextInput.value="",a.isCallActive||x(),E(n))}function te(){e.chatLog.innerHTML=`
+    <div class="system-msg">
+      <i class="fa-solid fa-circle-info"></i>
+      <span>Stenogramma tozalandi. AI bilan muloqotni davom ettirishingiz mumkin.</span>
+    </div>
+  `}function _(n){return n.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")}function v(n){M(n)}function ne(){const n=e.canvas,t=n.getContext("2d");let s=0;function u(){t.clearRect(0,0,n.width,n.height),t.beginPath(),t.lineWidth=2,t.strokeStyle=a.isCallActive?"#00f2fe":"rgba(255, 255, 255, 0.1)";const r=n.height,l=n.width,p=a.isCallActive?18:3,d=.04;t.moveTo(0,r/2);for(let g=0;g<l;g++){const f=r/2+Math.sin(g*d+s)*p*Math.cos(g*.01);t.lineTo(g,f)}t.stroke(),s+=a.isCallActive?.08:.02,requestAnimationFrame(u)}u()}window.addEventListener("DOMContentLoaded",j);
+//# sourceMappingURL=index-C1LPTTtR.js.map
+
+</script>
+  <style>:root{--bg-dark: #060a13;--bg-card: rgba(14, 21, 38, .75);--bg-card-hover: rgba(22, 34, 56, .85);--border-color: rgba(255, 255, 255, .07);--border-highlight: rgba(0, 242, 254, .35);--primary-gradient: linear-gradient(135deg, #00f2fe 0%, #4facfe 50%, #9d4edd 100%);--accent-cyan: #00f2fe;--accent-purple: #9d4edd;--success-green: #00e676;--danger-red: #ff3366;--warning-amber: #ffb703;--text-main: #eef2f7;--text-muted: #8b9cb5;--text-dim: #5e718a;--font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;--font-heading: "Outfit", sans-serif;--radius-lg: 18px;--radius-md: 12px;--radius-sm: 8px;--shadow-glow: 0 8px 40px 0 rgba(0, 242, 254, .12);--shadow-card: 0 8px 32px rgba(0, 0, 0, .4), 0 0 0 1px rgba(255, 255, 255, .04);--glass-backdrop: blur(20px) saturate(200%)}*{box-sizing:border-box;margin:0;padding:0}body{background-color:var(--bg-dark);background-image:radial-gradient(ellipse at 10% 10%,rgba(79,172,254,.08) 0px,transparent 50%),radial-gradient(ellipse at 90% 80%,rgba(157,78,221,.08) 0px,transparent 50%),radial-gradient(ellipse at 50% 50%,rgba(0,242,254,.03) 0px,transparent 50%);color:var(--text-main);font-family:var(--font-family);min-height:100vh;display:flex;flex-direction:column;overflow-x:hidden;line-height:1.6}.app-container{max-width:1440px;margin:0 auto;padding:20px;width:100%;min-height:100vh;display:flex;flex-direction:column;gap:20px}.navbar{display:flex;align-items:center;justify-content:space-between;background:var(--bg-card);backdrop-filter:var(--glass-backdrop);-webkit-backdrop-filter:var(--glass-backdrop);border:1px solid var(--border-color);padding:16px 24px;border-radius:var(--radius-lg)}.logo-group{display:flex;align-items:center;gap:16px}.logo-icon{width:48px;height:48px;background:var(--primary-gradient);border-radius:var(--radius-md);display:flex;align-items:center;justify-content:center;font-size:22px;color:#fff;box-shadow:0 4px 20px #00f2fe66}.logo-text h1{font-family:var(--font-heading);font-size:22px;font-weight:700;letter-spacing:-.5px}.logo-text h1 span{background:var(--primary-gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent}.subtitle{font-size:13px;color:var(--text-muted)}.header-actions{display:flex;align-items:center;gap:16px}.status-chip{display:flex;align-items:center;gap:8px;padding:8px 16px;border-radius:30px;font-size:13px;font-weight:600;background:#ffffff0d;border:1px solid var(--border-color)}.status-chip.online{background:#00e6761a;border-color:#00e6764d;color:var(--success-green)}.status-chip.offline{background:#ff33661a;border-color:#ff33664d;color:var(--danger-red)}.pulse-dot{width:8px;height:8px;border-radius:50%;background:currentColor;box-shadow:0 0 10px currentColor;animation:pulse 2s infinite}@keyframes pulse{0%{transform:scale(.95);opacity:.8}50%{transform:scale(1.2);opacity:1}to{transform:scale(.95);opacity:.8}}.api-key-container{display:flex;align-items:center;gap:8px;background:#0000004d;border:1px solid var(--border-color);padding:6px 12px;border-radius:30px}.api-key-container i{color:var(--accent-cyan);font-size:14px}.api-key-container input{background:transparent;border:none;color:var(--text-main);font-size:13px;outline:none;width:200px}.api-key-container button{background:var(--primary-gradient);border:none;color:#fff;width:26px;height:26px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:12px;transition:transform .2s}.api-key-container button:hover{transform:scale(1.1)}.vercel-badge{display:flex;align-items:center;gap:6px;background:#ffffff10;color:#fff;text-decoration:none;padding:8px 14px;border-radius:30px;font-size:12px;font-weight:500;border:1px solid rgba(255,255,255,.15);transition:background .2s}.vercel-badge:hover{background:#ffffff20}.dashboard-grid{display:grid;grid-template-columns:minmax(340px,380px) minmax(360px,1fr) minmax(300px,360px);gap:24px;flex:1}@media (max-width: 1200px){.dashboard-grid{grid-template-columns:1fr 1fr}.terminal-card{grid-column:span 1}.settings-card{grid-column:span 2}}@media (max-width: 768px){.dashboard-grid{grid-template-columns:1fr}.settings-card{grid-column:span 1}}.card{background:var(--bg-card);backdrop-filter:var(--glass-backdrop);-webkit-backdrop-filter:var(--glass-backdrop);border:1px solid var(--border-color);border-radius:var(--radius-lg);padding:24px;display:flex;flex-direction:column;gap:20px;box-shadow:var(--shadow-card);transition:border-color .3s,box-shadow .3s;position:relative;overflow:hidden}.card:before{content:"";position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(0,242,254,.3),transparent);pointer-events:none}.card:hover{border-color:var(--border-highlight)}.card-header{display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border-color);padding-bottom:14px}.card-header h2{font-family:var(--font-heading);font-size:17px;font-weight:600;display:flex;align-items:center;gap:10px;color:var(--text-main)}.card-header h2 i{color:var(--accent-cyan)}.phone-number{font-family:monospace;background:#00f2fe1a;color:var(--accent-cyan);padding:4px 10px;border-radius:var(--radius-sm);font-size:13px;font-weight:600;border:1px solid rgba(0,242,254,.2)}.operator-select-container{display:flex;flex-direction:column;gap:6px;background:#00000040;border:1px solid var(--border-color);padding:10px 14px;border-radius:var(--radius-md)}.operator-select-container label{font-size:11px;font-weight:600;color:var(--text-muted);display:flex;align-items:center;gap:6px}.operator-select-dropdown{background:#121a2bf2;border:1px solid var(--border-highlight);color:#fff;padding:8px 12px;border-radius:var(--radius-sm);font-family:var(--font-family);font-size:13px;font-weight:600;outline:none;cursor:pointer;transition:border-color .2s}.operator-select-dropdown:focus{border-color:var(--accent-cyan)}.phone-display{display:flex;flex-direction:column;align-items:center;justify-content:center;background:#0006;border:1px solid var(--border-color);border-radius:var(--radius-md);padding:30px 20px;position:relative;overflow:hidden}.hologram-stage{display:flex;flex-direction:column;align-items:center;justify-content:center;margin-bottom:20px;perspective:1000px;position:relative}.cube-3d-wrapper{width:130px;height:130px;position:relative;transform-style:preserve-3d;display:flex;align-items:center;justify-content:center;transition:transform .5s cubic-bezier(.175,.885,.32,1.275)}.cube-3d-wrapper:hover{transform:rotateY(180deg) rotateX(20deg)}.orbit-ring{position:absolute;border-radius:50%;border:1px dashed rgba(0,242,254,.4);pointer-events:none}.orbit-ring.ring-1{width:170px;height:170px;animation:spinOrbit 12s linear infinite;box-shadow:0 0 20px #00f2fe26}.orbit-ring.ring-2{width:145px;height:145px;border-color:#9d4edd80;animation:spinOrbitReverse 8s linear infinite;transform:rotateX(70deg)}@keyframes spinOrbit{0%{transform:rotate(0) rotateX(30deg)}to{transform:rotate(360deg) rotateX(30deg)}}@keyframes spinOrbitReverse{0%{transform:rotate(360deg) rotateX(70deg)}to{transform:rotate(0) rotateX(70deg)}}.sphere-3d-core{width:85px;height:85px;position:relative;transform-style:preserve-3d;animation:float3DCore 6s ease-in-out infinite}@keyframes float3DCore{0%,to{transform:translateY(0) rotateY(0) rotateX(10deg)}50%{transform:translateY(-14px) rotateY(180deg) rotateX(-10deg)}}.core-face{position:absolute;width:85px;height:85px;background:#0e1526e6;-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border:1px solid rgba(0,242,254,.5);border-radius:18px;display:flex;align-items:center;justify-content:center;font-size:32px;color:var(--accent-cyan);box-shadow:inset 0 0 25px #00f2fe40,0 0 30px #00f2fe59;transition:all .3s}.core-face.front{transform:rotateY(0) translateZ(42px)}.core-face.back{transform:rotateY(180deg) translateZ(42px)}.core-face.right{transform:rotateY(90deg) translateZ(42px)}.core-face.left{transform:rotateY(-90deg) translateZ(42px)}.core-face.top{transform:rotateX(90deg) translateZ(42px)}.core-face.bottom{transform:rotateX(-90deg) translateZ(42px)}.sphere-3d-core.op1-theme .core-face{border-color:var(--success-green);color:var(--success-green);box-shadow:inset 0 0 20px #00e6764d,0 0 25px #00e67666}.sphere-3d-core.op2-theme .core-face{border-color:var(--accent-cyan);color:var(--accent-cyan);box-shadow:inset 0 0 20px #00f2fe4d,0 0 25px #00f2fe66}.sphere-3d-core.op3-theme .core-face{border-color:var(--accent-purple);color:var(--accent-purple);box-shadow:inset 0 0 20px #9d4edd4d,0 0 25px #9d4edd66}.sphere-3d-core.speaking{animation:float3DSpeaking .8s ease-in-out infinite alternate}@keyframes float3DSpeaking{0%{transform:scale(1) rotateY(0)}to{transform:scale(1.15) rotateY(90deg)}}.agent-name-tag{display:flex;align-items:center;gap:8px;background:#0006;border:1px solid var(--border-color);padding:6px 16px;border-radius:20px;font-size:12px;font-weight:600;color:#fff;margin-top:14px}.agent-badge-dot{width:8px;height:8px;border-radius:50%;background:var(--success-green);box-shadow:0 0 10px var(--success-green)}.call-timer{font-family:var(--font-heading);font-size:28px;font-weight:700;color:var(--accent-cyan);margin-bottom:4px;letter-spacing:1px}.call-status{font-size:13px;color:var(--text-muted);text-align:center;min-height:20px}.visualizer-container{width:100%;height:80px;margin:16px 0;display:flex;align-items:center;justify-content:center;background:#00000026;border-radius:var(--radius-sm);padding:4px}#audio-wave-canvas{width:100%;height:100%}.sentiment-bar{display:flex;align-items:center;justify-content:space-between;width:100%;font-size:12px;color:var(--text-dim);border-top:1px dashed var(--border-color);padding-top:12px;margin-top:8px}.sentiment-tag{display:flex;align-items:center;gap:6px;padding:4px 12px;border-radius:20px;font-weight:600;font-size:12px}.sentiment-tag.neutral{background:#ffffff1a;color:#fff}.sentiment-tag.positive{background:#00e67633;color:var(--success-green)}.sentiment-tag.negative{background:#f363;color:var(--danger-red)}.controls-section{display:flex;flex-direction:column;gap:14px}.controls-label{display:flex;align-items:center;gap:12px}.controls-label-line{flex:1;height:1px;background:linear-gradient(90deg,transparent,var(--border-color),transparent)}.controls-label-text{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-dim);white-space:nowrap;display:flex;align-items:center;gap:6px}.controls-label-text i{color:var(--accent-cyan);font-size:11px}.call-controls{display:flex;gap:10px;width:100%;align-items:stretch}.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:14px 18px;border-radius:var(--radius-md);font-family:var(--font-family);font-size:13px;font-weight:700;border:none;cursor:pointer;transition:all .25s cubic-bezier(.4,0,.2,1);position:relative;overflow:hidden}.btn-call{background:linear-gradient(145deg,#00e676,#00c853,#00b248);color:#0a1628;flex:1;box-shadow:0 4px 20px #00e67659,inset 0 1px #ffffff40;text-transform:uppercase;letter-spacing:.8px;font-size:13px}.btn-glow-ring{position:absolute;top:-2px;right:-2px;bottom:-2px;left:-2px;border-radius:inherit;background:linear-gradient(145deg,rgba(0,230,118,.6),transparent,rgba(0,230,118,.3));opacity:0;z-index:-1;animation:glowPulse 2.5s ease-in-out infinite}@keyframes glowPulse{0%,to{opacity:0;transform:scale(1)}50%{opacity:.7;transform:scale(1.04)}}.btn-call:after{content:"";position:absolute;top:0;left:-100%;width:60%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.3),transparent);transition:left .5s ease;pointer-events:none}.btn-call:hover:not(:disabled):after{left:120%}.btn-call:hover:not(:disabled){transform:translateY(-3px);box-shadow:0 8px 32px #00e67680,inset 0 1px #ffffff4d}.btn-call:active:not(:disabled){transform:translateY(-1px) scale(.98);box-shadow:0 2px 12px #00e67666}.btn-end{background:linear-gradient(145deg,#f36,#ff1744,#d50032);color:#fff;flex:1;box-shadow:0 4px 20px #ff33664d,inset 0 1px #fff3;text-transform:uppercase;letter-spacing:.8px;font-size:13px}.btn-end:after{content:"";position:absolute;top:0;left:-100%;width:60%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.2),transparent);transition:left .5s ease;pointer-events:none}.btn-end:hover:not(:disabled):after{left:120%}.btn-end:hover:not(:disabled){transform:translateY(-3px);box-shadow:0 8px 32px #ff336680,inset 0 1px #ffffff40}.btn-end:active:not(:disabled){transform:translateY(-1px) scale(.98)}.btn:disabled{opacity:.3;cursor:not-allowed;transform:none!important;filter:grayscale(.4) brightness(.8)}.btn:disabled:after{display:none}.icon-btns-group{display:flex;gap:8px}.btn-icon-premium{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;width:52px;height:auto;padding:10px 6px;background:#ffffff0a;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);color:var(--text-muted);border:1px solid rgba(255,255,255,.08);border-radius:var(--radius-md);cursor:pointer;transition:all .25s ease;position:relative;overflow:hidden;font-family:var(--font-family)}.btn-icon-premium i{font-size:16px;transition:color .2s,transform .2s}.icon-btn-label{font-size:8px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;opacity:.7;color:var(--text-dim)}.btn-icon-premium:hover:not(:disabled){background:#00f2fe14;border-color:#00f2fe4d;color:var(--accent-cyan);box-shadow:0 0 20px #00f2fe1f}.btn-icon-premium:hover:not(:disabled) i{color:var(--accent-cyan);transform:scale(1.15)}.btn-icon-premium:hover:not(:disabled) .icon-btn-label{opacity:1;color:var(--accent-cyan)}.btn-icon-premium:disabled{opacity:.3;cursor:not-allowed}.btn-icon-premium.muted{background:#ff33661a;border-color:#ff33664d;color:var(--danger-red)}.btn-icon{width:46px;height:46px;padding:0;background:#ffffff0d;color:var(--text-main);border:1px solid var(--border-color)}.btn-icon:hover:not(:disabled){background:#ffffff26}.btn-primary{background:var(--primary-gradient);color:#fff;width:100%}.btn-text{background:transparent;border:none;color:var(--text-muted);cursor:pointer;font-size:14px}.btn-text:hover{color:var(--danger-red)}.quick-sim-container{display:flex;flex-direction:column;gap:10px;background:#00000026;border:1px solid rgba(255,255,255,.04);border-radius:var(--radius-md);padding:14px 16px}.sim-header{display:flex;align-items:center;gap:8px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.2px;color:var(--text-dim)}.sim-header i{color:var(--warning-amber);font-size:12px}.sim-chips{display:flex;flex-wrap:wrap;gap:8px}.sim-chip{background:#ffffff0a;border:1px solid rgba(255,255,255,.08);color:var(--text-muted);padding:8px 14px;border-radius:24px;font-size:12px;font-weight:500;font-family:var(--font-family);cursor:pointer;transition:all .3s cubic-bezier(.4,0,.2,1);display:flex;align-items:center;gap:6px;position:relative;overflow:hidden}.sim-chip i{font-size:11px;opacity:.6;transition:all .3s}.sim-chip:before{content:"";position:absolute;top:0;right:0;bottom:0;left:0;background:linear-gradient(135deg,#00f2fe1f,#4facfe14);opacity:0;transition:opacity .3s;border-radius:inherit}.sim-chip:hover{border-color:#00f2fe59;color:#fff;transform:translateY(-2px);box-shadow:0 4px 16px #00f2fe1f}.sim-chip:hover:before{opacity:1}.sim-chip:hover i{opacity:1;color:var(--accent-cyan);transform:scale(1.15)}.sim-chip:active{transform:translateY(0) scale(.97)}.transcript-card{display:flex;flex-direction:column}.chat-log{flex:1;min-height:420px;max-height:520px;overflow-y:auto;display:flex;flex-direction:column;gap:16px;padding-right:8px;scroll-behavior:smooth}.chat-log::-webkit-scrollbar{width:6px}.chat-log::-webkit-scrollbar-thumb{background:#ffffff1a;border-radius:4px}.system-msg{display:flex;align-items:center;gap:10px;background:#00f2fe14;border:1px solid rgba(0,242,254,.2);color:var(--accent-cyan);padding:12px 16px;border-radius:var(--radius-md);font-size:13px}.chat-bubble{display:flex;flex-direction:column;max-width:82%;gap:4px}.chat-bubble.client{align-self:flex-end}.chat-bubble.ai{align-self:flex-start}.bubble-sender{font-size:11px;color:var(--text-dim);display:flex;align-items:center;gap:6px;padding:0 4px}.chat-bubble.client .bubble-sender{align-self:flex-end}.bubble-content{padding:12px 16px;border-radius:var(--radius-md);font-size:14px;line-height:1.5}.chat-bubble.client .bubble-content{background:linear-gradient(135deg,#4facfe,#00f2fe);color:#0b0f19;font-weight:500;border-bottom-right-radius:2px}.chat-bubble.ai .bubble-content{background:#ffffff14;border:1px solid var(--border-color);color:var(--text-main);border-bottom-left-radius:2px}.manual-input-box{display:flex;gap:10px;background:#0000004d;border:1px solid var(--border-color);padding:8px 12px;border-radius:30px}.manual-input-box input{flex:1;background:transparent;border:none;color:var(--text-main);outline:none;font-size:14px;padding-left:8px}.manual-input-box button{background:var(--primary-gradient);border:none;color:#fff;width:36px;height:36px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px}.settings-tabs{display:flex;background:#0000004d;border-radius:var(--radius-md);padding:4px;gap:4px}.tab-btn{flex:1;padding:10px;background:transparent;border:none;color:var(--text-muted);font-weight:600;font-size:13px;border-radius:var(--radius-sm);cursor:pointer;transition:all .2s}.tab-btn.active{background:var(--bg-card);color:var(--accent-cyan);box-shadow:0 4px 12px #0000004d}.tab-content{display:none;flex-direction:column;gap:16px}.tab-content.active{display:flex}.form-group{display:flex;flex-direction:column;gap:8px}.form-group label{font-size:13px;font-weight:600;color:var(--text-muted);display:flex;align-items:center;gap:8px}.form-group label i{color:var(--accent-cyan)}.form-group input,.form-group textarea{background:#0000004d;border:1px solid var(--border-color);border-radius:var(--radius-sm);padding:12px;color:var(--text-main);font-family:var(--font-family);font-size:13px;outline:none;transition:border-color .2s}.form-group input:focus,.form-group textarea:focus{border-color:var(--accent-cyan)}.insta-sync-box{display:flex;gap:8px}.insta-sync-box input{flex:1}.insta-sync-box button{background:linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);border:none;color:#fff;padding:0 16px;border-radius:var(--radius-sm);font-weight:600;font-size:12px;cursor:pointer;display:flex;align-items:center;gap:6px;transition:opacity .2s}.insta-sync-box button:hover{opacity:.9}.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.stat-box{background:#0000004d;border:1px solid var(--border-color);border-radius:var(--radius-md);padding:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative}.stat-icon{font-size:20px;color:var(--accent-cyan);margin-bottom:8px}.stat-val{font-family:var(--font-heading);font-size:22px;font-weight:700;color:var(--text-main)}.stat-lbl{font-size:11px;color:var(--text-dim);margin-top:4px}.cost-tracker-card{background:linear-gradient(135deg,#00f2fe14,#9d4edd14);border:1px solid var(--border-highlight);border-radius:var(--radius-md);padding:18px;display:flex;flex-direction:column;align-items:center;gap:12px;box-shadow:0 4px 20px #00f2fe1a}.cost-header{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:var(--accent-cyan)}.cost-main-display{display:flex;align-items:baseline;gap:4px}.cost-main-display .currency{font-size:20px;font-weight:700;color:var(--success-green)}.cost-value{font-family:var(--font-heading);font-size:28px;font-weight:800;color:#fff;letter-spacing:1px}.cost-unit{font-size:12px;color:var(--text-muted)}.cost-badge{display:inline-flex;align-items:center;gap:6px;background:#00e67626;border:1px solid rgba(0,230,118,.3);color:var(--success-green);padding:4px 12px;border-radius:20px;font-size:11px;font-weight:600}.token-details{width:100%;border-top:1px dashed var(--border-color);padding-top:10px;display:flex;flex-direction:column;gap:6px}.token-row{display:flex;align-items:center;justify-content:space-between;font-size:12px;color:var(--text-muted)}.main-nav-bar{display:flex;align-items:center;gap:12px;margin-bottom:24px}.main-nav-btn{background:#121a2bb3;border:1px solid var(--border-color);color:var(--text-muted);padding:12px 24px;border-radius:var(--radius-md);font-family:var(--font-family);font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:10px;transition:all .3s cubic-bezier(.175,.885,.32,1.275)}.main-nav-btn:hover{border-color:var(--accent-cyan);color:#fff;transform:translateY(-2px)}.main-nav-btn.active{background:var(--primary-gradient);border-color:transparent;color:#fff;box-shadow:0 0 20px #00f2fe66}.view-section{transition:opacity .3s}.mode-switcher-bar{display:flex;align-items:center;gap:8px;background:#0000004d;padding:4px;border-radius:var(--radius-md);border:1px solid var(--border-color)}.mode-btn{background:transparent;border:none;color:var(--text-muted);padding:8px 16px;border-radius:var(--radius-sm);font-family:var(--font-family);font-size:12px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px;transition:all .2s}.mode-btn.active{background:#00f2fe26;color:var(--accent-cyan);border:1px solid rgba(0,242,254,.3)}.table-responsive{width:100%;overflow-x:auto;margin-top:10px}.operators-table{width:100%;border-collapse:collapse;text-align:left;font-size:13px}.operators-table th{background:#0006;color:var(--text-muted);padding:14px 16px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--border-color)}.operators-table td{padding:16px;border-bottom:1px solid rgba(255,255,255,.05);color:#fff;vertical-align:middle}.op-cell-user{display:flex;align-items:center;gap:12px}.op-avatar{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;color:#fff}.op1-bg{background:var(--success-green);box-shadow:0 0 10px #00e67666}.op2-bg{background:var(--accent-cyan);box-shadow:0 0 10px #00f2fe66}.op3-bg{background:var(--accent-purple);box-shadow:0 0 10px #9d4edd66}.sub-text{display:block;font-size:11px;color:var(--text-muted)}.code-pill{font-family:monospace;background:#00f2fe1a;color:var(--accent-cyan);padding:3px 8px;border-radius:4px;font-size:12px}.btn-xs{background:#00f2fe26;border:1px solid var(--accent-cyan);color:var(--accent-cyan);padding:6px 14px;border-radius:20px;font-size:11px;font-weight:700;cursor:pointer;transition:all .2s}.btn-xs:hover{background:var(--accent-cyan);color:#000}.floor-2d-container{background:#0000004d;border:1px solid var(--border-color);border-radius:var(--radius-md);padding:24px}.floor-title{display:flex;align-items:center;justify-content:space-between;font-size:13px;font-weight:700;color:var(--accent-cyan);margin-bottom:20px}.pulse-badge{display:inline-flex;align-items:center;gap:6px;background:#00e67626;color:var(--success-green);padding:4px 10px;border-radius:20px;font-size:11px}.desk-grid-2d{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px}.desk-card{background:#121a2bcc;border:1px solid var(--border-color);border-radius:var(--radius-md);padding:20px;display:flex;flex-direction:column;gap:14px;position:relative;transition:transform .3s,border-color .3s}.desk-card:hover{transform:translateY(-4px);border-color:var(--accent-cyan)}.desk-card.active-call{border-color:var(--success-green);box-shadow:0 0 20px #00e67633}.desk-header{display:flex;align-items:center;justify-content:space-between;font-size:11px;font-weight:700}.desk-number{color:var(--text-muted)}.status-pill.live{background:#ff174433;color:#ff1744;padding:2px 8px;border-radius:12px}.status-pill.idle{background:#00e67626;color:var(--success-green);padding:2px 8px;border-radius:12px}.desk-avatar-box{display:flex;align-items:center;justify-content:space-between}.avatar-2d{width:50px;height:50px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;color:#fff}.op1-avatar{background:var(--success-green)}.op2-avatar{background:var(--accent-cyan)}.op3-avatar{background:var(--accent-purple)}.equalizer-bar{display:flex;align-items:flex-end;gap:3px;height:24px}.equalizer-bar span{width:3px;background:var(--success-green);border-radius:3px;animation:eqPulse .8s ease-in-out infinite alternate}.equalizer-bar span:nth-child(2){animation-delay:.2s}.equalizer-bar span:nth-child(3){animation-delay:.4s}.equalizer-bar span:nth-child(4){animation-delay:.1s}.equalizer-bar span:nth-child(5){animation-delay:.3s}.equalizer-bar.idle-eq span{height:4px!important;animation:none;background:#fff3}@keyframes eqPulse{0%{height:4px}to{height:24px}}.desk-details h3{font-size:16px;margin-bottom:2px}.role-lbl{font-size:12px;color:var(--text-muted)}.phone-lbl{font-size:11px;color:var(--accent-cyan);margin-top:4px}.desk-metrics{border-top:1px dashed var(--border-color);padding-top:10px;display:flex;justify-content:space-between;font-size:11px;color:var(--text-muted)}.room-3d-wrapper{display:flex;flex-direction:column;gap:16px}.room-selector-tabs{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.room-tab{background:#0006;border:1px solid var(--border-color);color:var(--text-muted);padding:10px 18px;border-radius:var(--radius-sm);font-family:var(--font-family);font-size:12px;font-weight:600;cursor:pointer;transition:all .2s}.room-tab.active{background:#00f2fe26;border-color:var(--accent-cyan);color:#fff;box-shadow:0 0 15px #00f2fe4d}.room-stage-3d{height:340px;background:radial-gradient(circle at center,#121a2be6,#050a14fa);border:1px solid var(--border-highlight);border-radius:var(--radius-md);perspective:900px;overflow:hidden;position:relative;display:flex;align-items:center;justify-content:center}.room-3d-box{width:320px;height:220px;position:relative;transform-style:preserve-3d;transform:rotateX(25deg) rotateY(-30deg) translateZ(-20px);transition:transform .8s cubic-bezier(.175,.885,.32,1.275);--theme-color: #00f2fe;--theme-color-glow: rgba(0, 242, 254, .35)}.room-3d-box.theme-room-malika{--theme-color: #10b981;--theme-color-glow: rgba(16, 185, 129, .35)}.room-3d-box.theme-room-jasur{--theme-color: #3b82f6;--theme-color-glow: rgba(59, 130, 246, .35)}.room-3d-box.theme-room-nigora{--theme-color: #06b6d4;--theme-color-glow: rgba(6, 182, 212, .35)}.room-3d-box.theme-room-farruh{--theme-color: #f59e0b;--theme-color-glow: rgba(245, 158, 11, .35)}.room-3d-box.theme-room-kamola{--theme-color: #a855f7;--theme-color-glow: rgba(168, 85, 247, .35)}.room-wall{position:absolute;background:#121a2bd9;border:1px solid var(--theme-color);box-shadow:0 0 15px var(--theme-color-glow)}.back-wall{width:320px;height:180px;transform:translateZ(-100px);background:linear-gradient(180deg,var(--theme-color-glow),rgba(5,10,20,.95))}.left-wall{width:200px;height:180px;transform:rotateY(90deg) translateZ(-100px);background:linear-gradient(90deg,var(--theme-color-glow),rgba(5,10,20,.95))}.room-floor{width:320px;height:200px;transform:rotateX(90deg) translateZ(80px);background:repeating-linear-gradient(0deg,var(--theme-color-glow) 0px,var(--theme-color-glow) 1px,transparent 1px,transparent 20px),repeating-linear-gradient(90deg,var(--theme-color-glow) 0px,var(--theme-color-glow) 1px,transparent 1px,transparent 20px);border:1px solid var(--theme-color)}.room-floor:after{content:"";position:absolute;top:0;left:0;right:0;bottom:0;box-shadow:inset 0 0 40px var(--theme-color-glow);pointer-events:none}.desk-3d-object{position:absolute;width:140px;height:70px;left:90px;top:60px;transform-style:preserve-3d}.desk-top{width:140px;height:70px;background:#0a0f1ef2;border:2px solid var(--theme-color);border-radius:8px;box-shadow:0 0 25px var(--theme-color-glow)}.monitor-3d{position:absolute;width:90px;height:55px;top:-45px;left:25px;background:#000;border:1px solid var(--theme-color);border-radius:4px;box-shadow:0 0 15px var(--theme-color-glow);padding:6px}.screen-content{display:flex;flex-direction:column;gap:2px;font-family:monospace;font-size:7px;color:#fff}.screen-content .glow{color:var(--success-green);font-weight:700}.hologram-avatar-3d{position:absolute;right:-30px;top:-10px;width:45px;height:45px;border-radius:50%;background:linear-gradient(135deg,var(--theme-color),#050a14);border:2px solid #fff;display:flex;align-items:center;justify-content:center;font-size:20px;color:#fff;box-shadow:0 0 30px var(--theme-color-glow);animation:roomFloat 3s ease-in-out infinite}.hologram-cone{position:absolute;width:140px;height:120px;left:0;top:-60px;background:linear-gradient(to top,var(--theme-color-glow),transparent);clip-path:polygon(50% 0%,0% 100%,100% 100%);opacity:.3;transform:translateZ(-30px);pointer-events:none;animation:pulseCone 2s ease-in-out infinite}@keyframes pulseCone{0%,to{opacity:.25}50%{opacity:.5}}@keyframes roomFloat{0%,to{transform:translateY(0)}50%{transform:translateY(-8px)}}.room-stats-overlay{position:absolute;bottom:20px;left:20px;background:#050a14d9;-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border:1px solid var(--border-highlight);padding:12px 18px;border-radius:var(--radius-md);box-shadow:0 0 30px #000c}.room-stats-overlay h3{font-size:14px;color:#fff;margin-bottom:6px}.room-stat-pills{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.room-pill{font-size:11px;background:#ffffff14;color:var(--text-muted);padding:3px 10px;border-radius:12px}.room-pill.glow-green{background:#00e67626;color:var(--success-green)}.token-row strong{color:var(--accent-cyan);font-family:monospace}.live-cost-indicator{display:flex;flex-direction:column;align-items:center;gap:6px;margin-top:10px;width:100%}.rate-pill{display:inline-flex;align-items:center;gap:6px;background:#00f2fe1f;border:1px solid rgba(0,242,254,.25);color:var(--accent-cyan);padding:4px 14px;border-radius:20px;font-size:12px;font-weight:600}.session-cost-pill{font-size:11px;color:var(--text-muted)}.session-cost-pill span{color:var(--success-green);font-weight:600;font-family:monospace}.uzs-converted-display{font-size:13px;color:var(--warning-amber);background:#ffb7031a;border:1px solid rgba(255,183,3,.25);padding:6px 14px;border-radius:20px;display:flex;align-items:center;gap:8px;font-weight:500}.tariff-formula-box{width:100%;background:#0000004d;border:1px solid var(--border-color);border-radius:var(--radius-sm);padding:12px;font-size:11px;color:var(--text-muted);display:flex;flex-direction:column;gap:6px}.formula-title{font-weight:600;color:var(--text-main)}.tariff-formula-box ul{list-style:none;display:flex;flex-direction:column;gap:4px;padding-left:4px}.tariff-formula-box li strong{color:var(--accent-cyan)}.handoff-alert{display:flex;align-items:center;gap:12px;background:#ffb70326;border:1px solid var(--warning-amber);color:var(--warning-amber);padding:12px 16px;border-radius:var(--radius-md);font-size:13px;animation:pulse 1.5s infinite}.footer{text-align:center;font-size:12px;color:var(--text-dim);padding:20px 0 16px;margin-top:8px}.footer-inner{display:flex;flex-direction:column;align-items:center;gap:12px}.footer-brand{display:flex;align-items:center;gap:10px;font-size:14px;font-weight:600;color:var(--text-muted)}.footer-brand i{color:var(--accent-cyan);font-size:18px}.footer-links{display:flex;gap:16px}.footer-links a{color:var(--text-dim);font-size:18px;text-decoration:none;transition:color .2s,transform .2s}.footer-links a:hover{color:var(--accent-cyan);transform:translateY(-2px)}.footer-copy{font-size:11px;color:var(--text-dim);opacity:.7}.settings-card{max-height:calc(100vh - 200px);overflow-y:auto;overflow-x:hidden}.settings-card::-webkit-scrollbar{width:5px}.settings-card::-webkit-scrollbar-thumb{background:#ffffff1a;border-radius:4px}.typing-indicator{display:flex;align-items:center;gap:6px;padding:12px 16px;background:#ffffff0a;border:1px dashed var(--border-color);border-radius:var(--radius-md)}.typing-indicator .dot{width:7px;height:7px;border-radius:50%;background:var(--accent-cyan);animation:typingBounce 1.4s infinite ease-in-out;opacity:.6}.typing-indicator .dot:nth-child(1){animation-delay:0s}.typing-indicator .dot:nth-child(2){animation-delay:.2s}.typing-indicator .dot:nth-child(3){animation-delay:.4s}@keyframes typingBounce{0%,60%,to{transform:translateY(0);opacity:.4}30%{transform:translateY(-6px);opacity:1}}.typing-text{font-size:12px;color:var(--text-dim);margin-left:4px;font-style:italic}.main-nav-bar{display:flex;gap:8px;padding:6px;background:var(--bg-card);-webkit-backdrop-filter:var(--glass-backdrop);backdrop-filter:var(--glass-backdrop);border:1px solid var(--border-color);border-radius:var(--radius-md)}.main-nav-btn{flex:1;padding:12px 20px;background:transparent;border:none;border-radius:var(--radius-sm);color:var(--text-muted);font-family:var(--font-family);font-size:14px;font-weight:600;cursor:pointer;transition:all .25s ease;display:flex;align-items:center;justify-content:center;gap:10px}.main-nav-btn i{font-size:16px}.main-nav-btn:hover{background:#ffffff0d;color:var(--text-main)}.main-nav-btn.active{background:linear-gradient(135deg,#00f2fe26,#4facfe1a);color:var(--accent-cyan);box-shadow:0 4px 16px #00f2fe1f;border:1px solid rgba(0,242,254,.2)}@media (max-width: 1366px){.dashboard-grid{grid-template-columns:minmax(300px,350px) minmax(320px,1fr) minmax(280px,330px);gap:16px}}@media (max-width: 768px){.navbar{flex-direction:column;gap:12px;padding:14px 16px}.header-actions{flex-wrap:wrap;justify-content:center;gap:8px}.main-nav-bar{flex-direction:column}.main-nav-btn{font-size:13px;padding:10px 16px}}.switch-container{position:relative;display:inline-block;width:44px;height:22px}.switch-container input{opacity:0;width:0;height:0}.switch-slider{position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background-color:#ffffff26!important;transition:.3s;border-radius:22px}.switch-slider:before{position:absolute;content:"";height:16px;width:16px;left:3px;bottom:3px;background-color:#fff;transition:.3s;border-radius:50%;box-shadow:0 2px 4px #0000004d}.switch-container input:checked+.switch-slider{background-color:#a855f7!important;box-shadow:0 0 10px #a855f780}.switch-container input:checked+.switch-slider:before{transform:translate(22px)}.modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:#050a14d9;-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);display:flex;align-items:center;justify-content:center;z-index:10000;opacity:0;pointer-events:none;transition:opacity .3s ease}.modal-overlay.active{opacity:1;pointer-events:auto}.modal-card{width:100%;max-width:520px;background:#121a2bf2;border:1px solid var(--border-highlight);border-radius:var(--radius-lg);box-shadow:0 20px 50px #0009,0 0 30px #00f2fe1a;overflow:hidden;transform:translateY(20px) scale(.95);transition:transform .3s cubic-bezier(.175,.885,.32,1.275)}.modal-overlay.active .modal-card{transform:translateY(0) scale(1)}.modal-header{padding:20px;border-bottom:1px solid var(--border-color);display:flex;align-items:center;justify-content:space-between}.modal-title-box{display:flex;align-items:center;gap:14px}.modal-avatar{width:42px;height:42px;border-radius:50%;background:var(--accent-cyan);color:#fff;display:flex;align-items:center;justify-content:center;font-size:18px;box-shadow:0 0 15px #00f2fe4d}.modal-subtitle{font-size:11px;color:var(--text-muted)}.modal-close-btn{background:none;border:none;color:var(--text-muted);font-size:24px;cursor:pointer;transition:color .2s}.modal-close-btn:hover{color:#fff}.modal-body{padding:20px;display:flex;flex-direction:column;gap:18px}.modal-actions-row{display:flex;gap:10px}.modal-footer{padding:15px 20px;background:#0a0f1e80;border-top:1px solid var(--border-color);display:flex;justify-content:flex-end;gap:12px}.greeting-edit-badge{display:inline-flex;align-items:center;justify-content:space-between;gap:10px;background:#ffffff08;border:1px solid var(--border-color);border-radius:var(--radius-sm);padding:8px 12px;color:var(--text-main);cursor:pointer;transition:all .25s ease;font-size:11px;width:100%;max-width:320px;text-align:left}.greeting-edit-badge:hover{background:#00f2fe14;border-color:var(--accent-cyan);box-shadow:0 0 10px #00f2fe33}.greeting-text-preview{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}.greeting-edit-icon{color:var(--accent-cyan);font-size:10px}.workflow-rule-card{background:#ffffff05;border:1px solid var(--border-color);border-radius:var(--radius-md);padding:16px;position:relative;display:flex;flex-direction:column;gap:8px;transition:border-color .25s,box-shadow .25s}.workflow-rule-card:hover{border-color:#a855f766;box-shadow:0 0 15px #a855f71a}.rule-delete-btn{position:absolute;top:16px;right:16px;background:#ef44441a;border:1px solid rgba(239,68,68,.3);color:#f87171;width:26px;height:26px;border-radius:4px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s}.rule-delete-btn:hover{background:var(--danger-red);color:#fff;border-color:var(--danger-red)}.flow-node{display:flex;align-items:center;gap:12px}.flow-badge{font-size:10px;font-weight:800;padding:3px 8px;border-radius:4px;text-transform:uppercase;min-width:60px;text-align:center}.flow-badge.badge-if{background:#a855f726;color:#c084fc;border:1px solid rgba(168,85,247,.3)}.flow-badge.badge-then{background:#00f2fe26;color:var(--accent-cyan);border:1px solid rgba(0,242,254,.3)}.flow-arrow{display:flex;justify-content:center;align-items:center;color:var(--text-muted);font-size:12px;margin:-2px 0;padding-left:72px}.flow-input-container{flex:1}.rule-input{width:100%;background:#0000004d;border:1px solid var(--border-color);border-radius:var(--radius-sm);color:#fff;padding:6px 10px;font-size:12px;transition:border-color .2s}.rule-input:focus{border-color:var(--accent-cyan);outline:none}.btn-download-pwa{background:linear-gradient(135deg,#10b981,#059669);color:#fff;border:1px solid rgba(16,185,129,.4);padding:8px 16px;border-radius:var(--radius-sm);font-family:var(--font-family);font-size:13px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:8px;box-shadow:0 0 12px #10b9814d;transition:all .3s cubic-bezier(.175,.885,.32,1.275)}.btn-download-pwa:hover{transform:translateY(-2px);box-shadow:0 0 20px #10b98180;background:linear-gradient(135deg,#34d399,#10b981)}.btn-download-html-nav{background:linear-gradient(135deg,#a855f7,#7c3aed);color:#fff;border:1px solid rgba(168,85,247,.4);padding:8px 14px;border-radius:var(--radius-sm);font-family:var(--font-family);font-size:13px;font-weight:700;text-decoration:none;display:inline-flex;align-items:center;gap:8px;box-shadow:0 0 12px #a855f74d;transition:all .3s cubic-bezier(.175,.885,.32,1.275)}.btn-download-html-nav:hover{transform:translateY(-2px);box-shadow:0 0 20px #a855f780;background:linear-gradient(135deg,#c084fc,#a855f7)}.btn-download-zip-nav{background:#00f2fe1a;color:var(--accent-cyan);border:1px solid rgba(0,242,254,.4);padding:8px 14px;border-radius:var(--radius-sm);font-family:var(--font-family);font-size:13px;font-weight:700;text-decoration:none;display:inline-flex;align-items:center;gap:8px;transition:all .3s cubic-bezier(.175,.885,.32,1.275)}.btn-download-zip-nav:hover{transform:translateY(-2px);background:var(--accent-cyan);color:#0b0f19}.btn-download-pwa i{font-size:15px;animation:pulseIcon 2s infinite}@keyframes pulseIcon{0%,to{transform:scale(1)}50%{transform:scale(1.15)}}.download-modal-card{max-width:580px;width:90%;background:linear-gradient(145deg,#0d1322,#111a2e);border:1px solid rgba(0,242,254,.3);box-shadow:0 0 35px #00f2fe26}.download-modal-avatar{background:linear-gradient(135deg,#10b981,#059669);color:#fff;width:42px;height:42px;font-size:18px;border-radius:10px;display:flex;align-items:center;justify-content:center}.download-modal-body{display:flex;flex-direction:column;gap:16px;padding:20px 0}.download-option-card{background:#ffffff08;border:1px solid var(--border-color);border-radius:var(--radius-md);padding:18px;display:flex;flex-direction:column;gap:14px;transition:all .25s}.download-option-card.highlighted{border-color:#10b98166;background:linear-gradient(135deg,#10b9810f,#00f2fe0a);box-shadow:0 0 20px #10b98114}.option-header{display:flex;gap:14px;align-items:flex-start}.option-icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}.pwa-icon{background:#10b98126;color:#10b981;border:1px solid rgba(16,185,129,.3)}.zip-icon{background:#00f2fe26;color:var(--accent-cyan);border:1px solid rgba(0,242,254,.3)}.option-header h4{margin:0 0 4px;font-size:15px;color:#fff;font-weight:700}.option-header p{margin:0;font-size:12px;color:var(--text-muted);line-height:1.4}.option-action{display:flex;align-items:center;gap:12px;flex-wrap:wrap}.btn-install-pwa{background:linear-gradient(135deg,#10b981,#059669);color:#fff;border:none;padding:10px 20px;font-size:13px;font-weight:700;border-radius:var(--radius-sm);cursor:pointer;display:inline-flex;align-items:center;gap:8px;transition:all .2s}.btn-install-pwa:hover{background:linear-gradient(135deg,#34d399,#10b981);transform:translateY(-1px)}.install-status-hint{font-size:12px;color:#10b981;display:inline-flex;align-items:center;gap:6px}.btn-download-zip{background:#00f2fe1a;color:var(--accent-cyan);border:1px solid var(--accent-cyan);padding:10px 20px;font-size:13px;font-weight:700;border-radius:var(--radius-sm);text-decoration:none;display:inline-flex;align-items:center;gap:8px;transition:all .2s}.btn-download-zip:hover{background:var(--accent-cyan);color:#0d1322}.platform-guides{background:#00000040;border-radius:var(--radius-sm);padding:12px;display:flex;flex-direction:column;gap:8px;font-size:11px;border:1px solid rgba(255,255,255,.05)}.guide-item{color:var(--text-main);line-height:1.4;display:flex;align-items:flex-start;gap:6px}.guide-item strong{color:var(--accent-cyan);white-space:nowrap}
+
+</style>
+</head>
+<body>
+  <div id="app" class="app-container">
+    <!-- Navbar -->
+    <header class="navbar">
+      <div class="logo-group">
+        <div class="logo-icon">
+          <i class="fa-solid fa-headset"></i>
+        </div>
+        <div class="logo-text">
+          <h1>AI Call Center <span>Uzbekistan</span></h1>
+          <p class="subtitle">Gemini 2.0 Flash Voice AI Operator</p>
+        </div>
+      </div>
+      
+      <div class="header-actions">
+        <div class="status-chip online" id="connection-chip">
+          <span class="pulse-dot"></span>
+          <span id="chip-text">🔒 Gemini 2.0 API Ulangan (Maxfiy)</span>
+        </div>
+        
+        <button id="download-app-btn" class="btn-download-pwa" title="Loyihani Planshetga O'rnatish">
+          <i class="fa-solid fa-tablet-screen-button"></i>
+          <span>📲 Planshetga O'rnatish</span>
+        </button>
+
+        <a href="/AI_Call_Center_Planshet.html" download="AI_Call_Center_Planshet.html" class="btn-download-html-nav" title="Bitta faylli offline dasturni yuklab olish">
+          <i class="fa-solid fa-file-arrow-down"></i>
+          <span>📄 Dasturni Yuklash (.html)</span>
+        </a>
+
+        <a href="/ai-call-center-offline.zip" download="ai-call-center-offline.zip" class="btn-download-zip-nav" title="Barcha manba fayllarini ZIP yuklash">
+          <i class="fa-solid fa-file-zipper"></i>
+          <span>📦 ZIP Arxiv</span>
+        </a>
+
+        <a href="https://vercel.com" target="_blank" class="vercel-badge">
+          <i class="fa-solid fa-cloud-arrow-up"></i> Vercel Active
+        </a>
+      </div>
+    </header>
+
+    <!-- Main Navigation Bar -->
+    <nav class="main-nav-bar">
+      <button class="main-nav-btn active" id="nav-terminal-btn" data-target="terminal-view">
+        <i class="fa-solid fa-headset"></i> AI Telefon Terminali & Muloqot
+      </button>
+      <button class="main-nav-btn" id="nav-operators-btn" data-target="operators-view">
+        <i class="fa-solid fa-users-gear"></i> Operatorlar Bo'limi Markazi
+      </button>
+      <button class="main-nav-btn" id="nav-settings-btn" data-target="settings-view">
+        <i class="fa-solid fa-gears"></i> ⚙️ Tizim Sozlamalari
+      </button>
+    </nav>
+
+    <!-- Section 1: AI Telefon Terminali View -->
+    <main class="dashboard-grid view-section active" id="terminal-view">
+      <!-- Left Panel: Phone Terminal & Audio Wave -->
+      <section class="card terminal-card">
+        <div class="card-header">
+          <h2><i class="fa-solid fa-headset"></i> AI Call Center Terminali</h2>
+          <span class="phone-number" id="active-phone-display">+998 (71) 200-01-01</span>
+        </div>
+        
+        <!-- 3 Operator Selector -->
+        <div class="operator-select-container">
+          <label for="operator-select"><i class="fa-solid fa-users-viewfinder"></i> Liniyani tanlang (AI Operatorlar):</label>
+          <select id="operator-select" class="operator-select-dropdown">
+            <option value="op1" selected>🟢 Liniya 1: Malika — Sotuv Liniyasi 1 (+998 71 200-01-01)</option>
+            <option value="op2">🔵 Liniya 2: Jasur — Sotuv Liniyasi 2 (+998 71 200-01-02)</option>
+            <option value="op3">🟣 Liniya 3: Nigora — Sotuv Liniyasi 3 (+998 71 200-01-03)</option>
+            <option value="op4">🟠 Liniya 4: Farruh — Sotuv Liniyasi 4 (+998 71 200-01-04)</option>
+            <option value="op_head">👑 Liniya 0: Kamola — Bo'lim Boshlig'i (+998 71 200-01-00)</option>
+          </select>
+        </div>
+
+        <div class="phone-display">
+          <!-- 3D Holographic Agent Visualizer Stage -->
+          <div class="hologram-stage" id="hologram-stage">
+            <div class="cube-3d-wrapper" id="cube-wrapper">
+              <div class="orbit-ring ring-1"></div>
+              <div class="orbit-ring ring-2"></div>
+              <div class="sphere-3d-core op1-theme" id="agent-3d-core">
+                <div class="core-face front"><i class="fa-solid fa-user-tie"></i></div>
+                <div class="core-face back"><i class="fa-solid fa-headset"></i></div>
+                <div class="core-face right"><i class="fa-solid fa-brain"></i></div>
+                <div class="core-face left"><i class="fa-solid fa-bolt"></i></div>
+                <div class="core-face top"><i class="fa-solid fa-atom"></i></div>
+                <div class="core-face bottom"><i class="fa-solid fa-shield-halved"></i></div>
+              </div>
+            </div>
+            <div class="agent-name-tag" id="agent-3d-tag">
+              <span class="agent-badge-dot"></span>
+              <span id="agent-name-display">Operator 1: Malika (Sotuv & Buyurtma)</span>
+            </div>
+          </div>
+          
+          <div class="call-timer" id="call-timer">00:00</div>
+          <div class="call-status" id="call-status">Qo'ng'iroq qilish uchun tugmani bosing</div>
+          
+          <!-- Live Per-Minute Cost Rate Bar -->
+          <div class="live-cost-indicator">
+            <div class="rate-pill">
+              <i class="fa-solid fa-chart-line"></i> Harajat tezligi: <span id="live-minute-rate">$0.0000 / min</span>
+            </div>
+            <div class="session-cost-pill">
+              Muloqot harajati: <span id="live-session-cost">$0.00000</span> (<span id="live-session-uzs">0 So'm</span>)
+            </div>
+          </div>
+
+          <!-- Audio Wave Visualizer -->
+          <div class="visualizer-container">
+            <canvas id="audio-wave-canvas" width="400" height="80"></canvas>
+          </div>
+
+          <!-- Sentiment Indicator -->
+          <div class="sentiment-bar">
+            <span>Mijoz Kayfiyati:</span>
+            <div class="sentiment-tag neutral" id="sentiment-tag">
+              <i class="fa-solid fa-face-meh"></i> Neytral
+            </div>
+          </div>
+        </div>
+
+        <!-- Phone Action Controls -->
+        <div class="controls-section">
+          <div class="controls-label">
+            <span class="controls-label-line"></span>
+            <span class="controls-label-text"><i class="fa-solid fa-tower-broadcast"></i> Qo'ng'iroq Boshqaruvi</span>
+            <span class="controls-label-line"></span>
+          </div>
+
+          <div class="call-controls">
+            <button id="start-call-btn" class="btn btn-call">
+              <span class="btn-glow-ring"></span>
+              <i class="fa-solid fa-phone"></i>
+              <span>Qo'ng'iroq</span>
+            </button>
+            
+            <button id="end-call-btn" class="btn btn-end" disabled>
+              <i class="fa-solid fa-phone-slash"></i>
+              <span>Tugatish</span>
+            </button>
+
+            <div class="icon-btns-group">
+              <button id="mute-btn" class="btn btn-icon-premium" disabled title="Mikrofonni o'chirish">
+                <i class="fa-solid fa-microphone"></i>
+                <span class="icon-btn-label">Mikrofon</span>
+              </button>
+              
+              <button id="test-voice-btn" class="btn btn-icon-premium" title="Ovozni sinash (TTS)">
+                <i class="fa-solid fa-volume-high"></i>
+                <span class="icon-btn-label">Sinash</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="quick-sim-container">
+          <div class="sim-header">
+            <i class="fa-solid fa-bolt"></i>
+            <span>Tezkor Sinov Savollari</span>
+          </div>
+          <div class="sim-chips">
+            <button class="sim-chip" data-msg="Assalomu alaykum, ish vaqtingiz soat nechagacha?">
+              <i class="fa-regular fa-clock"></i> Ish vaqti
+            </button>
+            <button class="sim-chip" data-msg="Xizmat ko'rsatish narxlaringiz qancha?">
+              <i class="fa-solid fa-coins"></i> Narxlar
+            </button>
+            <button class="sim-chip" data-msg="Ofisingiz manzili qayerda joylashgan?">
+              <i class="fa-solid fa-location-dot"></i> Manzil
+            </button>
+            <button class="sim-chip" data-msg="Men inson operator bilan gaplashmoqchiman.">
+              <i class="fa-solid fa-user-tie"></i> Inson Operator
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Middle Panel: Realtime Call Transcript & Audio Stream -->
+      <section class="card transcript-card">
+        <div class="card-header">
+          <h2><i class="fa-solid fa-comments"></i> Jonli Muloqot Stenogrammasi</h2>
+          <button id="clear-log-btn" class="btn-text" title="Tozalash"><i class="fa-solid fa-trash"></i></button>
+        </div>
+        
+        <div class="chat-log" id="chat-log">
+          <div class="system-msg">
+            <i class="fa-solid fa-circle-info"></i>
+            <span>AI Call Center tayyor. Mikrofonni yoqib AI bilan O'zbek tilida muloqot qilishingiz mumkin.</span>
+          </div>
+          <div class="typing-indicator" id="typing-indicator" style="display: none;">
+            <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+            <span class="typing-text">AI Operator yozmoqda...</span>
+          </div>
+        </div>
+
+        <div class="manual-input-box">
+          <input type="text" id="manual-text-input" placeholder="Yoki matn shaklida savol bering..." autocomplete="off">
+          <button id="send-text-btn"><i class="fa-solid fa-paper-plane"></i></button>
+        </div>
+      </section>
+
+      <!-- Right Panel: Settings, Prompt & Stats -->
+      <section class="card settings-card">
+        <div class="card-header">
+          <h2><i class="fa-solid fa-sliders"></i> AI Operator Sozlamalari</h2>
+        </div>
+
+        <div class="tabs-bar">
+          <button class="tab-btn active" data-tab="prompt-tab">Firma & Prompt</button>
+          <button class="tab-btn" data-tab="stats-tab">Analitika</button>
+          <button class="tab-btn" data-tab="supervisor-tab" style="border-bottom: 2px solid #a855f7; color: #c084fc;"><i class="fa-solid fa-crown"></i> Supervisor Panel</button>
+        </div>
+
+        <!-- Tab 1: Prompt & Knowledge Base -->
+        <div class="tab-content active" id="prompt-tab">
+          <div class="form-group">
+            <label for="company-name-input"><i class="fa-solid fa-building"></i> Kompaniya Nomi:</label>
+            <input type="text" id="company-name-input" value="Admiral Group Official">
+          </div>
+
+          <div class="form-group">
+            <label for="insta-url-input"><i class="fa-brands fa-instagram"></i> Instagram Linki (Avto-Sync):</label>
+            <div class="insta-sync-box">
+              <input type="text" id="insta-url-input" value="https://www.instagram.com/admiral_group_official" placeholder="https://www.instagram.com/..." autocomplete="off">
+              <button id="sync-insta-btn" title="Instagram ma'lumotlarini yuklash">
+                <i class="fa-solid fa-rotate"></i> Sync
+              </button>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="voice-engine-select"><i class="fa-solid fa-wand-magic-sparkles"></i> AI Operator Premium Ovoz Dvigateli:</label>
+            <select id="voice-engine-select" class="operator-select-dropdown" style="width: 100%;">
+              <option value="gemini-neural" selected>🔥 ElevenLabs / OpenAI / Gemini 2.0 Neural AI Voice (Premium)</option>
+              <option value="google-uz">✨ Microsoft / Google Native Uzbek Audio Stream</option>
+              <option value="browser-tts">🔊 Standard Web Speech TTS</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="eleven-key-input"><i class="fa-solid fa-key"></i> ElevenLabs API Kalit (Ixtiyoriy Ultra-Insoniy Ovoz):</label>
+            <input type="password" id="eleven-key-input" placeholder="xi-api-key-..." autocomplete="off">
+          </div>
+
+          <div class="form-group">
+            <label for="openai-key-input"><i class="fa-solid fa-key"></i> OpenAI API Kalit (Ixtiyoriy HD Ovoz):</label>
+            <input type="password" id="openai-key-input" placeholder="sk-proj-..." autocomplete="off">
+          </div>
+
+          <div class="form-group">
+            <label><i class="fa-solid fa-volume-high"></i> Operatorlar Ovozini Sinash:</label>
+            <div class="voice-test-grid" style="display: flex; gap: 8px; flex-wrap: wrap;">
+              <button type="button" class="sim-chip voice-test-btn" data-op="op1" style="flex: 1; justify-content: center;">
+                🟢 Malika Ovozi
+              </button>
+              <button type="button" class="sim-chip voice-test-btn" data-op="op2" style="flex: 1; justify-content: center;">
+                🔵 Jasur Ovozi
+              </button>
+              <button type="button" class="sim-chip voice-test-btn" data-op="op3" style="flex: 1; justify-content: center;">
+                🟣 Nigora Ovozi
+              </button>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="tg-bot-token-input"><i class="fa-brands fa-telegram"></i> Telegram Bot Token:</label>
+            <input type="password" id="tg-bot-token-input" placeholder="7849201842:AAH939..." autocomplete="off">
+          </div>
+
+          <div class="form-group">
+            <label for="tg-chat-id-input"><i class="fa-solid fa-paper-plane"></i> Telegram Chat ID (Guruh/Kanal ID):</label>
+            <input type="text" id="tg-chat-id-input" placeholder="-1001234567890 yoki @my_channel" autocomplete="off">
+          </div>
+
+          <div class="form-group">
+            <label for="system-instruction-input"><i class="fa-solid fa-brain"></i> AI Operator Bilimlar Bazasi (Prompt):</label>
+            <textarea id="system-instruction-input" rows="9">Siz "Admiral Group Official" kompaniyasining Sotuv va Buyurtma bo'limi jonli telefon operatorisiz. Ismingiz: Malika.
+Telefon liniyangiz: +998 (71) 200-01-01. Instagram: @admiral_group_official
+
+INSONIY MULOQOT QOIDASI:
+- O'zingizni HECH QACHON robot, bot yoki sun'iy intellekt deb aytmang! Xuddi tajribali jonli inson operator kabi o'ta samimiy, muomalali va tabiiy gapiring.
+- Mijoz nima degan bo'lsa, uning so'zlarini diqqat bilan tinglab, muloqotni davom ettiring.
+
+SUHBAT OXIRIDA BUYURTMA SO'RASH VA QABUL QILISH FLOW:
+1. Har bir savolga javob berib bo'lgach, suhbat oxirida ALBATTA: "Sizni mahsulotlarimiz qiziqtiradimi?" deb so'rang.
+2. Agar mijoz mahsulotga qiziqsa va "Zakaz qilaman" / "Sotib olaman" desa, mijozdan tartib bilan quyidagi ma'lumotlarni so'rab oling:
+   - Ismi va sharifi
+   - Qaysi shahar/viloyat va aniq manzili
+   - Bog'lanish telefon raqami
+3. Ma'lumotlarni olgach, buyurtmani tasdiqlang: "Rahmat! Buyurtmangiz qabul qilindi va tasdiqlandi. Operatorlarimiz tez orada siz bilan bog'lanishadi."
+
+MAVZU CHEGARASI VA BEGONA SAVOLLAR:
+- Siz FAQAT Admiral Group kompaniyasi, mahsulotlari, narxlari, xaridlari hamda O'zbekiston bo'ylab yetkazib berish xizmati bo'yicha savollarga javob berasiz.
+- Begona savollarga: "Kechirasiz, men faqat Admiral Group mahsulotlari va yetkazib berish masalalarida konsultatsiya bera olaman", deb rad eting.
+
+YETKAZIB BERISH:
+- Admiral Group mahsulotlari Toshkent shahri va O'zbekistonning barcha 12 ta viloyatiga tezkor yetkazib beriladi.</textarea>
+          </div>
+
+          <button id="save-prompt-btn" class="btn btn-primary">
+            <i class="fa-solid fa-floppy-disk"></i> Sozlamalarni Saqlash
+          </button>
+        </div>
+
+        <!-- Tab 2: Analytics & Stats & Cost Tracker -->
+        <div class="tab-content" id="stats-tab">
+          <div class="cost-tracker-card">
+            <div class="cost-header">
+              <i class="fa-solid fa-calculator"></i>
+              <span>API Harajatlari Avto-Kalkulyatori (Gemini 2.0)</span>
+            </div>
+            
+            <div class="cost-main-display">
+              <span class="currency">$</span>
+              <span id="stat-total-cost" class="cost-value">0.00000</span>
+              <span class="cost-unit">USD</span>
+            </div>
+            
+            <div class="uzs-converted-display">
+              <i class="fa-solid fa-money-bill-wave"></i> Taxminiy So'mdagi rasxod: <strong id="stat-total-uzs">0.00 So'm</strong>
+            </div>
+
+            <div class="cost-badge" id="plan-badge">
+              <i class="fa-solid fa-gift"></i> Google AI Studio Free Tier ($0.00) / Paid Rate Active
+            </div>
+            
+            <div class="token-details">
+              <div class="token-row">
+                <span><i class="fa-solid fa-clock"></i> O'rtacha minutlik harajat:</span>
+                <strong id="stat-per-min-rate">$0.0000 / min</strong>
+              </div>
+              <div class="token-row">
+                <span>Kiruvchi Tokenlar (Input):</span>
+                <strong id="stat-input-tokens">0</strong>
+              </div>
+              <div class="token-row">
+                <span>Chiquvchi Tokenlar (Output):</span>
+                <strong id="stat-output-tokens">0</strong>
+              </div>
+              <div class="token-row">
+                <span>Jami Tokenlar:</span>
+                <strong id="stat-total-tokens">0</strong>
+              </div>
+            </div>
+
+            <div class="tariff-formula-box">
+              <p class="formula-title"><i class="fa-solid fa-circle-info"></i> API Tarif Stavkasi:</p>
+              <ul>
+                <li>🎤 Audio Kirish (Mikrofon): <strong>$0.00013 / min</strong></li>
+                <li>🔊 Audio Chiquvchi (AI Ovoz): <strong>$0.02000 / min</strong></li>
+                <li>📝 Text Tokenlar: <strong>$0.075 / 1M input, $0.30 / 1M output</strong></li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="stats-grid">
+            <div class="stat-box">
+              <i class="fa-solid fa-phone-slash stat-icon"></i>
+              <div class="stat-val" id="stat-total-calls">0</div>
+              <div class="stat-lbl">Jami Qo'ng'iroqlar</div>
+            </div>
+            
+            <div class="stat-box">
+              <i class="fa-solid fa-clock stat-icon"></i>
+              <div class="stat-val" id="stat-avg-duration">0s</div>
+              <div class="stat-lbl">O'rtacha Vaqt</div>
+            </div>
+
+            <div class="stat-box">
+              <i class="fa-solid fa-bolt stat-icon"></i>
+              <div class="stat-val" id="stat-latency">~450ms</div>
+              <div class="stat-lbl">AI Tezligi (Latency)</div>
+            </div>
+
+            <div class="stat-box">
+              <i class="fa-solid fa-face-smile stat-icon"></i>
+              <div class="stat-val">98%</div>
+              <div class="stat-lbl">Mijoz Mamnunligi</div>
+            </div>
+          </div>
+          
+          <div class="handoff-alert" id="handoff-alert" style="display: none;">
+            <i class="fa-solid fa-user-headset"></i>
+            <span><strong>Ogohlantirish:</strong> Mijoz inson operatorga uzatilishini so'ramoqda!</span>
+          </div>
+        </div>
+
+        <!-- Tab 3: Supervisor & Cost-Guard Dashboard -->
+        <div class="tab-content" id="supervisor-tab">
+          <div class="cost-tracker-card" style="border: 1px solid rgba(168, 85, 247, 0.3); background: rgba(147, 51, 234, 0.04); margin-bottom: 20px;">
+            <div class="cost-header" style="color: #c084fc;">
+              <i class="fa-solid fa-shield-halved"></i>
+              <span>Auto-Cost Guard Tizimi (Tejamkorlik)</span>
+            </div>
+            
+            <div style="margin: 15px 0; display: flex; align-items: center; justify-content: space-between; background: rgba(0, 0, 0, 0.2); padding: 12px 16px; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.05);">
+              <div>
+                <strong style="color: #fff; display: block; margin-bottom: 4px;">Avtomatik Ovozli Xarajat Nazorati</strong>
+                <span class="sub-text" style="font-size: 11px;">Mavzudan chetlashganda qo'ng'iroqni avtomatik uzish orqali AI ovoz sarfini 100% tejaydi.</span>
+              </div>
+              <label class="switch-container" style="position: relative; display: inline-block; width: 44px; height: 22px;">
+                <input type="checkbox" id="auto-cost-guard-switch" checked style="opacity: 0; width: 0; height: 0;">
+                <span class="switch-slider" style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(168, 85, 247, 0.6); transition: .3s; border-radius: 22px;"></span>
+              </label>
+            </div>
+
+            <div class="topic-detector-box" style="padding: 12px; border-radius: 8px; background: rgba(0, 0, 0, 0.25); border: 1px solid rgba(255, 255, 255, 0.05);">
+              <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+                <span style="font-size: 12px; color: var(--text-muted);"><i class="fa-solid fa-comments"></i> Muloqot Yo'nalishi Statusi:</span>
+                <span class="status-badge" id="cost-guard-topic-badge" style="background: rgba(16, 185, 129, 0.15); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.3); font-size: 11px; padding: 2px 8px; border-radius: 4px;">🟢 Normal (Sotuvda)</span>
+              </div>
+              <p id="cost-guard-alert-msg" style="font-size: 11px; color: var(--text-muted); margin: 0; line-height: 1.4;">
+                Kamola operatorlar suhbatini nazorat qilmoqda. Mavzudan tashqari (off-topic) savollar berilganda, u xarajatlarni tejash uchun ogohlantirish beradi yoki suhbatni tugatadi.
+              </p>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label style="color: #c084fc;"><i class="fa-solid fa-gavel"></i> Supervisor Tezkor Harakatlari:</label>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 8px;">
+              <button id="supervisor-warn-btn" class="btn btn-premium" style="font-size: 12px; padding: 10px; background: rgba(168, 85, 247, 0.15); border: 1px solid rgba(168, 85, 247, 0.4); color: #c084fc; display: flex; align-items: center; justify-content: center; gap: 6px;">
+                <i class="fa-solid fa-triangle-exclamation"></i> Mavzuga Qaytarish
+              </button>
+              <button id="supervisor-hangup-btn" class="btn btn-premium" style="font-size: 12px; padding: 10px; background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.4); color: #f87171; display: flex; align-items: center; justify-content: center; gap: 6px;">
+                <i class="fa-solid fa-phone-slash"></i> Intercept & Hangup
+              </button>
+            </div>
+          </div>
+
+          <div class="form-group" style="margin-top: 15px;">
+            <label for="supervisor-notes"><i class="fa-solid fa-pen-clip"></i> Bo'lim Boshlig'i Eslatmalari & Yo'riqnomalari:</label>
+            <textarea id="supervisor-notes" rows="4" style="background: rgba(0,0,0,0.25); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; color: #fff; width: 100%; box-sizing: border-box; padding: 10px; font-size: 12px; resize: none; margin-top: 5px; font-family: inherit;">1. Operatorlar faqat sotuv masalalarida gapirishi kerak.
+2. Har bir sotuv suhbati oxirida zakaz haqida so'ralishi shart.
+3. Keraksiz savollarga vaqt yo'qotilmasin, AI ovoz harajatlarini tejang!</textarea>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Section 2: Operatorlar Bo'limi Markazi View -->
+    <main class="operators-center-grid view-section" id="operators-view" style="display: none;">
+      <section class="card operators-main-card">
+        <div class="card-header">
+          <h2><i class="fa-solid fa-users-gear"></i> Admiral Group — Operatorlar Bo'limi Markazi</h2>
+          <!-- 3 Mode Switcher Buttons -->
+          <div class="mode-switcher-bar">
+            <button class="mode-btn active" data-mode="table-mode">
+              <i class="fa-solid fa-table-list"></i> Hisobotlar Jadvali
+            </button>
+            <button class="mode-btn" data-mode="mode-2d">
+              <i class="fa-solid fa-display"></i> 2D Real-Vaqt Vizual
+            </button>
+            <button class="mode-btn" data-mode="mode-3d">
+              <i class="fa-solid fa-cube"></i> 3D Shaxsiy Xona Vizual
+            </button>
+          </div>
+        </div>
+
+        <!-- Mode 1: Hisobotlar Jadvali (Table Report View) -->
+        <div class="op-mode-content active" id="table-mode">
+          <div class="table-responsive">
+            <table class="operators-table">
+              <thead>
+                <tr>
+                  <th>Operator Ismi</th>
+                  <th>Telefon Liniyasi</th>
+                  <th>Bo'limi & Mutaxassisligi</th>
+                  <th>Status</th>
+                  <th>Qo'ng'iroqlar</th>
+                  <th>O'rtacha Muloqot</th>
+                  <th>Harajat Rate</th>
+                  <th>Aniqlik Darajasi</th>
+                  <th>Bilimlar Bazasi (Qoidalar)</th>
+                  <th>Kirish So'zi (Suhbat Boshlash Gapi)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    <div class="op-cell-user">
+                      <div class="op-avatar op1-bg"><i class="fa-solid fa-user-tie"></i></div>
+                      <div>
+                        <strong>Malika</strong>
+                        <span class="sub-text">Sotuv Operator #1</span>
+                      </div>
+                    </div>
+                  </td>
+                  <td><span class="code-pill">+998 (71) 200-01-01</span></td>
+                  <td>Sotuv Liniyasi 1</td>
+                  <td><span class="status-badge online"><span class="pulse-dot"></span> Online (Kutmoqda)</span></td>
+                  <td id="op1-calls-count">142</td>
+                  <td>01:45 min</td>
+                  <td>$0.00018 / min</td>
+                  <td>99.6%</td>
+                  <td>
+                    <button class="btn-xs rule-manage-btn" data-op="op1" style="background: rgba(168, 85, 247, 0.1); border: 1px solid rgba(168, 85, 247, 0.3); color: #c084fc; font-size: 11px; padding: 6px 12px; cursor: pointer; border-radius: var(--radius-sm);"><i class="fa-solid fa-network-wired" style="margin-right: 6px;"></i> QA Sozlash (<span id="rule-count-op1">0</span>)</button>
+                  </td>
+                  <td>
+                    <div class="greeting-edit-badge" data-op="op1">
+                      <span class="greeting-text-preview" id="preview-op1">Yuklanmoqda...</span>
+                      <span class="greeting-edit-icon"><i class="fa-solid fa-pen"></i></span>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="op-cell-user">
+                      <div class="op-avatar op2-bg"><i class="fa-solid fa-user-tie"></i></div>
+                      <div>
+                        <strong>Jasur</strong>
+                        <span class="sub-text">Sotuv Operator #2</span>
+                      </div>
+                    </div>
+                  </td>
+                  <td><span class="code-pill">+998 (71) 200-01-02</span></td>
+                  <td>Sotuv Liniyasi 2</td>
+                  <td><span class="status-badge online"><span class="pulse-dot"></span> Online (Kutmoqda)</span></td>
+                  <td id="op2-calls-count">98</td>
+                  <td>02:10 min</td>
+                  <td>$0.00018 / min</td>
+                  <td>99.2%</td>
+                  <td>
+                    <button class="btn-xs rule-manage-btn" data-op="op2" style="background: rgba(168, 85, 247, 0.1); border: 1px solid rgba(168, 85, 247, 0.3); color: #c084fc; font-size: 11px; padding: 6px 12px; cursor: pointer; border-radius: var(--radius-sm);"><i class="fa-solid fa-network-wired" style="margin-right: 6px;"></i> QA Sozlash (<span id="rule-count-op2">0</span>)</button>
+                  </td>
+                  <td>
+                    <div class="greeting-edit-badge" data-op="op2">
+                      <span class="greeting-text-preview" id="preview-op2">Yuklanmoqda...</span>
+                      <span class="greeting-edit-icon"><i class="fa-solid fa-pen"></i></span>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="op-cell-user">
+                      <div class="op-avatar op3-bg"><i class="fa-solid fa-user-tie"></i></div>
+                      <div>
+                        <strong>Nigora</strong>
+                        <span class="sub-text">Sotuv Operator #3</span>
+                      </div>
+                    </div>
+                  </td>
+                  <td><span class="code-pill">+998 (71) 200-01-03</span></td>
+                  <td>Sotuv Liniyasi 3</td>
+                  <td><span class="status-badge online"><span class="pulse-dot"></span> Online (Kutmoqda)</span></td>
+                  <td id="op3-calls-count">76</td>
+                  <td>01:20 min</td>
+                  <td>$0.00018 / min</td>
+                  <td>99.9%</td>
+                  <td>
+                    <button class="btn-xs rule-manage-btn" data-op="op3" style="background: rgba(168, 85, 247, 0.1); border: 1px solid rgba(168, 85, 247, 0.3); color: #c084fc; font-size: 11px; padding: 6px 12px; cursor: pointer; border-radius: var(--radius-sm);"><i class="fa-solid fa-network-wired" style="margin-right: 6px;"></i> QA Sozlash (<span id="rule-count-op3">0</span>)</button>
+                  </td>
+                  <td>
+                    <div class="greeting-edit-badge" data-op="op3">
+                      <span class="greeting-text-preview" id="preview-op3">Yuklanmoqda...</span>
+                      <span class="greeting-edit-icon"><i class="fa-solid fa-pen"></i></span>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="op-cell-user">
+                      <div class="op-avatar op4-bg"><i class="fa-solid fa-user-tie"></i></div>
+                      <div>
+                        <strong>Farruh</strong>
+                        <span class="sub-text">Sotuv Operator #4</span>
+                      </div>
+                    </div>
+                  </td>
+                  <td><span class="code-pill">+998 (71) 200-01-04</span></td>
+                  <td>Sotuv Liniyasi 4</td>
+                  <td><span class="status-badge online"><span class="pulse-dot"></span> Online (Kutmoqda)</span></td>
+                  <td id="op4-calls-count">64</td>
+                  <td>01:35 min</td>
+                  <td>$0.00018 / min</td>
+                  <td>99.5%</td>
+                  <td>
+                    <button class="btn-xs rule-manage-btn" data-op="op4" style="background: rgba(168, 85, 247, 0.1); border: 1px solid rgba(168, 85, 247, 0.3); color: #c084fc; font-size: 11px; padding: 6px 12px; cursor: pointer; border-radius: var(--radius-sm);"><i class="fa-solid fa-network-wired" style="margin-right: 6px;"></i> QA Sozlash (<span id="rule-count-op4">0</span>)</button>
+                  </td>
+                  <td>
+                    <div class="greeting-edit-badge" data-op="op4">
+                      <span class="greeting-text-preview" id="preview-op4">Yuklanmoqda...</span>
+                      <span class="greeting-edit-icon"><i class="fa-solid fa-pen"></i></span>
+                    </div>
+                  </td>
+                </tr>
+                <tr class="supervisor-row" style="background: rgba(147, 51, 234, 0.08); border-left: 3px solid var(--purple-accent, #a855f7);">
+                  <td>
+                    <div class="op-cell-user">
+                      <div class="op-avatar op-head-bg" style="background: linear-gradient(135deg, #a855f7, #7c3aed); color: #fff;"><i class="fa-solid fa-crown"></i></div>
+                      <div>
+                        <strong>Kamola</strong>
+                        <span class="sub-text" style="color: #c084fc;">Bo'lim Boshlig'i</span>
+                      </div>
+                    </div>
+                  </td>
+                  <td><span class="code-pill" style="border-color: #a855f7; color: #c084fc;">+998 (71) 200-01-00</span></td>
+                  <td>Supervisor & Boshqaruv</td>
+                  <td><span class="status-badge online"><span class="pulse-dot" style="background-color: #a855f7; box-shadow: 0 0 8px #a855f7;"></span> Online (Nazoratda)</span></td>
+                  <td id="ophead-calls-count">31</td>
+                  <td>03:45 min</td>
+                  <td>$0.00018 / min</td>
+                  <td>100%</td>
+                  <td>
+                    <button class="btn-xs rule-manage-btn" data-op="op_head" style="background: rgba(168, 85, 247, 0.2); border: 1px solid #a855f7; color: #fff; font-size: 11px; padding: 6px 12px; cursor: pointer; border-radius: var(--radius-sm);"><i class="fa-solid fa-network-wired" style="margin-right: 6px;"></i> QA Sozlash (<span id="rule-count-op_head">0</span>)</button>
+                  </td>
+                  <td>
+                    <div class="greeting-edit-badge" data-op="op_head" style="border-color: rgba(168, 85, 247, 0.3);">
+                      <span class="greeting-text-preview" id="preview-op_head">Yuklanmoqda...</span>
+                      <span class="greeting-edit-icon" style="color: #c084fc;"><i class="fa-solid fa-pen"></i></span>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Mode 2: 2D Real-Vaqt Vizual (2D Interactive Floor Layout) -->
+        <div class="op-mode-content" id="mode-2d" style="display: none;">
+          <div class="floor-2d-container">
+            <div class="floor-title">
+              <span><i class="fa-solid fa-border-all"></i> Call Center Real-Vaqt Zal Xaritasi (2D Animated Floor)</span>
+              <span class="pulse-badge"><span class="pulse-dot"></span> Live Audio Signals</span>
+            </div>
+            
+            <div class="desk-grid-2d">
+              <!-- Desk 1: Malika -->
+              <div class="desk-card op1-desk active-call">
+                <div class="desk-header">
+                  <span class="desk-number">STANSIYA #01</span>
+                  <span class="status-pill live">🔴 SUHBATDA</span>
+                </div>
+                <div class="desk-avatar-box">
+                  <div class="avatar-2d op1-avatar">
+                    <i class="fa-solid fa-user-tie"></i>
+                  </div>
+                  <div class="equalizer-bar">
+                    <span></span><span></span><span></span><span></span><span></span>
+                  </div>
+                </div>
+                <div class="desk-details">
+                  <h3>Malika</h3>
+                  <p class="role-lbl">Sotuv Liniyasi 1</p>
+                  <p class="phone-lbl"><i class="fa-solid fa-phone"></i> +998 71 200-01-01</p>
+                </div>
+                <div class="desk-metrics">
+                  <div><span>Buyurtmalar:</span> <strong>28 ta</strong></div>
+                  <div><span>Suhbat vaqti:</span> <strong>01:12</strong></div>
+                </div>
+              </div>
+
+              <!-- Desk 2: Jasur -->
+              <div class="desk-card op2-desk">
+                <div class="desk-header">
+                  <span class="desk-number">STANSIYA #02</span>
+                  <span class="status-pill idle">🟢 KUTMOQDA</span>
+                </div>
+                <div class="desk-avatar-box">
+                  <div class="avatar-2d op2-avatar">
+                    <i class="fa-solid fa-user-tie"></i>
+                  </div>
+                  <div class="equalizer-bar idle-eq">
+                    <span></span><span></span><span></span><span></span><span></span>
+                  </div>
+                </div>
+                <div class="desk-details">
+                  <h3>Jasur</h3>
+                  <p class="role-lbl">Sotuv Liniyasi 2</p>
+                  <p class="phone-lbl"><i class="fa-solid fa-phone"></i> +998 71 200-01-02</p>
+                </div>
+                <div class="desk-metrics">
+                  <div><span>Buyurtmalar:</span> <strong>19 ta</strong></div>
+                  <div><span>Suhbat vaqti:</span> <strong>00:00</strong></div>
+                </div>
+              </div>
+
+              <!-- Desk 3: Nigora -->
+              <div class="desk-card op3-desk">
+                <div class="desk-header">
+                  <span class="desk-number">STANSIYA #03</span>
+                  <span class="status-pill idle">🟢 KUTMOQDA</span>
+                </div>
+                <div class="desk-avatar-box">
+                  <div class="avatar-2d op3-avatar">
+                    <i class="fa-solid fa-user-tie"></i>
+                  </div>
+                  <div class="equalizer-bar idle-eq">
+                    <span></span><span></span><span></span><span></span><span></span>
+                  </div>
+                </div>
+                <div class="desk-details">
+                  <h3>Nigora</h3>
+                  <p class="role-lbl">Sotuv Liniyasi 3</p>
+                  <p class="phone-lbl"><i class="fa-solid fa-phone"></i> +998 71 200-01-03</p>
+                </div>
+                <div class="desk-metrics">
+                  <div><span>Buyurtmalar:</span> <strong>14 ta</strong></div>
+                  <div><span>Suhbat vaqti:</span> <strong>00:00</strong></div>
+                </div>
+              </div>
+
+              <!-- Desk 4: Farruh -->
+              <div class="desk-card op4-desk">
+                <div class="desk-header">
+                  <span class="desk-number">STANSIYA #04</span>
+                  <span class="status-pill idle">🟢 KUTMOQDA</span>
+                </div>
+                <div class="desk-avatar-box">
+                  <div class="avatar-2d op4-avatar">
+                    <i class="fa-solid fa-user-tie"></i>
+                  </div>
+                  <div class="equalizer-bar idle-eq">
+                    <span></span><span></span><span></span><span></span><span></span>
+                  </div>
+                </div>
+                <div class="desk-details">
+                  <h3>Farruh</h3>
+                  <p class="role-lbl">Sotuv Liniyasi 4</p>
+                  <p class="phone-lbl"><i class="fa-solid fa-phone"></i> +998 71 200-01-04</p>
+                </div>
+                <div class="desk-metrics">
+                  <div><span>Buyurtmalar:</span> <strong>11 ta</strong></div>
+                  <div><span>Suhbat vaqti:</span> <strong>00:00</strong></div>
+                </div>
+              </div>
+
+              <!-- Desk 5: Supervisor Kamola -->
+              <div class="desk-card op-head-desk" style="border: 1px solid rgba(168, 85, 247, 0.4); box-shadow: 0 0 15px rgba(168, 85, 247, 0.15);">
+                <div class="desk-header" style="background: rgba(168, 85, 247, 0.15);">
+                  <span class="desk-number" style="color: #c084fc;">SUPERVISOR STANSIYASI</span>
+                  <span class="status-pill live" style="background: rgba(168, 85, 247, 0.2); color: #c084fc; border: 1px solid rgba(168, 85, 247, 0.4);">🛡️ NAZORAT</span>
+                </div>
+                <div class="desk-avatar-box">
+                  <div class="avatar-2d op-head-avatar" style="background: linear-gradient(135deg, #a855f7, #7c3aed); color: #fff;">
+                    <i class="fa-solid fa-crown"></i>
+                  </div>
+                  <div class="equalizer-bar idle-eq">
+                    <span></span><span></span><span></span><span></span><span></span>
+                  </div>
+                </div>
+                <div class="desk-details">
+                  <h3 style="color: #fff;">Kamola</h3>
+                  <p class="role-lbl" style="color: #c084fc;">Bo'lim Boshlig'i</p>
+                  <p class="phone-lbl"><i class="fa-solid fa-phone"></i> +998 71 200-01-00</p>
+                </div>
+                <div class="desk-metrics">
+                  <div><span>Tejovlar:</span> <strong>Ko'rib chiqilmoqda</strong></div>
+                  <div><span>Status:</span> <strong style="color: #a855f7;">Avto-Cost Guard: ON</strong></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mode 3: 3D Shaxsiy Xona Vizual (3D Operator Personal Room View) -->
+        <div class="op-mode-content" id="mode-3d" style="display: none;">
+          <div class="room-3d-wrapper">
+            <!-- Operator Room Selector Tabs -->
+            <div class="room-selector-tabs">
+              <button class="room-tab active" data-room="room-malika">
+                🏢 Malika — Sotuv Xonasi 1
+              </button>
+              <button class="room-tab" data-room="room-jasur">
+                🏢 Jasur — Sotuv Xonasi 2
+              </button>
+              <button class="room-tab" data-room="room-nigora">
+                🏢 Nigora — Sotuv Xonasi 3
+              </button>
+              <button class="room-tab" data-room="room-farruh">
+                🏢 Farruh — Sotuv Xonasi 4
+              </button>
+              <button class="room-tab" data-room="room-kamola" style="border-left: 2px solid #a855f7; color: #c084fc;">
+                👑 Kamola — Supervisor Suite
+              </button>
+            </div>
+
+            <!-- 3D Room Stage Container -->
+            <div class="room-stage-3d">
+              <div class="room-3d-box" id="room-3d-box">
+                <!-- 3D Room Walls & Floor -->
+                <div class="room-wall back-wall"></div>
+                <div class="room-wall left-wall"></div>
+                <div class="room-floor"></div>
+
+                <!-- 3D Workstation Desk & Objects -->
+                <div class="desk-3d-object">
+                  <div class="desk-top"></div>
+                  <div class="monitor-3d">
+                    <div class="screen-content" id="room-screen-content">
+                      <span class="code-line">SYS_CALL_CENTER_v2.0</span>
+                      <span class="code-line glow">LINIYA: +998 (71) 200-01-01</span>
+                      <span class="code-line">STATUS: ONLINE 24/7</span>
+                    </div>
+                  </div>
+                  <div class="hologram-cone"></div>
+                  <div class="hologram-avatar-3d" id="room-avatar-3d">
+                    <i class="fa-solid fa-user-tie"></i>
+                  </div>
+                </div>
+
+                <!-- Floating Hologram Stats Display in 3D Room -->
+                <div class="room-stats-overlay" id="room-stats-overlay">
+                  <h3 id="room-title">Malika — Sotuv & Buyurtmalar Bo'limi</h3>
+                  <div class="room-stat-pills" id="room-stat-pills">
+                    <span class="room-pill">📍 Toshkent HQ Office</span>
+                    <span class="room-pill glow-green">🟢 Liniya 1 (+998 71 200-01-01)</span>
+                    <span class="room-pill">📦 Bugungi Buyurtmalar: 34 ta</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Section 3: Tizim Sozlamalari View -->
+    <main class="operators-center-grid view-section" id="settings-view" style="display: none; padding: 24px; gap: 24px; grid-template-columns: 1fr 1fr;">
+      <!-- Left Panel: Phone Settings -->
+      <section class="card" style="margin: 0; background: rgba(18, 26, 43, 0.8);">
+        <div class="card-header" style="border-bottom: 1px solid var(--border-color); padding-bottom: 12px; margin-bottom: 20px;">
+          <h2 style="font-size: 18px; color: #fff; margin: 0;"><i class="fa-solid fa-square-phone" style="color: var(--accent-cyan); margin-right: 8px;"></i> Liniya Telefon Raqamlari</h2>
+          <p style="font-size: 11px; color: var(--text-muted); margin: 4px 0 0 0;">Har bir operator uchun ulanadigan o'zbek telefon raqamlarini tahrirlang. O'zgarishlar darhol saqlanadi.</p>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 16px;">
+          <!-- Kamola -->
+          <div style="background: rgba(147, 51, 234, 0.05); border: 1px solid rgba(168, 85, 247, 0.2); border-radius: var(--radius-sm); padding: 12px; display: flex; align-items: center; justify-content: space-between; gap: 12px;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <div class="op-avatar op-head-bg" style="width: 34px; height: 34px; font-size: 13px; background: linear-gradient(135deg, #a855f7, #7c3aed); color: #fff; display: flex; align-items: center; justify-content: center; border-radius: 50%;"><i class="fa-solid fa-crown"></i></div>
+              <div>
+                <strong style="font-size: 13px; color: #fff;">Kamola (Bo'lim Boshlig'i)</strong>
+                <div style="font-size: 11px; color: #c084fc;">Liniya 0</div>
+              </div>
+            </div>
+            <input type="text" class="rule-input op-phone-input" data-op="op_head" style="max-width: 180px; text-align: center; border-color: rgba(168, 85, 247, 0.4);" placeholder="+998 (71) 200-01-00">
+          </div>
+          <!-- Malika -->
+          <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 12px; display: flex; align-items: center; justify-content: space-between; gap: 12px;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <div class="op-avatar op1-bg" style="width: 34px; height: 34px; font-size: 13px; display: flex; align-items: center; justify-content: center; border-radius: 50%;"><i class="fa-solid fa-user-tie"></i></div>
+              <div>
+                <strong style="font-size: 13px; color: #fff;">Malika</strong>
+                <div style="font-size: 11px; color: var(--success-green);">Liniya 1</div>
+              </div>
+            </div>
+            <input type="text" class="rule-input op-phone-input" data-op="op1" style="max-width: 180px; text-align: center;" placeholder="+998 (71) 200-01-01">
+          </div>
+          <!-- Jasur -->
+          <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 12px; display: flex; align-items: center; justify-content: space-between; gap: 12px;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <div class="op-avatar op2-bg" style="width: 34px; height: 34px; font-size: 13px; display: flex; align-items: center; justify-content: center; border-radius: 50%;"><i class="fa-solid fa-user-tie"></i></div>
+              <div>
+                <strong style="font-size: 13px; color: #fff;">Jasur</strong>
+                <div style="font-size: 11px; color: var(--accent-cyan);">Liniya 2</div>
+              </div>
+            </div>
+            <input type="text" class="rule-input op-phone-input" data-op="op2" style="max-width: 180px; text-align: center;" placeholder="+998 (71) 200-01-02">
+          </div>
+          <!-- Nigora -->
+          <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 12px; display: flex; align-items: center; justify-content: space-between; gap: 12px;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <div class="op-avatar op3-bg" style="width: 34px; height: 34px; font-size: 13px; display: flex; align-items: center; justify-content: center; border-radius: 50%;"><i class="fa-solid fa-user-tie"></i></div>
+              <div>
+                <strong style="font-size: 13px; color: #fff;">Nigora</strong>
+                <div style="font-size: 11px; color: var(--purple-accent);">Liniya 3</div>
+              </div>
+            </div>
+            <input type="text" class="rule-input op-phone-input" data-op="op3" style="max-width: 180px; text-align: center;" placeholder="+998 (71) 200-01-03">
+          </div>
+          <!-- Farruh -->
+          <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 12px; display: flex; align-items: center; justify-content: space-between; gap: 12px;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <div class="op-avatar op4-bg" style="width: 34px; height: 34px; font-size: 13px; display: flex; align-items: center; justify-content: center; border-radius: 50%;"><i class="fa-solid fa-user-tie"></i></div>
+              <div>
+                <strong style="font-size: 13px; color: #fff;">Farruh</strong>
+                <div style="font-size: 11px; color: var(--warning-amber);">Liniya 4</div>
+              </div>
+            </div>
+            <input type="text" class="rule-input op-phone-input" data-op="op4" style="max-width: 180px; text-align: center;" placeholder="+998 (71) 200-01-04">
+          </div>
+        </div>
+      </section>
+
+      <!-- Right Panel: Connection Manual -->
+      <section class="card" style="margin: 0; background: rgba(18, 26, 43, 0.8); max-height: 520px; overflow-y: auto; padding-right: 10px;">
+        <div class="card-header" style="border-bottom: 1px solid var(--border-color); padding-bottom: 12px; margin-bottom: 20px;">
+          <h2 style="font-size: 18px; color: #fff; margin: 0;"><i class="fa-solid fa-book-bookmark" style="color: var(--accent-cyan); margin-right: 8px;"></i> Call-Center Ulanish Yo'llanmasi</h2>
+          <p style="font-size: 11px; color: var(--text-muted); margin: 4px 0 0 0;">Haqiqiy o'zbek telefon raqamlarini AI tizimiga integratsiya qilish bo'yicha yo'riqnoma.</p>
+        </div>
+        <div style="font-size: 12px; line-height: 1.6; color: var(--text-muted); display: flex; flex-direction: column; gap: 16px;">
+          <div>
+            <h4 style="color: #fff; margin: 0 0 6px 0; font-size: 13px; display: flex; align-items: center; gap: 8px;"><span style="background: var(--accent-cyan); color: #000; width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 800;">1</span> O'zbekistondan SIP Trunk olish</h4>
+            <p style="margin: 0;">AI Call Center real qo'ng'iroqlarni qabul qilishi uchun sizga virtual raqam (SIP Trunk) kerak bo'ladi. Uni O'zbekistonning aloqa operatorlaridan olish mumkin:</p>
+            <ul style="margin: 4px 0 0 0; padding-left: 20px;">
+              <li><strong>Uztelecom / Beeline Business / Mobiuz / Ucell:</strong> Kompaniya nomiga rasmiy shartnoma orqali +998 (71) yoki +998 (55) bilan boshlanuvchi SIP Trunk ulanish liniyasini olish (IP ATS hisob ma'lumotlari: Host, Login, Parol).</li>
+            </ul>
+          </div>
+          <div>
+            <h4 style="color: #fff; margin: 0 0 6px 0; font-size: 13px; display: flex; align-items: center; gap: 8px;"><span style="background: var(--accent-cyan); color: #000; width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 800;">2</span> SIP Gateway o'rnatish</h4>
+            <p style="margin: 0;">SIP raqamdan kelayotgan audio oqimni (RTP) bizning WebRTC/API tizimiga ulaydigan maxsus shlyuz (Gateway) kerak:</p>
+            <ul style="margin: 4px 0 0 0; padding-left: 20px;">
+              <li><strong>SIP.TG Gateway:</strong> O'zbek SIP raqamini to'g'ridan-to'g'ri Telegram-ga ulaydigan va Web API taqdim qiladigan eng oson platforma.</li>
+              <li><strong>Zadarma / Twilio SIP Trunking:</strong> Kiruvchi qo'ng'iroqlarni Webhook orqali audio oqim ko'rinishida serverimizga yo'naltiradi.</li>
+              <li><strong>Asterisk / FreePBX Server:</strong> Agar o'z serveringiz bo'lsa, Asterisk o'rnatib, SIP liniyani ulaysiz va uni n8n webhook-ga bog'laysiz.</li>
+            </ul>
+          </div>
+          <div>
+            <h4 style="color: #fff; margin: 0 0 6px 0; font-size: 13px; display: flex; align-items: center; gap: 8px;"><span style="background: var(--accent-cyan); color: #000; width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 800;">3</span> N8N Integratsiyasi (Logic flow)</h4>
+            <p style="margin: 0;">Qo'ng'iroq bo'lganda n8n da quyidagi zanjir ulanadi:</p>
+            <div style="background: rgba(0,0,0,0.4); padding: 10px; border-radius: 4px; font-family: monospace; font-size: 11px; margin: 6px 0; border: 1px solid var(--border-color); color: #c084fc;">
+              [SIP Call Incoming] ➔ [n8n Webhook Node] ➔ [Gemini AI Agent API Node] ➔ [TTS Edge/ElevenLabs API] ➔ [SIP Audio Response Node]
+            </div>
+            <p style="margin: 0;">n8n webhook-ga qo'ng'iroq kelganida, mijoz ovozi matnga o'girilib, Gemini-ga yuboriladi. Gemini operator promti bo'yicha javob matnini generatsiya qiladi. Ovozlashtirish dvigateli matnni audio qilib, n8n orqali mijozga qaytaradi.</p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="footer-inner">
+        <div class="footer-brand">
+          <i class="fa-solid fa-headset"></i>
+          <span>Admiral Group AI Call Center</span>
+        </div>
+        <div class="footer-links">
+          <a href="https://www.instagram.com/admiral_group_official" target="_blank"><i class="fa-brands fa-instagram"></i></a>
+          <a href="https://t.me/" target="_blank"><i class="fa-brands fa-telegram"></i></a>
+          <a href="https://vercel.com" target="_blank"><i class="fa-solid fa-cloud"></i></a>
+        </div>
+        <p class="footer-copy">&copy; 2026 Admiral Group Official — Gemini 2.0 Flash & Vercel Serverless</p>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Premium n8n-Style Custom QA Rules Modal -->
+  <div id="qa-rules-modal" class="modal-overlay">
+    <div class="modal-card" style="max-width: 600px;">
+      <div class="modal-header">
+        <div class="modal-title-box">
+          <div class="modal-avatar" id="qa-modal-op-avatar"><i class="fa-solid fa-user-gear"></i></div>
+          <div>
+            <h3 id="qa-modal-op-name" style="margin: 0; font-size: 16px;">Jasur</h3>
+            <span class="modal-subtitle">N8N uslubidagi Bilimlar & Qoidalar Boshqaruvchisi</span>
+          </div>
+        </div>
+        <button class="modal-close-btn" id="qa-modal-close-btn">&times;</button>
+      </div>
+      <div class="modal-body" style="max-height: 450px; overflow-y: auto; padding-right: 8px;">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+          <p style="font-size: 11px; color: var(--text-muted); margin: 0; max-width: 70%;">Mijoz savollariga qarab qoidalarni belgilang. Kalit so'z mos kelsa, AI xarajatisiz tezkor javob qaytariladi.</p>
+          <button id="qa-guide-toggle-btn" class="sim-chip" style="height: 28px; font-size: 11px; border: 1px solid var(--accent-cyan); color: var(--accent-cyan); background: rgba(0, 242, 254, 0.05); padding: 0 10px; cursor: pointer;"><i class="fa-solid fa-book-open" style="margin-right: 6px;"></i> Qo'llanma</button>
+        </div>
+        
+        <!-- Interactive Help Manual Box -->
+        <div id="qa-guide-box" style="display: none; background: rgba(168, 85, 247, 0.05); border: 1px solid rgba(168, 85, 247, 0.2); border-radius: var(--radius-sm); padding: 14px; margin-bottom: 16px; font-size: 12px; line-height: 1.5; color: var(--text-main); position: relative; animation: fadeIn 0.3s ease;">
+          <h4 style="margin: 0 0 8px 0; color: #c084fc; display: flex; align-items: center; gap: 8px;"><i class="fa-solid fa-graduation-cap"></i> Bilimlar Bazasi Yo'riqnomasi</h4>
+          <ul style="margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 6px; color: var(--text-muted);">
+            <li><strong>IF Trigger (Mijoz savoli):</strong> Mijoz gapida qatnashishi kerak bo'lgan kalit so'zlarni kiriting. Masalan: <code style="color: #fff; background: rgba(255,255,255,0.1); padding: 2px 4px; border-radius: 2px;">kafolat, garantiya</code>. Vergul orqali bir nechta kalit so'z yozish mumkin.</li>
+            <li><strong>THEN Reply (Operator javobi):</strong> Mos keluvchi kalit so'z aytilganda operator aytishi kerak bo'lgan aniq va to'liq gapni yozing. Masalan: <span style="color: var(--accent-cyan);">"Admiral Group mahsulotlariga 1 yil kafolat beriladi."</span></li>
+            <li><strong>⚡ Tejamkorlik Qoidasi:</strong> Tizim mijoz nutqida kalit so'zni aniqlasa, Gemini AI API-ga murojaat qilmaydi (xarajat 0$ bo'ladi) va zudlik bilan ushbu tayyor javobni o'qiydi.</li>
+            <li><strong>➕ Yangi Qoida Qo'shish:</strong> Quyidagi firuza rangli ramkali tugmani bosing, trigger va javob qismlarini to'ldiring, so'ngra <strong>"Qoidalarni Saqlash"</strong> tugmasi orqali saqlang.</li>
+          </ul>
+        </div>
+        
+        <!-- Workflow nodes container -->
+        <div id="qa-rules-container" style="display: flex; flex-direction: column; gap: 16px;">
+          <!-- Dynamic rule cards go here -->
+        </div>
+        
+        <button id="qa-add-rule-btn" class="sim-chip" style="width: 100%; justify-content: center; height: 38px; cursor: pointer; border: 1px dashed var(--accent-cyan); color: var(--accent-cyan); background: rgba(0, 242, 254, 0.03); margin-top: 14px;"><i class="fa-solid fa-plus" style="margin-right: 6px;"></i> Yangi Qoida Qo'shish (Trigger)</button>
+      </div>
+      <div class="modal-footer">
+        <button id="qa-modal-cancel-btn" class="btn btn-secondary" style="padding: 8px 16px; font-size: 13px;">Bekor qilish</button>
+        <button id="qa-modal-save-btn" class="btn btn-primary" style="padding: 8px 20px; font-size: 13px; background: var(--primary-gradient);"><i class="fa-solid fa-check" style="margin-right: 6px;"></i> Qoidalarni Saqlash</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Premium Greeting Editor Modal -->
+  <div id="greeting-modal" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title-box">
+          <div class="modal-avatar" id="modal-op-avatar"><i class="fa-solid fa-user-tie"></i></div>
+          <div>
+            <h3 id="modal-op-name" style="margin: 0; font-size: 16px;">Malika</h3>
+            <span class="modal-subtitle" id="modal-op-role">Sotuv Operator #1</span>
+          </div>
+        </div>
+        <button class="modal-close-btn" id="modal-close-btn">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group" style="margin: 0;">
+          <label for="modal-greeting-textarea" style="display: block; margin-bottom: 8px; font-size: 12px; color: var(--text-muted);"><i class="fa-solid fa-quote-left"></i> Suhbatni boshlash jumlalari (Kirish so'zi):</label>
+          <textarea id="modal-greeting-textarea" rows="4" style="width: 100%; padding: 12px; background: rgba(0,0,0,0.3); border: 1px solid var(--border-color); border-radius: var(--radius-sm); color: #fff; font-size: 13px; line-height: 1.5; resize: vertical;" placeholder="Operator suhbatni boshlaydigan kirish gapi..."></textarea>
+        </div>
+        <div class="modal-actions-row">
+          <button id="modal-test-voice-btn" class="sim-chip" style="flex: 1; justify-content: center; height: 38px; cursor: pointer; border: 1px solid var(--accent-cyan); color: var(--accent-cyan); background: rgba(0, 242, 254, 0.05);"><i class="fa-solid fa-play" style="margin-right: 6px;"></i> Ovozni sinash</button>
+          <button id="modal-reset-btn" class="sim-chip" style="flex: 1; justify-content: center; height: 38px; cursor: pointer; border: 1px solid rgba(239, 68, 68, 0.3); color: #f87171; background: rgba(239, 68, 68, 0.05);"><i class="fa-solid fa-rotate-left" style="margin-right: 6px;"></i> Defaultga qaytarish</button>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id="modal-cancel-btn" class="btn btn-secondary" style="padding: 8px 16px; font-size: 13px;">Bekor qilish</button>
+        <button id="modal-save-btn" class="btn btn-primary" style="padding: 8px 20px; font-size: 13px; background: var(--primary-gradient);"><i class="fa-solid fa-check" style="margin-right: 6px;"></i> Saqlash va Tatbiq etish</button>
+      </div>
+    </div>
+  <!-- Download & Install PWA Modal -->
+  <div id="download-modal" class="modal-overlay">
+    <div class="modal-card download-modal-card">
+      <div class="modal-header">
+        <div class="modal-title-box">
+          <div class="modal-avatar download-modal-avatar"><i class="fa-solid fa-tablet-screen-button"></i></div>
+          <div>
+            <h3 style="margin: 0; font-size: 17px; color: #fff;">Planshetga Yuklab Olish & O'rnatish</h3>
+            <span class="modal-subtitle">AI Call Center ilovasidan planshet va smartfonda avtonom foydalanish</span>
+          </div>
+        </div>
+        <button class="modal-close-btn" id="download-modal-close-btn">&times;</button>
+      </div>
+
+      <div class="modal-body download-modal-body">
+        <!-- PWA Install Card -->
+        <div class="download-option-card highlighted">
+          <div class="option-header">
+            <div class="option-icon pwa-icon"><i class="fa-solid fa-mobile-screen-button"></i></div>
+            <div>
+              <h4>1. Planshet Bosh Ekranga O'rnatish (PWA Ilova - Tavsiya etiladi)</h4>
+              <p>Planshetingizga xuddi noutbuk yoki mobil ilova kabi o'rnatiladi. Brauzer panellarisiz to'liq ekranda ishlaydi!</p>
+            </div>
+          </div>
+          <div class="option-action">
+            <button id="pwa-install-trigger-btn" class="btn btn-primary btn-install-pwa">
+              <i class="fa-solid fa-download"></i> Planshetga O'rnatish
+            </button>
+            <span id="pwa-install-status-text" class="install-status-hint"><i class="fa-solid fa-circle-check"></i> Brauzer PWA rejimida tayyor</span>
+          </div>
+
+          <!-- Platform specific instructions -->
+          <div class="platform-guides">
+            <div class="guide-item">
+              <strong><i class="fa-brands fa-android"></i> Android / Chrome Planshet:</strong>
+              <span>Brauzer menyusidan (<strong>⋮</strong>) <em>"Bosh ekranga qo'shish"</em> yoki <em>"Ilovani o'rnatish"</em>ni bosing.</span>
+            </div>
+            <div class="guide-item">
+              <strong><i class="fa-brands fa-apple"></i> iPad (Safari):</strong>
+              <span>Pastki menyudagi <strong>Ulashish (Share <i class="fa-solid fa-arrow-up-from-bracket"></i>)</strong> tugmasini bosing va <em>"Bosh ekranga qo'shish" (Add to Home Screen)</em>ni tanlang.</span>
+            </div>
+            <div class="guide-item">
+              <strong><i class="fa-brands fa-windows"></i> Windows / Desktop Planshet:</strong>
+              <span>Brauzer manzil satri (URL) o'ng tomonidagi <strong>O'rnatish (Install <i class="fa-solid fa-desktop"></i>)</strong> belgisini bosing.</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Single File HTML App Download Card -->
+        <div class="download-option-card">
+          <div class="option-header">
+            <div class="option-icon html-icon" style="background: rgba(168, 85, 247, 0.15); color: #c084fc; border: 1px solid rgba(168, 85, 247, 0.3);"><i class="fa-solid fa-file-code"></i></div>
+            <div>
+              <h4>2. Bitta Faylli Avtonom Dastur (Standalone HTML)</h4>
+              <p>Hamma dizayn va kodi 1 ta `.html` fayliga jamlangan. Planshet xotirasiga yuklab olib, fayl menejeridan to'g'ridan-to'g'ri planshetda dastur kabi ochishingiz mumkin!</p>
+            </div>
+          </div>
+          <div class="option-action">
+            <a href="/AI_Call_Center_Planshet.html" download="AI_Call_Center_Planshet.html" id="download-html-btn" class="btn btn-primary" style="background: linear-gradient(135deg, #a855f7, #7c3aed); border: none; padding: 10px 20px; font-size: 13px; font-weight: 700; color: #fff; text-decoration: none; border-radius: var(--radius-sm); display: inline-flex; align-items: center; gap: 8px;">
+              <i class="fa-solid fa-file-arrow-down"></i> HTML Dasturni Yuklab Olish (.html)
+            </a>
+          </div>
+        </div>
+
+        <!-- ZIP Package Download Card -->
+        <div class="download-option-card">
+          <div class="option-header">
+            <div class="option-icon zip-icon"><i class="fa-solid fa-file-zipper"></i></div>
+            <div>
+              <h4>3. Full WEB Manba Jamlanmasi (ZIP Arxiv)</h4>
+              <p>Ushbu loyihaning barcha manba fayllarini ZIP arxiv shaklida planshet xotirasiga yuklab olasiz.</p>
+            </div>
+          </div>
+          <div class="option-action">
+            <a href="/ai-call-center-offline.zip" download="ai-call-center-offline.zip" id="download-zip-btn" class="btn btn-secondary btn-download-zip">
+              <i class="fa-solid fa-file-arrow-down"></i> ZIP Arxivni Yuklab Olish (.zip)
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button id="download-modal-cancel-btn" class="btn btn-secondary" style="padding: 8px 18px; font-size: 13px;">Yopish</button>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

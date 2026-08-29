@@ -2,7 +2,7 @@
 
 // State Management
 const state = {
-  apiKey: localStorage.getItem('gemini_api_key') || import.meta.env.VITE_GEMINI_API_KEY || '',
+  apiKey: localStorage.getItem('gemini_api_key') || '',
   isCallActive: false,
   isMuted: false,
   callDurationSeconds: 0,

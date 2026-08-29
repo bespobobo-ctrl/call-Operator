@@ -2391,6 +2391,51 @@ body {
   background: linear-gradient(135deg, #34d399 0%, #10b981 100%);
 }
 
+.btn-download-html-nav {
+  background: linear-gradient(135deg, #a855f7 0%, #7c3aed 100%);
+  color: #ffffff;
+  border: 1px solid rgba(168, 85, 247, 0.4);
+  padding: 8px 14px;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-family);
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 0 12px rgba(168, 85, 247, 0.3);
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.btn-download-html-nav:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 20px rgba(168, 85, 247, 0.5);
+  background: linear-gradient(135deg, #c084fc 0%, #a855f7 100%);
+}
+
+.btn-download-zip-nav {
+  background: rgba(0, 242, 254, 0.1);
+  color: var(--accent-cyan);
+  border: 1px solid rgba(0, 242, 254, 0.4);
+  padding: 8px 14px;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-family);
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.btn-download-zip-nav:hover {
+  transform: translateY(-2px);
+  background: var(--accent-cyan);
+  color: #0b0f19;
+}
+
 .btn-download-pwa i {
   font-size: 15px;
   animation: pulseIcon 2s infinite;
