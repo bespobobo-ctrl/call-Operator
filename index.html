@@ -47,10 +47,20 @@
       <!-- Left Panel: Phone Terminal & Audio Wave -->
       <section class="card terminal-card">
         <div class="card-header">
-          <h2><i class="fa-solid fa-phone-volume"></i> AI Telefon Terminali</h2>
-          <span class="phone-number">+998 (71) 200-00-99</span>
+          <h2><i class="fa-solid fa-headset"></i> AI Call Center Terminali</h2>
+          <span class="phone-number" id="active-phone-display">+998 (71) 200-01-01</span>
         </div>
         
+        <!-- 3 Operator Selector -->
+        <div class="operator-select-container">
+          <label for="operator-select"><i class="fa-solid fa-users-viewfinder"></i> Liniyani tanlang (3 ta AI Operator):</label>
+          <select id="operator-select" class="operator-select-dropdown">
+            <option value="op1" selected>🟢 Liniya 1: Malika — Sotuv & Buyurtma (+998 71 200-01-01)</option>
+            <option value="op2">🔵 Liniya 2: Jasur — Texnik Qo'llab-quvvatlash (+998 71 200-01-02)</option>
+            <option value="op3">🟣 Liniya 3: Nigora — Servis & Shikoyatlar (+998 71 200-01-03)</option>
+          </select>
+        </div>
+
         <div class="phone-display">
           <div class="avatar-ring" id="avatar-ring">
             <div class="ai-avatar">

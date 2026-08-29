@@ -15,6 +15,7 @@ const state = {
   speechSynth: window.speechSynthesis,
   sentiment: 'neutral',
   companyName: 'Admiral Group Official',
+  currentOperatorId: 'op1',
   systemPrompt: '',
   chatHistory: [],
   inputTokens: 0,
@@ -23,6 +24,55 @@ const state = {
   totalCostUSD: 0,
   currentSessionCostUSD: 0,
   USD_TO_UZS: 12850
+};
+
+// 3 AI Operators Telephony Lines Config
+const operators = {
+  op1: {
+    id: 'op1',
+    name: 'Malika',
+    role: 'Sotuv & Buyurtma',
+    phone: '+998 (71) 200-01-01',
+    prompt: `Siz "Admiral Group Official" kompaniyasining Sotuv va Buyurtmalar bo'limi bosh AI operatorisiz.
+Ismingiz: Malika.
+Telefon liniyangiz: +998 (71) 200-01-01
+Instagram: https://www.instagram.com/admiral_group_official
+
+Vazifangiz:
+1. Mijozlardan sotuv va yangi buyurtmalarni qabul qilish.
+2. Mahsulotlar narxi, chegirmalar va O'zbekiston bo'ylab yetkazib berish shartlarini tushuntirish.
+3. Har doim O'zbek tilida nihoyatda samimiy va professional muomala qilish.`
+  },
+  op2: {
+    id: 'op2',
+    name: 'Jasur',
+    role: 'Texnik Qo\'llab-quvvatlash',
+    phone: '+998 (71) 200-01-02',
+    prompt: `Siz "Admiral Group Official" kompaniyasining Texnik Qo'llab-quvvatlash bo'limi yetakchi AI operatorisiz.
+Ismingiz: Jasur.
+Telefon liniyangiz: +998 (71) 200-01-02
+Instagram: https://www.instagram.com/admiral_group_official
+
+Vazifangiz:
+1. Mijozlarning texnik savollari, xizmat ko'rsatish shartlari va konsultatsiyalariga javob berish.
+2. Muammolarni bartaraf etish bo'yicha aniq yo'riqnoma berish.
+3. Har doim O'zbek tilida botiq, aqlli va muomalali ravishda yordam berish.`
+  },
+  op3: {
+    id: 'op3',
+    name: 'Nigora',
+    role: 'Servis & Shikoyatlar',
+    phone: '+998 (71) 200-01-03',
+    prompt: `Siz "Admiral Group Official" kompaniyasining Mijozlar Boshqaruvi va Servis bo'limi AI operatorisiz.
+Ismingiz: Nigora.
+Telefon liniyangiz: +998 (71) 200-01-03
+Instagram: https://www.instagram.com/admiral_group_official
+
+Vazifangiz:
+1. Mijozlarning fikr-mulohazalari, takliflari va shikoyatlarini tinglash hamda yozib olish.
+2. Agar mijoz inson operator bilan gaplashmoqchi bo'lsa, "Sizni bo'limimizning jonli inson-operatoriga yo'naltiraman" deb ulash.
+3. Har doim O'zbek tilida hushfe'l, muloyim va e'tiborli bo'lish.`
+  }
 };
 
 // DOM Elements
@@ -72,7 +122,9 @@ const elements = {
   tabContents: document.querySelectorAll('.tab-content'),
   simChips: document.querySelectorAll('.sim-chip'),
   instaUrlInput: document.getElementById('insta-url-input'),
-  syncInstaBtn: document.getElementById('sync-insta-btn')
+  syncInstaBtn: document.getElementById('sync-insta-btn'),
+  operatorSelect: document.getElementById('operator-select'),
+  activePhoneDisplay: document.getElementById('active-phone-display')
 };
 
 // Initialize Application
@@ -98,6 +150,12 @@ function init() {
   if (elements.syncInstaBtn) {
     elements.syncInstaBtn.addEventListener('click', handleInstaSync);
   }
+  if (elements.operatorSelect) {
+    elements.operatorSelect.addEventListener('change', handleOperatorChange);
+  }
+
+  // Load default Operator (Malika op1)
+  switchOperator('op1');
 
   // Tab switching
   elements.tabBtns.forEach(btn => {
@@ -263,12 +321,30 @@ function startCall() {
     }
   }
 
-  // AI Welcome Greeting
+  // AI Welcome Greeting for Active Operator
   setTimeout(() => {
-    const welcome = `Assalomu alaykum! ${state.companyName} qo'llab-quvvatlash markaziga xush kelibsiz. Men sun'iy intellektual operator Malikaman. Sizga qanday yordam bera olaman?`;
+    const activeOp = operators[state.currentOperatorId] || operators.op1;
+    const welcome = `Assalomu alaykum! Admiral Group Official ${activeOp.role} liniyasiga xush kelibsiz. Men AI operator ${activeOp.name}man. Sizga qanday yordam bera olaman?`;
     addMessageToLog('ai', welcome);
     speakResponse(welcome);
   }, 600);
+}
+
+// Handle Operator Line Switch
+function handleOperatorChange(e) {
+  const opId = e.target.value;
+  switchOperator(opId);
+}
+
+function switchOperator(opId) {
+  const op = operators[opId] || operators.op1;
+  state.currentOperatorId = opId;
+  state.systemPrompt = op.prompt;
+
+  if (elements.activePhoneDisplay) elements.activePhoneDisplay.textContent = op.phone;
+  if (elements.systemInstructionInput) elements.systemInstructionInput.value = op.prompt;
+
+  addSystemMessage(`Liniya almashdi: ${op.phone} (AI Operator: ${op.name} — ${op.role})`);
 }
 
 // End Call

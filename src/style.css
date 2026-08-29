@@ -298,6 +298,43 @@ body {
   border: 1px solid rgba(0, 242, 254, 0.2);
 }
 
+.operator-select-container {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid var(--border-color);
+  padding: 10px 14px;
+  border-radius: var(--radius-md);
+}
+
+.operator-select-container label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.operator-select-dropdown {
+  background: rgba(18, 26, 43, 0.95);
+  border: 1px solid var(--border-highlight);
+  color: #fff;
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-family);
+  font-size: 13px;
+  font-weight: 600;
+  outline: none;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+
+.operator-select-dropdown:focus {
+  border-color: var(--accent-cyan);
+}
+
 /* Terminal & Call Display */
 .phone-display {
   display: flex;
