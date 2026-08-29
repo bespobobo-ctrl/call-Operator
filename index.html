@@ -63,11 +63,13 @@
         
         <!-- 3 Operator Selector -->
         <div class="operator-select-container">
-          <label for="operator-select"><i class="fa-solid fa-users-viewfinder"></i> Liniyani tanlang (3 ta AI Operator):</label>
+          <label for="operator-select"><i class="fa-solid fa-users-viewfinder"></i> Liniyani tanlang (AI Operatorlar):</label>
           <select id="operator-select" class="operator-select-dropdown">
-            <option value="op1" selected>🟢 Liniya 1: Malika — Sotuv & Buyurtma (+998 71 200-01-01)</option>
-            <option value="op2">🔵 Liniya 2: Jasur — Texnik Qo'llab-quvvatlash (+998 71 200-01-02)</option>
-            <option value="op3">🟣 Liniya 3: Nigora — Servis & Shikoyatlar (+998 71 200-01-03)</option>
+            <option value="op1" selected>🟢 Liniya 1: Malika — Sotuv Liniyasi 1 (+998 71 200-01-01)</option>
+            <option value="op2">🔵 Liniya 2: Jasur — Sotuv Liniyasi 2 (+998 71 200-01-02)</option>
+            <option value="op3">🟣 Liniya 3: Nigora — Sotuv Liniyasi 3 (+998 71 200-01-03)</option>
+            <option value="op4">🟠 Liniya 4: Farruh — Sotuv Liniyasi 4 (+998 71 200-01-04)</option>
+            <option value="op_head">👑 Liniya 0: Kamola — Bo'lim Boshlig'i (+998 71 200-01-00)</option>
           </select>
         </div>
 
@@ -205,9 +207,10 @@
           <h2><i class="fa-solid fa-sliders"></i> AI Operator Sozlamalari</h2>
         </div>
 
-        <div class="settings-tabs">
-          <button class="tab-btn active" data-tab="prompt-tab">Promt & Bilimlar</button>
+        <div class="tabs-bar">
+          <button class="tab-btn active" data-tab="prompt-tab">Firma & Prompt</button>
           <button class="tab-btn" data-tab="stats-tab">Analitika</button>
+          <button class="tab-btn" data-tab="supervisor-tab" style="border-bottom: 2px solid #a855f7; color: #c084fc;"><i class="fa-solid fa-crown"></i> Supervisor Panel</button>
         </div>
 
         <!-- Tab 1: Prompt & Knowledge Base -->
@@ -383,6 +386,56 @@ YETKAZIB BERISH:
             <span><strong>Ogohlantirish:</strong> Mijoz inson operatorga uzatilishini so'ramoqda!</span>
           </div>
         </div>
+
+        <!-- Tab 3: Supervisor & Cost-Guard Dashboard -->
+        <div class="tab-content" id="supervisor-tab">
+          <div class="cost-tracker-card" style="border: 1px solid rgba(168, 85, 247, 0.3); background: rgba(147, 51, 234, 0.04); margin-bottom: 20px;">
+            <div class="cost-header" style="color: #c084fc;">
+              <i class="fa-solid fa-shield-halved"></i>
+              <span>Auto-Cost Guard Tizimi (Tejamkorlik)</span>
+            </div>
+            
+            <div style="margin: 15px 0; display: flex; align-items: center; justify-content: space-between; background: rgba(0, 0, 0, 0.2); padding: 12px 16px; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.05);">
+              <div>
+                <strong style="color: #fff; display: block; margin-bottom: 4px;">Avtomatik Ovozli Xarajat Nazorati</strong>
+                <span class="sub-text" style="font-size: 11px;">Mavzudan chetlashganda qo'ng'iroqni avtomatik uzish orqali AI ovoz sarfini 100% tejaydi.</span>
+              </div>
+              <label class="switch-container" style="position: relative; display: inline-block; width: 44px; height: 22px;">
+                <input type="checkbox" id="auto-cost-guard-switch" checked style="opacity: 0; width: 0; height: 0;">
+                <span class="switch-slider" style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(168, 85, 247, 0.6); transition: .3s; border-radius: 22px;"></span>
+              </label>
+            </div>
+
+            <div class="topic-detector-box" style="padding: 12px; border-radius: 8px; background: rgba(0, 0, 0, 0.25); border: 1px solid rgba(255, 255, 255, 0.05);">
+              <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+                <span style="font-size: 12px; color: var(--text-muted);"><i class="fa-solid fa-comments"></i> Muloqot Yo'nalishi Statusi:</span>
+                <span class="status-badge" id="cost-guard-topic-badge" style="background: rgba(16, 185, 129, 0.15); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.3); font-size: 11px; padding: 2px 8px; border-radius: 4px;">🟢 Normal (Sotuvda)</span>
+              </div>
+              <p id="cost-guard-alert-msg" style="font-size: 11px; color: var(--text-muted); margin: 0; line-height: 1.4;">
+                Kamola operatorlar suhbatini nazorat qilmoqda. Mavzudan tashqari (off-topic) savollar berilganda, u xarajatlarni tejash uchun ogohlantirish beradi yoki suhbatni tugatadi.
+              </p>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label style="color: #c084fc;"><i class="fa-solid fa-gavel"></i> Supervisor Tezkor Harakatlari:</label>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 8px;">
+              <button id="supervisor-warn-btn" class="btn btn-premium" style="font-size: 12px; padding: 10px; background: rgba(168, 85, 247, 0.15); border: 1px solid rgba(168, 85, 247, 0.4); color: #c084fc; display: flex; align-items: center; justify-content: center; gap: 6px;">
+                <i class="fa-solid fa-triangle-exclamation"></i> Mavzuga Qaytarish
+              </button>
+              <button id="supervisor-hangup-btn" class="btn btn-premium" style="font-size: 12px; padding: 10px; background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.4); color: #f87171; display: flex; align-items: center; justify-content: center; gap: 6px;">
+                <i class="fa-solid fa-phone-slash"></i> Intercept & Hangup
+              </button>
+            </div>
+          </div>
+
+          <div class="form-group" style="margin-top: 15px;">
+            <label for="supervisor-notes"><i class="fa-solid fa-pen-clip"></i> Bo'lim Boshlig'i Eslatmalari & Yo'riqnomalari:</label>
+            <textarea id="supervisor-notes" rows="4" style="background: rgba(0,0,0,0.25); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; color: #fff; width: 100%; box-sizing: border-box; padding: 10px; font-size: 12px; resize: none; margin-top: 5px; font-family: inherit;">1. Operatorlar faqat sotuv masalalarida gapirishi kerak.
+2. Har bir sotuv suhbati oxirida zakaz haqida so'ralishi shart.
+3. Keraksiz savollarga vaqt yo'qotilmasin, AI ovoz harajatlarini tejang!</textarea>
+          </div>
+        </div>
       </section>
     </main>
 
@@ -429,12 +482,12 @@ YETKAZIB BERISH:
                       <div class="op-avatar op1-bg"><i class="fa-solid fa-user-tie"></i></div>
                       <div>
                         <strong>Malika</strong>
-                        <span class="sub-text">Bosh Operator</span>
+                        <span class="sub-text">Sotuv Operator #1</span>
                       </div>
                     </div>
                   </td>
                   <td><span class="code-pill">+998 (71) 200-01-01</span></td>
-                  <td>Sotuv va Buyurtmalar Bo'limi</td>
+                  <td>Sotuv Liniyasi 1</td>
                   <td><span class="status-badge online"><span class="pulse-dot"></span> Online (Kutmoqda)</span></td>
                   <td id="op1-calls-count">142</td>
                   <td>01:45 min</td>
@@ -445,15 +498,15 @@ YETKAZIB BERISH:
                 <tr>
                   <td>
                     <div class="op-cell-user">
-                      <div class="op-avatar op2-bg"><i class="fa-solid fa-headset"></i></div>
+                      <div class="op-avatar op2-bg"><i class="fa-solid fa-user-tie"></i></div>
                       <div>
                         <strong>Jasur</strong>
-                        <span class="sub-text">Texnik Mutaxassis</span>
+                        <span class="sub-text">Sotuv Operator #2</span>
                       </div>
                     </div>
                   </td>
                   <td><span class="code-pill">+998 (71) 200-01-02</span></td>
-                  <td>Texnik Qo'llab-quvvatlash</td>
+                  <td>Sotuv Liniyasi 2</td>
                   <td><span class="status-badge online"><span class="pulse-dot"></span> Online (Kutmoqda)</span></td>
                   <td id="op2-calls-count">98</td>
                   <td>02:10 min</td>
@@ -464,21 +517,59 @@ YETKAZIB BERISH:
                 <tr>
                   <td>
                     <div class="op-cell-user">
-                      <div class="op-avatar op3-bg"><i class="fa-solid fa-user-gear"></i></div>
+                      <div class="op-avatar op3-bg"><i class="fa-solid fa-user-tie"></i></div>
                       <div>
                         <strong>Nigora</strong>
-                        <span class="sub-text">Servis Menejeri</span>
+                        <span class="sub-text">Sotuv Operator #3</span>
                       </div>
                     </div>
                   </td>
                   <td><span class="code-pill">+998 (71) 200-01-03</span></td>
-                  <td>Mijozlar Servisi & Shikoyatlar</td>
+                  <td>Sotuv Liniyasi 3</td>
                   <td><span class="status-badge online"><span class="pulse-dot"></span> Online (Kutmoqda)</span></td>
                   <td id="op3-calls-count">76</td>
                   <td>01:20 min</td>
                   <td>$0.00018 / min</td>
                   <td>99.9%</td>
                   <td><button class="btn-xs select-op-btn" data-op="op3">Ulanish</button></td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="op-cell-user">
+                      <div class="op-avatar op4-bg"><i class="fa-solid fa-user-tie"></i></div>
+                      <div>
+                        <strong>Farruh</strong>
+                        <span class="sub-text">Sotuv Operator #4</span>
+                      </div>
+                    </div>
+                  </td>
+                  <td><span class="code-pill">+998 (71) 200-01-04</span></td>
+                  <td>Sotuv Liniyasi 4</td>
+                  <td><span class="status-badge online"><span class="pulse-dot"></span> Online (Kutmoqda)</span></td>
+                  <td id="op4-calls-count">64</td>
+                  <td>01:35 min</td>
+                  <td>$0.00018 / min</td>
+                  <td>99.5%</td>
+                  <td><button class="btn-xs select-op-btn" data-op="op4">Ulanish</button></td>
+                </tr>
+                <tr class="supervisor-row" style="background: rgba(147, 51, 234, 0.08); border-left: 3px solid var(--purple-accent, #a855f7);">
+                  <td>
+                    <div class="op-cell-user">
+                      <div class="op-avatar op-head-bg" style="background: linear-gradient(135deg, #a855f7, #7c3aed); color: #fff;"><i class="fa-solid fa-crown"></i></div>
+                      <div>
+                        <strong>Kamola</strong>
+                        <span class="sub-text" style="color: #c084fc;">Bo'lim Boshlig'i</span>
+                      </div>
+                    </div>
+                  </td>
+                  <td><span class="code-pill" style="border-color: #a855f7; color: #c084fc;">+998 (71) 200-01-00</span></td>
+                  <td>Supervisor & Boshqaruv</td>
+                  <td><span class="status-badge online"><span class="pulse-dot" style="background-color: #a855f7; box-shadow: 0 0 8px #a855f7;"></span> Online (Nazoratda)</span></td>
+                  <td id="ophead-calls-count">31</td>
+                  <td>03:45 min</td>
+                  <td>$0.00018 / min</td>
+                  <td>100%</td>
+                  <td><button class="btn-xs select-op-btn" data-op="op_head" style="background: linear-gradient(135deg, #a855f7, #7c3aed); border: none; box-shadow: 0 0 8px rgba(168, 85, 247, 0.4);">Ulanish</button></td>
                 </tr>
               </tbody>
             </table>
@@ -510,7 +601,7 @@ YETKAZIB BERISH:
                 </div>
                 <div class="desk-details">
                   <h3>Malika</h3>
-                  <p class="role-lbl">Sotuv va Buyurtma Bo'limi</p>
+                  <p class="role-lbl">Sotuv Liniyasi 1</p>
                   <p class="phone-lbl"><i class="fa-solid fa-phone"></i> +998 71 200-01-01</p>
                 </div>
                 <div class="desk-metrics">
@@ -527,7 +618,7 @@ YETKAZIB BERISH:
                 </div>
                 <div class="desk-avatar-box">
                   <div class="avatar-2d op2-avatar">
-                    <i class="fa-solid fa-headset"></i>
+                    <i class="fa-solid fa-user-tie"></i>
                   </div>
                   <div class="equalizer-bar idle-eq">
                     <span></span><span></span><span></span><span></span><span></span>
@@ -535,11 +626,11 @@ YETKAZIB BERISH:
                 </div>
                 <div class="desk-details">
                   <h3>Jasur</h3>
-                  <p class="role-lbl">Texnik Konsultatsiya</p>
+                  <p class="role-lbl">Sotuv Liniyasi 2</p>
                   <p class="phone-lbl"><i class="fa-solid fa-phone"></i> +998 71 200-01-02</p>
                 </div>
                 <div class="desk-metrics">
-                  <div><span>Yechimlar:</span> <strong>19 ta</strong></div>
+                  <div><span>Buyurtmalar:</span> <strong>19 ta</strong></div>
                   <div><span>Suhbat vaqti:</span> <strong>00:00</strong></div>
                 </div>
               </div>
@@ -552,7 +643,7 @@ YETKAZIB BERISH:
                 </div>
                 <div class="desk-avatar-box">
                   <div class="avatar-2d op3-avatar">
-                    <i class="fa-solid fa-user-gear"></i>
+                    <i class="fa-solid fa-user-tie"></i>
                   </div>
                   <div class="equalizer-bar idle-eq">
                     <span></span><span></span><span></span><span></span><span></span>
@@ -560,12 +651,62 @@ YETKAZIB BERISH:
                 </div>
                 <div class="desk-details">
                   <h3>Nigora</h3>
-                  <p class="role-lbl">Mijozlar Servisi</p>
+                  <p class="role-lbl">Sotuv Liniyasi 3</p>
                   <p class="phone-lbl"><i class="fa-solid fa-phone"></i> +998 71 200-01-03</p>
                 </div>
                 <div class="desk-metrics">
-                  <div><span>Murojaatlar:</span> <strong>14 ta</strong></div>
+                  <div><span>Buyurtmalar:</span> <strong>14 ta</strong></div>
                   <div><span>Suhbat vaqti:</span> <strong>00:00</strong></div>
+                </div>
+              </div>
+
+              <!-- Desk 4: Farruh -->
+              <div class="desk-card op4-desk">
+                <div class="desk-header">
+                  <span class="desk-number">STANSIYA #04</span>
+                  <span class="status-pill idle">🟢 KUTMOQDA</span>
+                </div>
+                <div class="desk-avatar-box">
+                  <div class="avatar-2d op4-avatar">
+                    <i class="fa-solid fa-user-tie"></i>
+                  </div>
+                  <div class="equalizer-bar idle-eq">
+                    <span></span><span></span><span></span><span></span><span></span>
+                  </div>
+                </div>
+                <div class="desk-details">
+                  <h3>Farruh</h3>
+                  <p class="role-lbl">Sotuv Liniyasi 4</p>
+                  <p class="phone-lbl"><i class="fa-solid fa-phone"></i> +998 71 200-01-04</p>
+                </div>
+                <div class="desk-metrics">
+                  <div><span>Buyurtmalar:</span> <strong>11 ta</strong></div>
+                  <div><span>Suhbat vaqti:</span> <strong>00:00</strong></div>
+                </div>
+              </div>
+
+              <!-- Desk 5: Supervisor Kamola -->
+              <div class="desk-card op-head-desk" style="border: 1px solid rgba(168, 85, 247, 0.4); box-shadow: 0 0 15px rgba(168, 85, 247, 0.15);">
+                <div class="desk-header" style="background: rgba(168, 85, 247, 0.15);">
+                  <span class="desk-number" style="color: #c084fc;">SUPERVISOR STANSIYASI</span>
+                  <span class="status-pill live" style="background: rgba(168, 85, 247, 0.2); color: #c084fc; border: 1px solid rgba(168, 85, 247, 0.4);">🛡️ NAZORAT</span>
+                </div>
+                <div class="desk-avatar-box">
+                  <div class="avatar-2d op-head-avatar" style="background: linear-gradient(135deg, #a855f7, #7c3aed); color: #fff;">
+                    <i class="fa-solid fa-crown"></i>
+                  </div>
+                  <div class="equalizer-bar idle-eq">
+                    <span></span><span></span><span></span><span></span><span></span>
+                  </div>
+                </div>
+                <div class="desk-details">
+                  <h3 style="color: #fff;">Kamola</h3>
+                  <p class="role-lbl" style="color: #c084fc;">Bo'lim Boshlig'i</p>
+                  <p class="phone-lbl"><i class="fa-solid fa-phone"></i> +998 71 200-01-00</p>
+                </div>
+                <div class="desk-metrics">
+                  <div><span>Tejovlar:</span> <strong>Ko'rib chiqilmoqda</strong></div>
+                  <div><span>Status:</span> <strong style="color: #a855f7;">Avto-Cost Guard: ON</strong></div>
                 </div>
               </div>
             </div>
@@ -578,13 +719,19 @@ YETKAZIB BERISH:
             <!-- Operator Room Selector Tabs -->
             <div class="room-selector-tabs">
               <button class="room-tab active" data-room="room-malika">
-                🏢 Malika — Sotuv Xonasi (3D Office)
+                🏢 Malika — Sotuv Xonasi 1
               </button>
               <button class="room-tab" data-room="room-jasur">
-                🔬 Jasur — Texnik Laboratoriya (3D Lab)
+                🏢 Jasur — Sotuv Xonasi 2
               </button>
               <button class="room-tab" data-room="room-nigora">
-                🛋️ Nigora — Servis Lounge (3D Lounge)
+                🏢 Nigora — Sotuv Xonasi 3
+              </button>
+              <button class="room-tab" data-room="room-farruh">
+                🏢 Farruh — Sotuv Xonasi 4
+              </button>
+              <button class="room-tab" data-room="room-kamola" style="border-left: 2px solid #a855f7; color: #c084fc;">
+                👑 Kamola — Supervisor Suite
               </button>
             </div>
 

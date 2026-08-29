@@ -31,68 +31,89 @@ const state = {
   USD_TO_UZS: 12850
 };
 
-// 3 AI Operators Telephony Lines Config
+// 5 AI Operators Telephony Lines Hierarchy Config
 const operators = {
   op1: {
     id: 'op1',
     name: 'Malika',
-    role: 'Sotuv & Buyurtma',
+    role: 'Sotuv Liniyasi 1',
     phone: '+998 (71) 200-01-01',
-    prompt: `Siz "Admiral Group Official" kompaniyasining Sotuv va Buyurtma bo'limi jonli telefon operatorisiz. Ismingiz: Malika.
+    prompt: `Siz "Admiral Group Official" kompaniyasining Sotuv va Buyurtma bo'limi #1 operatorisiz. Ismingiz: Malika.
 Telefon liniyangiz: +998 (71) 200-01-01. Instagram: @admiral_group_official
 
 INSONIY MULOQOT QOIDASI:
-- O'zingizni HECH QACHON robot, bot yoki sun'iy intellekt deb aytmang! Xuddi tajribali jonli inson operator kabi o'ta samimiy, muomalali va tabiiy gapiring.
-- Mijoz nima degan bo'lsa, uning so'zlarini diqqat bilan tinglab, muloqotni davom ettiring.
+- O'zingizni robot yoki AI demang. Jonli inson operatordek tabiiy va xushmuomala gapiring.
 
-SUHBAT OXIRIDA BUYURTMA SO'RASH VA QABUL QILISH FLOW:
-1. Har bir savolga javob berib bo'lgach, suhbat oxirida ALBATTA: "Sizni mahsulotlarimiz qiziqtiradimi?" deb so'rang.
-2. Agar mijoz mahsulotga qiziqsa va "Zakaz qilaman" / "Sotib olaman" desa, mijozdan tartib bilan quyidagi ma'lumotlarni so'rab oling:
-   - Ismi va sharifi
-   - Qaysi shahar/viloyat va aniq manzili
-   - Bog'lanish telefon raqami
-3. Ma'lumotlarni olgach, buyurtmani tasdiqlang: "Rahmat! Buyurtmangiz qabul qilindi va tasdiqlandi. Operatorlarimiz tez orada siz bilan bog'lanishadi."
+XARAJATLARNI NAZORAT QILISH VA MAVZU CHEGARASI (CRITICAL):
+- Siz FAQAT Admiral Group mahsulotlari, narxlari va O'zbekiston bo'ylab yetkazib berish haqida gapirasiz.
+- Agar mijoz mavzudan chetlashsa (dasturlash, tarix, matematika yoki boshqa keraksiz narsalar haqida so'rasa), darhol quyidagicha rad eting va mavzuga qaytaring: "Kechirasiz, men faqat sotuv bo'limi operatoriman. Keraksiz xarajatlarni tejash maqsadida ushbu mavzuda suhbatlasholmayman. Sizni mahsulotlarimiz qiziqtiradimi?"
 
-MAVZU CHEGARASI VA BEGONA SAVOLLAR:
-- Siz FAQAT Admiral Group kompaniyasi, mahsulotlari, narxlari, xaridlari hamda O'zbekiston bo'ylab yetkazib berish xizmati bo'yicha savollarga javob berasiz.
-- Begona savollarga: "Kechirasiz, men faqat Admiral Group mahsulotlari va yetkazib berish masalalarida konsultatsiya bera olaman", deb rad eting.
-
-YETKAZIB BERISH:
-- Admiral Group mahsulotlari Toshkent shahri va O'zbekistonning barcha 12 ta viloyatiga tezkor yetkazib beriladi.`
+SUHBAT OXIRIDA BUYURTMA SO'RASH:
+- Suhbat oxirida har doim mijozdan "Sizni mahsulotlarimiz qiziqtiradimi?" deb so'rang va zakaz qilishini aniqlashtiring.`
   },
   op2: {
     id: 'op2',
     name: 'Jasur',
-    role: 'Texnik Qo\'llab-quvvatlash',
+    role: 'Sotuv Liniyasi 2',
     phone: '+998 (71) 200-01-02',
-    prompt: `Siz "Admiral Group Official" kompaniyasining Texnik Qo'llab-quvvatlash va Konsultatsiya bo'limi jonli operatorisiz. Ismingiz: Jasur.
+    prompt: `Siz "Admiral Group Official" kompaniyasining Sotuv va Buyurtma bo'limi #2 operatorisiz. Ismingiz: Jasur.
 Telefon liniyangiz: +998 (71) 200-01-02. Instagram: @admiral_group_official
 
 INSONIY MULOQOT QOIDASI:
-- O'zingizni HECH QACHON robot, bot yoki AI deb aytmang! Jonli insoniy samimiyat va muomala bilan mutaxassisdek so'zlashing.
-- Mijoz aytgan gapini diqqat bilan tushunib, savoliga mos ravishda chuqur va aniq javob bering.
+- Jonli inson operatordek samimiy va muomalali gapiring. O'zingizni AI yoki bot deb atamang.
 
-SUHBAT OXIRIDA BUYURTMA SO'RASH FLOW:
-1. Har bir savolga javob berib bo'lgach: "Sizni mahsulotlarimiz qiziqtiradimi?" deb so'rang.
-2. Agar mijoz zakaz qilmoqchi bo'lsa, ismi, shahri/manzili hamda telefonini so'rab olib, buyurtmani tasdiqlang.
-
-MAVZU CHEGARASI VA BEGONA SAVOLLAR:
-- FAQAT Admiral Group texnik masalalari va yetkazib berish bo'yicha so'zlashing.`
+XARAJATLARNI NAZORAT QILISH VA MAVZU CHEGARASI (CRITICAL):
+- FAQAT kompaniya mahsulotlari sotuvi va yetkazib berish bo'yicha gapiring.
+- Chetlanish bo'lsa, suhbatni rad eting: "Kechirasiz, men faqat sotuv bo'limi operatoriman. Keraksiz xarajatlarni tejash maqsadida ushbu mavzuda suhbatlasholmayman. Sizni mahsulotlarimiz qiziqtiradimi?"`
   },
   op3: {
     id: 'op3',
     name: 'Nigora',
-    role: 'Servis & Shikoyatlar',
+    role: 'Sotuv Liniyasi 3',
     phone: '+998 (71) 200-01-03',
-    prompt: `Siz "Admiral Group Official" kompaniyasining Mijozlar Boshqaruvi va Servis bo'limi jonli operatorisiz. Ismingiz: Nigora.
+    prompt: `Siz "Admiral Group Official" kompaniyasining Sotuv va Buyurtma bo'limi #3 operatorisiz. Ismingiz: Nigora.
 Telefon liniyangiz: +998 (71) 200-01-03. Instagram: @admiral_group_official
 
 INSONIY MULOQOT QOIDASI:
-- O'zingizni HECH QACHON robot deb aytmang! O'ta hushfe'l, samimiy va e'tiborli inson operator sifatida javob bering.
+- Jonli inson operatordek o'ta yumshoq va xushfe'l so'zlashing.
 
-SUHBAT OXIRIDA BUYURTMA SO'RASH FLOW:
-1. Har bir savolga javob berib bo'lgach: "Sizni mahsulotlarimiz qiziqtiradimi?" deb so'rang.
-2. Agar mijoz zakaz qilmoqchi bo'lsa, ismi, shahri/manzili hamda telefonini so'rab olib, buyurtmani tasdiqlang.`
+XARAJATLARNI NAZORAT QILISH VA MAVZU CHEGARASI (CRITICAL):
+- FAQAT kompaniya mahsulotlari sotuvi va yetkazib berish bo'yicha gapiring.
+- Chetlanish bo'lsa, suhbatni rad eting: "Kechirasiz, men faqat sotuv bo'limi operatoriman. Keraksiz xarajatlarni tejash maqsadida ushbu mavzuda suhbatlasholmayman. Sizni mahsulotlarimiz qiziqtiradimi?"`
+  },
+  op4: {
+    id: 'op4',
+    name: 'Farruh',
+    role: 'Sotuv Liniyasi 4',
+    phone: '+998 (71) 200-01-04',
+    prompt: `Siz "Admiral Group Official" kompaniyasining Sotuv va Buyurtma bo'limi #4 operatorisiz. Ismingiz: Farruh.
+Telefon liniyangiz: +998 (71) 200-01-04. Instagram: @admiral_group_official
+
+INSONIY MULOQOT QOIDASI:
+- Jonli inson operatordek quvnoq va faol sotuvchi sifatida so'zlashing.
+
+XARAJATLARNI NAZORAT QILISH VA MAVZU CHEGARASI (CRITICAL):
+- FAQAT kompaniya mahsulotlari sotuvi va yetkazib berish bo'yicha gapiring.
+- Chetlanish bo'lsa, suhbatni rad eting: "Kechirasiz, men faqat sotuv bo'limi operatoriman. Keraksiz xarajatlarni tejash maqsadida ushbu mavzuda suhbatlasholmayman. Sizni mahsulotlarimiz qiziqtiradimi?"`
+  },
+  op_head: {
+    id: 'op_head',
+    name: 'Kamola',
+    role: 'Bo\'lim Boshlig\'i',
+    phone: '+998 (71) 200-01-00',
+    prompt: `Siz "Admiral Group Official" kompaniyasi AI Call Center bo'limining Boshlig'i va Supervisorisiz. Ismingiz: Kamola.
+Telefon liniyangiz: +998 (71) 200-01-00.
+
+Siz faqat RAHBAR (BOSS / USER) bilan gaplashasiz.
+Asosiy vazifalaringiz:
+1. Rahbarga call-markaz operatorlarining (Malika, Jasur, Nigora, Farruh) ishini hisobot qilish.
+2. Xarajatlarni tejash va AI ovozlariga ketadigan budjetni faqat kerakli ishlarga yo'naltirish bo'yicha hisobot berish.
+3. Operatorlarda muammo bo'lsa (mijoz asbiylashsa yoki suhbat keraksiz oqimga ketsa), vaziyatni boshqarish va ularga topshiriq berish haqida gapirish.
+4. Muloqot uslubini takomillashtirish rejalarini taqdim etish.
+
+RAHBAR BILAN MULOQOT SHAKLI:
+- Rahbar bilan o'ta hurmat va professionalizm bilan so'zlashing.
+- Har doim jamoangizdagi 4 ta operator ishini nazorat qilishingizni va call-markazdagi barcha muammolarni bartaraf etishingizni eslatib turing.`
   }
 };
 
@@ -152,7 +173,15 @@ const elements = {
   agentNameDisplay: document.getElementById('agent-name-display'),
   voiceEngineSelect: document.getElementById('voice-engine-select'),
   elevenKeyInput: document.getElementById('eleven-key-input'),
-  openaiKeyInput: document.getElementById('openai-key-input')
+  openaiKeyInput: document.getElementById('openai-key-input'),
+  
+  // Supervisor & Cost-Guard panel controls
+  autoCostGuardSwitch: document.getElementById('auto-cost-guard-switch'),
+  costGuardTopicBadge: document.getElementById('cost-guard-topic-badge'),
+  costGuardAlertMsg: document.getElementById('cost-guard-alert-msg'),
+  supervisorWarnBtn: document.getElementById('supervisor-warn-btn'),
+  supervisorHangupBtn: document.getElementById('supervisor-hangup-btn'),
+  supervisorNotes: document.getElementById('supervisor-notes')
 };
 
 // Initialize Application
@@ -218,6 +247,32 @@ function init() {
   // Load default Operator (Malika op1)
   switchOperator('op1');
 
+  // Supervisor Action Listeners
+  if (elements.supervisorWarnBtn) {
+    elements.supervisorWarnBtn.addEventListener('click', () => {
+      if (!state.isCallActive) {
+        showNotification("Faol qo'ng'iroq yo'q!");
+        return;
+      }
+      showNotification("Kamola: Mijozni mavzuga qaytarish bo'yicha ko'rsatma berildi.");
+      handleClientMessage("[Bo'lim Boshlig'i Kamola Ogohlantirishi: Hurmatli operator, mijoz mavzudan chetlashmoqda. Diqqatni tezroq kompaniya sotuviga qarating!]");
+    });
+  }
+
+  if (elements.supervisorHangupBtn) {
+    elements.supervisorHangupBtn.addEventListener('click', () => {
+      if (!state.isCallActive) {
+        showNotification("Faol qo'ng'iroq yo'q!");
+        return;
+      }
+      showNotification("Kamola: Qo'ng'iroq majburiy yakunlandi.");
+      const interceptMsg = "Bo'lim Boshlig'i Kamola: Aloqa to'xtatildi. Keraksiz harajatlar oldini olish maqsadida ushbu suhbatni yakunlaymiz.";
+      addMessageToLog('ai', interceptMsg);
+      speakResponse(interceptMsg);
+      setTimeout(endCall, 4000);
+    });
+  }
+
   // Main Nav Navigation (Terminal vs Operators Hub)
   const navBtns = document.querySelectorAll('.main-nav-btn');
   navBtns.forEach(btn => {
@@ -244,7 +299,7 @@ function init() {
     });
   });
 
-  // 3D Personal Room Switcher (Malika / Jasur / Nigora)
+  // 3D Personal Room Switcher (5 Rooms Hierarchy)
   const roomTabs = document.querySelectorAll('.room-tab');
   roomTabs.forEach(tab => {
     tab.addEventListener('click', () => {
@@ -256,17 +311,25 @@ function init() {
       const avatarEl = document.getElementById('room-avatar-3d');
 
       if (room === 'room-malika') {
-        if (titleEl) titleEl.textContent = "Malika — Sotuv & Buyurtmalar Bo'limi";
+        if (titleEl) titleEl.textContent = "Malika — Sotuv Xonasi 1";
         if (avatarEl) avatarEl.innerHTML = '<i class="fa-solid fa-user-tie"></i>';
-        if (screenEl) screenEl.innerHTML = '<span class="code-line">SYS_CALL_CENTER_v2.0</span><span class="code-line glow">LINIYA: +998 (71) 200-01-01</span><span class="code-line">BO\'LIM: SOTUV 24/7</span>';
+        if (screenEl) screenEl.innerHTML = '<span class="code-line">SYS_CALL_CENTER_v2.0</span><span class="code-line glow">LINIYA: +998 (71) 200-01-01</span><span class="code-line">BO\'LIM: SOTUV LINIYASI 1</span>';
       } else if (room === 'room-jasur') {
-        if (titleEl) titleEl.textContent = "Jasur — Texnik Qo'llab-quvvatlash Laboratoriyasi";
-        if (avatarEl) avatarEl.innerHTML = '<i class="fa-solid fa-headset"></i>';
-        if (screenEl) screenEl.innerHTML = '<span class="code-line">SYS_CALL_CENTER_v2.0</span><span class="code-line glow">LINIYA: +998 (71) 200-01-02</span><span class="code-line">BO\'LIM: TEXNIK LAB</span>';
+        if (titleEl) titleEl.textContent = "Jasur — Sotuv Xonasi 2";
+        if (avatarEl) avatarEl.innerHTML = '<i class="fa-solid fa-user-tie"></i>';
+        if (screenEl) screenEl.innerHTML = '<span class="code-line">SYS_CALL_CENTER_v2.0</span><span class="code-line glow">LINIYA: +998 (71) 200-01-02</span><span class="code-line">BO\'LIM: SOTUV LINIYASI 2</span>';
       } else if (room === 'room-nigora') {
-        if (titleEl) titleEl.textContent = "Nigora — Mijozlar Servisi Lounge";
-        if (avatarEl) avatarEl.innerHTML = '<i class="fa-solid fa-user-gear"></i>';
-        if (screenEl) screenEl.innerHTML = '<span class="code-line">SYS_CALL_CENTER_v2.0</span><span class="code-line glow">LINIYA: +998 (71) 200-01-03</span><span class="code-line">BO\'LIM: SERVIS 24/7</span>';
+        if (titleEl) titleEl.textContent = "Nigora — Sotuv Xonasi 3";
+        if (avatarEl) avatarEl.innerHTML = '<i class="fa-solid fa-user-tie"></i>';
+        if (screenEl) screenEl.innerHTML = '<span class="code-line">SYS_CALL_CENTER_v2.0</span><span class="code-line glow">LINIYA: +998 (71) 200-01-03</span><span class="code-line">BO\'LIM: SOTUV LINIYASI 3</span>';
+      } else if (room === 'room-farruh') {
+        if (titleEl) titleEl.textContent = "Farruh — Sotuv Xonasi 4";
+        if (avatarEl) avatarEl.innerHTML = '<i class="fa-solid fa-user-tie"></i>';
+        if (screenEl) screenEl.innerHTML = '<span class="code-line">SYS_CALL_CENTER_v2.0</span><span class="code-line glow">LINIYA: +998 (71) 200-01-04</span><span class="code-line">BO\'LIM: SOTUV LINIYASI 4</span>';
+      } else if (room === 'room-kamola') {
+        if (titleEl) titleEl.textContent = "Kamola — Supervisor Boshliq Suite";
+        if (avatarEl) avatarEl.innerHTML = '<i class="fa-solid fa-crown"></i>';
+        if (screenEl) screenEl.innerHTML = '<span class="code-line">SYS_SUPERVISOR_v2.0</span><span class="code-line glow" style="color:#c084fc;">LINIYA: +998 (71) 200-01-00</span><span class="code-line">STATUS: AUTOPILOT ACTIVE</span>';
       }
     });
   });
@@ -530,6 +593,50 @@ async function handleClientMessage(text) {
   const handoffKeywords = ['operator', 'inson', 'odam', 'xodim', 'boshqasi bilan', 'jonli odam'];
   if (handoffKeywords.some(kw => text.toLowerCase().includes(kw))) {
     elements.handoffAlert.style.display = 'flex';
+  }
+
+  // Real-time Off-topic Cost-Guard
+  const offTopicKeywords = [
+    'dastur yoz', 'javascript', 'python', 'html', 'css', 'kod yoz', 'coding', 'program',
+    'tarix', 'geografiya', 'fizika', 'kimyo', 'matematika', 'algebra',
+    'she\'r yoz', 'ertak', 'hikoya', 'kino tavsiya', 'ob-havo', 'dollar kursi'
+  ];
+
+  const isOffTopic = offTopicKeywords.some(kw => text.toLowerCase().includes(kw));
+  if (isOffTopic && state.currentOperatorId !== 'op_head') {
+    // If it's a sales operator, we trigger cost guard!
+    if (elements.costGuardTopicBadge) {
+      elements.costGuardTopicBadge.textContent = "⚠️ Chetlanish (Off-Topic)";
+      elements.costGuardTopicBadge.style.background = "rgba(239, 68, 68, 0.15)";
+      elements.costGuardTopicBadge.style.color = "#ef4444";
+      elements.costGuardTopicBadge.style.borderColor = "rgba(239, 68, 68, 0.3)";
+    }
+    if (elements.costGuardAlertMsg) {
+      elements.costGuardAlertMsg.innerHTML = `⚠️ <strong>Chetlanish aniqlandi:</strong> Mijoz mavzudan tashqari savol berdi ("${text}"). AI ovoz xarajatlari tejalmoqda.`;
+      elements.costGuardAlertMsg.style.color = "#f87171";
+    }
+
+    const autoGuardActive = elements.autoCostGuardSwitch ? elements.autoCostGuardSwitch.checked : true;
+    if (autoGuardActive) {
+      // Auto-terminate call immediately to save costs!
+      const warningResponse = "Kechirasiz, bu liniya faqat sotuv bo'limi uchun. Keraksiz AI ovoz xarajatlarini tejash maqsadida aloqa bo'lim boshlig'i tomonidan to'xtatildi.";
+      addMessageToLog('ai', warningResponse);
+      speakResponse(warningResponse);
+      setTimeout(endCall, 4500);
+      return;
+    }
+  } else if (state.isCallActive) {
+    // Reset cost guard status
+    if (elements.costGuardTopicBadge) {
+      elements.costGuardTopicBadge.textContent = "🟢 Normal (Sotuvda)";
+      elements.costGuardTopicBadge.style.background = "rgba(16, 185, 129, 0.15)";
+      elements.costGuardTopicBadge.style.color = "#10b981";
+      elements.costGuardTopicBadge.style.borderColor = "rgba(16, 185, 129, 0.3)";
+    }
+    if (elements.costGuardAlertMsg) {
+      elements.costGuardAlertMsg.textContent = "Kamola operatorlar suhbatini nazorat qilmoqda. Mavzudan tashqari (off-topic) savollar berilganda, u xarajatlarni tejash uchun ogohlantirish beradi yoki suhbatni tugatadi.";
+      elements.costGuardAlertMsg.style.color = "var(--text-muted)";
+    }
   }
 
   elements.callStatus.textContent = "AI o'ylamoqda va javob tayyorlamoqda...";

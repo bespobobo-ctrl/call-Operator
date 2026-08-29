@@ -43,7 +43,9 @@ export default async function handler(req, res) {
       const elevenVoiceMap = {
         op1: '21m00Tcm4TlvDq8ikWAM', // Rachel (Female)
         op2: 'ErXwobaYiN019PkySvjV', // Antoni (Deep Male)
-        op3: 'EXAVITQu4vr4xnSDxMaL'  // Bella (Soft Female)
+        op3: 'EXAVITQu4vr4xnSDxMaL', // Bella (Soft Female)
+        op4: 'N2lVS1w4GcCO15B0PvC9', // Eric (Energetic Male)
+        op_head: 'AZnzlk1XvdvUeBnXmlld' // Domi (Professional Female)
       };
       const voiceId = elevenVoiceMap[opId] || elevenVoiceMap.op1;
       const elevenUrl = `https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`;
@@ -81,7 +83,9 @@ export default async function handler(req, res) {
       const openAiVoiceMap = {
         op1: 'nova',    // Upbeat Female
         op2: 'onyx',    // Deep Male
-        op3: 'shimmer' // Soft Female
+        op3: 'shimmer', // Soft Female
+        op4: 'alloy',   // Neutral Male/Energetic
+        op_head: 'alloy' // Authoritative Supervisor
       };
       const voice = openAiVoiceMap[opId] || 'nova';
 
@@ -115,7 +119,13 @@ export default async function handler(req, res) {
   // Engine 3: Gemini 2.0 Flash Multimodal Audio Generation (If Key Provided)
   if (customGeminiKey && customGeminiKey.length > 10) {
     try {
-      const geminiVoiceMap = { op1: 'Puck', op2: 'Charon', op3: 'Kore' };
+      const geminiVoiceMap = { 
+        op1: 'Puck', 
+        op2: 'Charon', 
+        op3: 'Kore', 
+        op4: 'Fenrir', 
+        op_head: 'Aoede' 
+      };
       const voiceName = geminiVoiceMap[opId] || 'Puck';
       const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${customGeminiKey}`;
 
@@ -162,6 +172,14 @@ export default async function handler(req, res) {
       voiceName = 'uz-UZ-MadinaNeural';
       rate = 0.94;
       pitch = '-3Hz';
+    } else if (opId === 'op4') {
+      voiceName = 'uz-UZ-SardorNeural'; // Male Uzbek Voice!
+      rate = 1.02;
+      pitch = '-1Hz';
+    } else if (opId === 'op_head') {
+      voiceName = 'uz-UZ-MadinaNeural'; // Supervisor Female
+      rate = 0.98;
+      pitch = '+1Hz';
     } else {
       voiceName = 'uz-UZ-MadinaNeural';
       rate = 1.03;
