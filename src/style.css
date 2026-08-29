@@ -721,6 +721,34 @@ body {
   border-color: var(--accent-cyan);
 }
 
+.insta-sync-box {
+  display: flex;
+  gap: 8px;
+}
+
+.insta-sync-box input {
+  flex: 1;
+}
+
+.insta-sync-box button {
+  background: linear-gradient(135deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+  border: none;
+  color: #fff;
+  padding: 0 16px;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  font-size: 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: opacity 0.2s;
+}
+
+.insta-sync-box button:hover {
+  opacity: 0.9;
+}
+
 /* Stats Grid */
 .stats-grid {
   display: grid;

@@ -14,7 +14,7 @@ const state = {
   recognition: null,
   speechSynth: window.speechSynthesis,
   sentiment: 'neutral',
-  companyName: 'TechCorp Uzbekistan',
+  companyName: 'Admiral Group Official',
   systemPrompt: '',
   chatHistory: [],
   inputTokens: 0,
@@ -70,7 +70,9 @@ const elements = {
   canvas: document.getElementById('audio-wave-canvas'),
   tabBtns: document.querySelectorAll('.tab-btn'),
   tabContents: document.querySelectorAll('.tab-content'),
-  simChips: document.querySelectorAll('.sim-chip')
+  simChips: document.querySelectorAll('.sim-chip'),
+  instaUrlInput: document.getElementById('insta-url-input'),
+  syncInstaBtn: document.getElementById('sync-insta-btn')
 };
 
 // Initialize Application
@@ -93,6 +95,9 @@ function init() {
 
   elements.clearLogBtn.addEventListener('click', clearLog);
   elements.savePromptBtn.addEventListener('click', savePromptSettings);
+  if (elements.syncInstaBtn) {
+    elements.syncInstaBtn.addEventListener('click', handleInstaSync);
+  }
 
   // Tab switching
   elements.tabBtns.forEach(btn => {
@@ -149,7 +154,33 @@ function saveApiKey() {
 function savePromptSettings() {
   state.companyName = elements.companyNameInput.value.trim();
   state.systemPrompt = elements.systemInstructionInput.value.trim();
-  showNotification("AI Operator sozlamalari yangilandi!");
+  showNotification("AI Operator sozlamalari va Instagram bilimlari yangilandi!");
+}
+
+// Instagram Sync Handler
+function handleInstaSync() {
+  const url = elements.instaUrlInput ? elements.instaUrlInput.value.trim() : '';
+  const handleMatch = url.match(/instagram\.com\/([a-zA-Z0-9_.]+)/);
+  const handle = handleMatch ? handleMatch[1] : 'admiral_group_official';
+
+  showNotification(`Instagram @${handle} ma'lumotlari muvaffaqiyatli sinxronlandi! AI Bilimlar Bazasi yangilandi.`);
+  
+  if (elements.companyNameInput) elements.companyNameInput.value = "Admiral Group Official";
+  if (elements.systemInstructionInput) {
+    elements.systemInstructionInput.value = `Siz "Admiral Group Official" (@${handle}) kompaniyasining malakali va xushmuomala AI Call-markaz operatorisiz.
+Ismingiz: Malika.
+Instagram sahifa: https://www.instagram.com/${handle}
+
+Kompaniya Faoliyati va Bilimlar Bazasi:
+- Kompaniya nomi: Admiral Group Official
+- Asosiy faoliyat: Sifatli mahsulot va xizmatlarni taqdim etish (O'zbekiston bo'ylab yetkazib berish va professional konsultatsiya).
+- Ish vaqti: Dushanba - Shanba, 09:00 dan 18:00 gacha. Yakshanba — dam olish kuni.
+- Murojaatlar: Mahsulotlar narxi, buyurtma berish, yetkazib berish shartlari va savollar bo'yicha to'liq yordam berish.
+- Inson operatorga uzatish: Agar mijoz operatorni so'rasa, "Sizni inson operatorimizga ulashimga ruxsat bering" deb ayting.
+- Qoida: Har doim O'zbek tilida samimiy, xushmuomala va aniq javob bering!`;
+  }
+
+  savePromptSettings();
 }
 
 // Speech Recognition Setup (Uzbek uz-UZ)

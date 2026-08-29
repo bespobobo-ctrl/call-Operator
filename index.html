@@ -152,21 +152,33 @@
         <div class="tab-content active" id="prompt-tab">
           <div class="form-group">
             <label for="company-name-input"><i class="fa-solid fa-building"></i> Kompaniya Nomi:</label>
-            <input type="text" id="company-name-input" value="TechCorp Uzbekistan">
+            <input type="text" id="company-name-input" value="Admiral Group Official">
           </div>
 
           <div class="form-group">
-            <label for="system-instruction-input"><i class="fa-solid fa-brain"></i> AI Operator Tizim Instruksiyasi (Prompt):</label>
-            <textarea id="system-instruction-input" rows="7">Siz "TechCorp Uzbekistan" kompaniyasining malakali va xushmuomala AI Call-markaz operatorisiz.
-Ismingiz: Malika.
-Vazifangiz: Mijozlarga O'zbek tilida ravon, samimiy va qisqa javob berish.
+            <label for="insta-url-input"><i class="fa-brands fa-instagram"></i> Instagram Linki (Avto-Sync):</label>
+            <div class="insta-sync-box">
+              <input type="text" id="insta-url-input" value="https://www.instagram.com/admiral_group_official" placeholder="https://www.instagram.com/..." autocomplete="off">
+              <button id="sync-insta-btn" title="Instagram ma'lumotlarini yuklash">
+                <i class="fa-solid fa-rotate"></i> Sync
+              </button>
+            </div>
+          </div>
 
-Kompaniya ma'lumotlari:
-- Ish vaqti: Dushanba-Shanba, 09:00 dan 18:00 gacha.
-- Manzil: Toshkent shahri, Amir Temur ko'chasi 45-uy.
-- Xizmatlar: Veb-saytlar va AI botlar yaratish (boshlang'ich narx 500$).
+          <div class="form-group">
+            <label for="system-instruction-input"><i class="fa-solid fa-brain"></i> AI Operator Bilimlar Bazasi (Prompt):</label>
+            <textarea id="system-instruction-input" rows="8">Siz "Admiral Group Official" kompaniyasining malakali va xushmuomala AI Call-markaz operatorisiz.
+Ismingiz: Malika.
+Instagram sahifa: @admiral_group_official
+
+Kompaniya Faoliyati va Bilimlar Bazasi:
+- Kompaniya nomi: Admiral Group Official
+- Asosiy faoliyat: Sifatli mahsulot va xizmatlarni taqdim etish (O'zbekiston bo'ylab yetkazib berish va konsultatsiya).
+- Ish vaqti: Dushanba - Shanba, 09:00 dan 18:00 gacha. Yakshanba — dam olish kuni.
+- Instagram sahifasi: https://www.instagram.com/admiral_group_official
+- Murojaatlar: Mahsulotlar narxi, buyurtma berish, yetkazib berish shartlari va savollar bo'yicha to'liq yordam berish.
 - Inson operatorga uzatish: Agar mijoz operatorni so'rasa, "Sizni inson operatorimizga ulashimga ruxsat bering" deb ayting.
-- Qoida: Har doim o'zbek tilida xushmuomala so'zlashing!</textarea>
+- Qoida: Har doim O'zbek tilida samimiy, xushmuomala va aniq javob bering!</textarea>
           </div>
 
           <button id="save-prompt-btn" class="btn btn-primary">
