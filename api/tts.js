@@ -1,4 +1,6 @@
 // Vercel Serverless Function — Multi-Provider Ultra-HD Uzbek AI Voice Engine
+import { MsEdgeTTS, OUTPUT_FORMAT } from 'msedge-tts';
+
 export default async function handler(req, res) {
   // CORS Headers
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -146,56 +148,44 @@ export default async function handler(req, res) {
     }
   }
 
-  // Engine 4: Microsoft Uzbek Neural Voice Stream with TrustedClientToken Header
+  // Engine 4: Microsoft Edge Uzbek Neural Voice Stream (Zero API Key required, WebSockets, highly stable!)
   try {
     let voiceName = 'uz-UZ-MadinaNeural';
-    let rate = '+0%';
+    let rate = 1.0;
     let pitch = '+0Hz';
 
     if (opId === 'op2') {
       voiceName = 'uz-UZ-SardorNeural'; // Male Uzbek Voice!
-      rate = '-4%';
+      rate = 0.96;
       pitch = '-4Hz';
     } else if (opId === 'op3') {
       voiceName = 'uz-UZ-MadinaNeural';
-      rate = '-6%';
+      rate = 0.94;
       pitch = '-3Hz';
     } else {
       voiceName = 'uz-UZ-MadinaNeural';
-      rate = '+3%';
+      rate = 1.03;
       pitch = '+3Hz';
     }
 
-    const ssml = `<speak version='1.0' xmlns='http://www.w3.org/2001/10/synthesis' xml:lang='uz-UZ'>
-      <voice name='${voiceName}'>
-        <prosody rate='${rate}' pitch='${pitch}'>
-          ${escapeXml(cleanText)}
-        </prosody>
-      </voice>
-    </speak>`;
+    const tts = new MsEdgeTTS();
+    await tts.setMetadata(voiceName, OUTPUT_FORMAT.AUDIO_24KHZ_96KBITRATE_MONO_MP3);
 
-    const ttsUrl = `https://speech.platform.bing.com/consumer/speech/synthesize/readaloud/single/tts?api-key=6A5AA1D4EA6349499216C73808555020`;
+    const { audioStream } = tts.toStream(cleanText, { rate, pitch });
 
-    const audioRes = await fetch(ttsUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/ssml+xml',
-        'X-Microsoft-OutputFormat': 'audio-24khz-96kbitrate-mono-mp3',
-        'TrustedClientToken': '6A5AA1D4EA6349499216C73808555020',
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36 Edg/122.0.0.0'
-      },
-      body: ssml
+    const chunks = [];
+    await new Promise((resolve, reject) => {
+      audioStream.on('data', (chunk) => chunks.push(chunk));
+      audioStream.on('end', resolve);
+      audioStream.on('error', reject);
     });
 
-    if (audioRes.ok) {
-      const arrayBuffer = await audioRes.arrayBuffer();
-      const buffer = Buffer.from(arrayBuffer);
+    const buffer = Buffer.concat(chunks);
+    res.setHeader('Content-Type', 'audio/mpeg');
+    res.setHeader('Content-Length', buffer.length);
+    res.setHeader('Cache-Control', 'public, max-age=86400');
+    return res.status(200).send(buffer);
 
-      res.setHeader('Content-Type', 'audio/mpeg');
-      res.setHeader('Content-Length', buffer.length);
-      res.setHeader('Cache-Control', 'public, max-age=86400');
-      return res.status(200).send(buffer);
-    }
   } catch (err) {
     console.warn("Microsoft Neural TTS Warning:", err);
   }
