@@ -50,6 +50,9 @@
       <button class="main-nav-btn" id="nav-operators-btn" data-target="operators-view">
         <i class="fa-solid fa-users-gear"></i> Operatorlar Bo'limi Markazi
       </button>
+      <button class="main-nav-btn" id="nav-settings-btn" data-target="settings-view">
+        <i class="fa-solid fa-gears"></i> ⚙️ Tizim Sozlamalari
+      </button>
     </nav>
 
     <!-- Section 1: AI Telefon Terminali View -->
@@ -811,6 +814,108 @@ YETKAZIB BERISH:
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Section 3: Tizim Sozlamalari View -->
+    <main class="operators-center-grid view-section" id="settings-view" style="display: none; padding: 24px; gap: 24px; grid-template-columns: 1fr 1fr;">
+      <!-- Left Panel: Phone Settings -->
+      <section class="card" style="margin: 0; background: rgba(18, 26, 43, 0.8);">
+        <div class="card-header" style="border-bottom: 1px solid var(--border-color); padding-bottom: 12px; margin-bottom: 20px;">
+          <h2 style="font-size: 18px; color: #fff; margin: 0;"><i class="fa-solid fa-square-phone" style="color: var(--accent-cyan); margin-right: 8px;"></i> Liniya Telefon Raqamlari</h2>
+          <p style="font-size: 11px; color: var(--text-muted); margin: 4px 0 0 0;">Har bir operator uchun ulanadigan o'zbek telefon raqamlarini tahrirlang. O'zgarishlar darhol saqlanadi.</p>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 16px;">
+          <!-- Kamola -->
+          <div style="background: rgba(147, 51, 234, 0.05); border: 1px solid rgba(168, 85, 247, 0.2); border-radius: var(--radius-sm); padding: 12px; display: flex; align-items: center; justify-content: space-between; gap: 12px;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <div class="op-avatar op-head-bg" style="width: 34px; height: 34px; font-size: 13px; background: linear-gradient(135deg, #a855f7, #7c3aed); color: #fff; display: flex; align-items: center; justify-content: center; border-radius: 50%;"><i class="fa-solid fa-crown"></i></div>
+              <div>
+                <strong style="font-size: 13px; color: #fff;">Kamola (Bo'lim Boshlig'i)</strong>
+                <div style="font-size: 11px; color: #c084fc;">Liniya 0</div>
+              </div>
+            </div>
+            <input type="text" class="rule-input op-phone-input" data-op="op_head" style="max-width: 180px; text-align: center; border-color: rgba(168, 85, 247, 0.4);" placeholder="+998 (71) 200-01-00">
+          </div>
+          <!-- Malika -->
+          <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 12px; display: flex; align-items: center; justify-content: space-between; gap: 12px;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <div class="op-avatar op1-bg" style="width: 34px; height: 34px; font-size: 13px; display: flex; align-items: center; justify-content: center; border-radius: 50%;"><i class="fa-solid fa-user-tie"></i></div>
+              <div>
+                <strong style="font-size: 13px; color: #fff;">Malika</strong>
+                <div style="font-size: 11px; color: var(--success-green);">Liniya 1</div>
+              </div>
+            </div>
+            <input type="text" class="rule-input op-phone-input" data-op="op1" style="max-width: 180px; text-align: center;" placeholder="+998 (71) 200-01-01">
+          </div>
+          <!-- Jasur -->
+          <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 12px; display: flex; align-items: center; justify-content: space-between; gap: 12px;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <div class="op-avatar op2-bg" style="width: 34px; height: 34px; font-size: 13px; display: flex; align-items: center; justify-content: center; border-radius: 50%;"><i class="fa-solid fa-user-tie"></i></div>
+              <div>
+                <strong style="font-size: 13px; color: #fff;">Jasur</strong>
+                <div style="font-size: 11px; color: var(--accent-cyan);">Liniya 2</div>
+              </div>
+            </div>
+            <input type="text" class="rule-input op-phone-input" data-op="op2" style="max-width: 180px; text-align: center;" placeholder="+998 (71) 200-01-02">
+          </div>
+          <!-- Nigora -->
+          <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 12px; display: flex; align-items: center; justify-content: space-between; gap: 12px;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <div class="op-avatar op3-bg" style="width: 34px; height: 34px; font-size: 13px; display: flex; align-items: center; justify-content: center; border-radius: 50%;"><i class="fa-solid fa-user-tie"></i></div>
+              <div>
+                <strong style="font-size: 13px; color: #fff;">Nigora</strong>
+                <div style="font-size: 11px; color: var(--purple-accent);">Liniya 3</div>
+              </div>
+            </div>
+            <input type="text" class="rule-input op-phone-input" data-op="op3" style="max-width: 180px; text-align: center;" placeholder="+998 (71) 200-01-03">
+          </div>
+          <!-- Farruh -->
+          <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 12px; display: flex; align-items: center; justify-content: space-between; gap: 12px;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <div class="op-avatar op4-bg" style="width: 34px; height: 34px; font-size: 13px; display: flex; align-items: center; justify-content: center; border-radius: 50%;"><i class="fa-solid fa-user-tie"></i></div>
+              <div>
+                <strong style="font-size: 13px; color: #fff;">Farruh</strong>
+                <div style="font-size: 11px; color: var(--warning-amber);">Liniya 4</div>
+              </div>
+            </div>
+            <input type="text" class="rule-input op-phone-input" data-op="op4" style="max-width: 180px; text-align: center;" placeholder="+998 (71) 200-01-04">
+          </div>
+        </div>
+      </section>
+
+      <!-- Right Panel: Connection Manual -->
+      <section class="card" style="margin: 0; background: rgba(18, 26, 43, 0.8); max-height: 520px; overflow-y: auto; padding-right: 10px;">
+        <div class="card-header" style="border-bottom: 1px solid var(--border-color); padding-bottom: 12px; margin-bottom: 20px;">
+          <h2 style="font-size: 18px; color: #fff; margin: 0;"><i class="fa-solid fa-book-bookmark" style="color: var(--accent-cyan); margin-right: 8px;"></i> Call-Center Ulanish Yo'llanmasi</h2>
+          <p style="font-size: 11px; color: var(--text-muted); margin: 4px 0 0 0;">Haqiqiy o'zbek telefon raqamlarini AI tizimiga integratsiya qilish bo'yicha yo'riqnoma.</p>
+        </div>
+        <div style="font-size: 12px; line-height: 1.6; color: var(--text-muted); display: flex; flex-direction: column; gap: 16px;">
+          <div>
+            <h4 style="color: #fff; margin: 0 0 6px 0; font-size: 13px; display: flex; align-items: center; gap: 8px;"><span style="background: var(--accent-cyan); color: #000; width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 800;">1</span> O'zbekistondan SIP Trunk olish</h4>
+            <p style="margin: 0;">AI Call Center real qo'ng'iroqlarni qabul qilishi uchun sizga virtual raqam (SIP Trunk) kerak bo'ladi. Uni O'zbekistonning aloqa operatorlaridan olish mumkin:</p>
+            <ul style="margin: 4px 0 0 0; padding-left: 20px;">
+              <li><strong>Uztelecom / Beeline Business / Mobiuz / Ucell:</strong> Kompaniya nomiga rasmiy shartnoma orqali +998 (71) yoki +998 (55) bilan boshlanuvchi SIP Trunk ulanish liniyasini olish (IP ATS hisob ma'lumotlari: Host, Login, Parol).</li>
+            </ul>
+          </div>
+          <div>
+            <h4 style="color: #fff; margin: 0 0 6px 0; font-size: 13px; display: flex; align-items: center; gap: 8px;"><span style="background: var(--accent-cyan); color: #000; width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 800;">2</span> SIP Gateway o'rnatish</h4>
+            <p style="margin: 0;">SIP raqamdan kelayotgan audio oqimni (RTP) bizning WebRTC/API tizimiga ulaydigan maxsus shlyuz (Gateway) kerak:</p>
+            <ul style="margin: 4px 0 0 0; padding-left: 20px;">
+              <li><strong>SIP.TG Gateway:</strong> O'zbek SIP raqamini to'g'ridan-to'g'ri Telegram-ga ulaydigan va Web API taqdim qiladigan eng oson platforma.</li>
+              <li><strong>Zadarma / Twilio SIP Trunking:</strong> Kiruvchi qo'ng'iroqlarni Webhook orqali audio oqim ko'rinishida serverimizga yo'naltiradi.</li>
+              <li><strong>Asterisk / FreePBX Server:</strong> Agar o'z serveringiz bo'lsa, Asterisk o'rnatib, SIP liniyani ulaysiz va uni n8n webhook-ga bog'laysiz.</li>
+            </ul>
+          </div>
+          <div>
+            <h4 style="color: #fff; margin: 0 0 6px 0; font-size: 13px; display: flex; align-items: center; gap: 8px;"><span style="background: var(--accent-cyan); color: #000; width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 800;">3</span> N8N Integratsiyasi (Logic flow)</h4>
+            <p style="margin: 0;">Qo'ng'iroq bo'lganda n8n da quyidagi zanjir ulanadi:</p>
+            <div style="background: rgba(0,0,0,0.4); padding: 10px; border-radius: 4px; font-family: monospace; font-size: 11px; margin: 6px 0; border: 1px solid var(--border-color); color: #c084fc;">
+              [SIP Call Incoming] ➔ [n8n Webhook Node] ➔ [Gemini AI Agent API Node] ➔ [TTS Edge/ElevenLabs API] ➔ [SIP Audio Response Node]
+            </div>
+            <p style="margin: 0;">n8n webhook-ga qo'ng'iroq kelganida, mijoz ovozi matnga o'girilib, Gemini-ga yuboriladi. Gemini operator promti bo'yicha javob matnini generatsiya qiladi. Ovozlashtirish dvigateli matnni audio qilib, n8n orqali mijozga qaytaradi.</p>
           </div>
         </div>
       </section>

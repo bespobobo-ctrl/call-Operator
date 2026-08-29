@@ -220,6 +220,77 @@ function init() {
     elements.openaiKeyInput.value = localStorage.getItem('openai_api_key') || '';
   }
 
+  // Load Custom Operator Phones from localStorage
+  const defaultPhones = {
+    op1: "+998 (71) 200-01-01",
+    op2: "+998 (71) 200-01-02",
+    op3: "+998 (71) 200-01-03",
+    op4: "+998 (71) 200-01-04",
+    op_head: "+998 (71) 200-01-00"
+  };
+
+  state.operatorPhones = JSON.parse(localStorage.getItem('operator_phones') || '{}');
+  for (const opId in defaultPhones) {
+    if (!state.operatorPhones[opId]) {
+      state.operatorPhones[opId] = defaultPhones[opId];
+    }
+    if (operators[opId]) {
+      operators[opId].phone = state.operatorPhones[opId];
+    }
+  }
+
+  // Populate phone inputs in Settings page & set values
+  document.querySelectorAll('.op-phone-input').forEach(input => {
+    const opId = input.getAttribute('data-op');
+    input.value = state.operatorPhones[opId] || '';
+
+    input.addEventListener('input', (e) => {
+      const newPhone = e.target.value.trim();
+      state.operatorPhones[opId] = newPhone;
+      localStorage.setItem('operator_phones', JSON.stringify(state.operatorPhones));
+      
+      if (operators[opId]) {
+        operators[opId].phone = newPhone;
+      }
+
+      // 1. Update Dropdown option text
+      const optionEl = document.querySelector(`#operator-select option[value="${opId}"]`);
+      if (optionEl) {
+        const op = operators[opId];
+        const prefixes = { 
+          op1: '🟢 Liniya 1: Malika — Sotuv Liniyasi 1', 
+          op2: '🔵 Liniya 2: Jasur — Sotuv Liniyasi 2', 
+          op3: '🟣 Liniya 3: Nigora — Sotuv Liniyasi 3', 
+          op4: '🟠 Liniya 4: Farruh — Sotuv Liniyasi 4', 
+          op_head: '👑 Liniya 0: Kamola — Bo\'lim Boshlig\'i' 
+        };
+        optionEl.textContent = `${prefixes[opId]} (${newPhone})`;
+      }
+
+      // 2. Update Active phone display inside terminal if active
+      if (state.currentOperatorId === opId && elements.activePhoneDisplay) {
+        elements.activePhoneDisplay.textContent = newPhone;
+      }
+
+      // 3. Update Phone pill inside Jadval table row
+      const ruleBtn = document.querySelector(`.rule-manage-btn[data-op="${opId}"]`);
+      if (ruleBtn) {
+        const row = ruleBtn.closest('tr');
+        if (row) {
+          const pill = row.querySelector('.code-pill');
+          if (pill) pill.textContent = newPhone;
+        }
+      }
+
+      // 4. Update 3D Hologram stats overlay
+      const activeOp = operators[state.currentOperatorId] || operators.op1;
+      const roomPillEl = document.querySelector('.room-pill.glow-green');
+      if (roomPillEl && state.currentOperatorId === opId) {
+        roomPillEl.textContent = `🟢 Liniya ${opId === 'op_head' ? '0' : opId.replace('op','')}: ${activeOp.name} — ${newPhone}`;
+      }
+    });
+  });
+
   // Auto-save keys to localStorage on input change
   if (elements.elevenKeyInput) {
     elements.elevenKeyInput.addEventListener('input', (e) => {
@@ -564,7 +635,7 @@ function init() {
     });
   }
 
-  // Main Nav Navigation (Terminal vs Operators Hub)
+  // Main Nav Navigation (Terminal vs Operators Hub vs Settings)
   const navBtns = document.querySelectorAll('.main-nav-btn');
   navBtns.forEach(btn => {
     btn.addEventListener('click', () => {
@@ -573,7 +644,9 @@ function init() {
       const targetId = btn.getAttribute('data-target');
       document.querySelectorAll('.view-section').forEach(sec => sec.style.display = 'none');
       const targetEl = document.getElementById(targetId);
-      if (targetEl) targetEl.style.display = targetId === 'terminal-view' ? 'grid' : 'block';
+      if (targetEl) {
+        targetEl.style.display = (targetId === 'terminal-view' || targetId === 'settings-view') ? 'grid' : 'block';
+      }
     });
   });
 
