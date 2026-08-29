@@ -858,6 +858,39 @@ function setupPwaAndDownloadModal() {
     });
   }
 
+  // Tablet direct blob download helper (Works on 100% of mobile Chrome/Safari/Edge browsers)
+  const triggerTabletDownload = async (e, fileUrl, filename) => {
+    if (e && typeof e.preventDefault === 'function') e.preventDefault();
+    showNotification(`⏳ ${filename} planshetga yuklanmoqda...`);
+    try {
+      const response = await fetch(fileUrl);
+      if (!response.ok) throw new Error('Fetch status ' + response.status);
+      const blob = await response.blob();
+      const blobUrl = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = blobUrl;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      setTimeout(() => URL.revokeObjectURL(blobUrl), 15000);
+      showNotification(`✅ ${filename} planshetingizga muvaffaqiyatli yuklab olindi!`);
+    } catch (err) {
+      console.warn('Direct blob download fallback:', err);
+      window.location.href = fileUrl;
+    }
+  };
+
+  const htmlBtn = document.getElementById('download-html-btn');
+  if (htmlBtn) {
+    htmlBtn.addEventListener('click', (e) => triggerTabletDownload(e, '/AI_Call_Center_Planshet.html', 'AI_Call_Center_Planshet.html'));
+  }
+
+  const zipBtn = document.getElementById('download-zip-btn');
+  if (zipBtn) {
+    zipBtn.addEventListener('click', (e) => triggerTabletDownload(e, '/ai-call-center-offline.zip', 'ai-call-center-offline.zip'));
+  }
+
   // Trigger PWA Installation prompt inside modal
   if (elements.pwaInstallTriggerBtn) {
     elements.pwaInstallTriggerBtn.addEventListener('click', async () => {
