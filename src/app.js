@@ -177,6 +177,73 @@ function init() {
   // Load default Operator (Malika op1)
   switchOperator('op1');
 
+  // Main Nav Navigation (Terminal vs Operators Hub)
+  const navBtns = document.querySelectorAll('.main-nav-btn');
+  navBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      navBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const targetId = btn.getAttribute('data-target');
+      document.querySelectorAll('.view-section').forEach(sec => sec.style.display = 'none');
+      const targetEl = document.getElementById(targetId);
+      if (targetEl) targetEl.style.display = targetId === 'terminal-view' ? 'grid' : 'block';
+    });
+  });
+
+  // Operators Center Mode Switcher (Jadval / 2D / 3D)
+  const modeBtns = document.querySelectorAll('.mode-btn');
+  modeBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      modeBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const modeId = btn.getAttribute('data-mode');
+      document.querySelectorAll('.op-mode-content').forEach(mc => mc.style.display = 'none');
+      const modeEl = document.getElementById(modeId);
+      if (modeEl) modeEl.style.display = 'block';
+    });
+  });
+
+  // 3D Personal Room Switcher (Malika / Jasur / Nigora)
+  const roomTabs = document.querySelectorAll('.room-tab');
+  roomTabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      roomTabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      const room = tab.getAttribute('data-room');
+      const screenEl = document.getElementById('room-screen-content');
+      const titleEl = document.getElementById('room-title');
+      const avatarEl = document.getElementById('room-avatar-3d');
+
+      if (room === 'room-malika') {
+        if (titleEl) titleEl.textContent = "Malika — Sotuv & Buyurtmalar Bo'limi";
+        if (avatarEl) avatarEl.innerHTML = '<i class="fa-solid fa-user-tie"></i>';
+        if (screenEl) screenEl.innerHTML = '<span class="code-line">SYS_CALL_CENTER_v2.0</span><span class="code-line glow">LINIYA: +998 (71) 200-01-01</span><span class="code-line">BO\'LIM: SOTUV 24/7</span>';
+      } else if (room === 'room-jasur') {
+        if (titleEl) titleEl.textContent = "Jasur — Texnik Qo'llab-quvvatlash Laboratoriyasi";
+        if (avatarEl) avatarEl.innerHTML = '<i class="fa-solid fa-headset"></i>';
+        if (screenEl) screenEl.innerHTML = '<span class="code-line">SYS_CALL_CENTER_v2.0</span><span class="code-line glow">LINIYA: +998 (71) 200-01-02</span><span class="code-line">BO\'LIM: TEXNIK LAB</span>';
+      } else if (room === 'room-nigora') {
+        if (titleEl) titleEl.textContent = "Nigora — Mijozlar Servisi Lounge";
+        if (avatarEl) avatarEl.innerHTML = '<i class="fa-solid fa-user-gear"></i>';
+        if (screenEl) screenEl.innerHTML = '<span class="code-line">SYS_CALL_CENTER_v2.0</span><span class="code-line glow">LINIYA: +998 (71) 200-01-03</span><span class="code-line">BO\'LIM: SERVIS 24/7</span>';
+      }
+    });
+  });
+
+  // Table "Ulanish" Buttons
+  document.querySelectorAll('.select-op-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const opId = btn.getAttribute('data-op');
+      if (elements.operatorSelect) {
+        elements.operatorSelect.value = opId;
+        switchOperator(opId);
+        // Switch back to terminal
+        const termNav = document.getElementById('nav-terminal-btn');
+        if (termNav) termNav.click();
+      }
+    });
+  });
+
   // Tab switching
   elements.tabBtns.forEach(btn => {
     btn.addEventListener('click', () => {

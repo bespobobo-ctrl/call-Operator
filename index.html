@@ -40,10 +40,18 @@
           <i class="fa-solid fa-cloud-arrow-up"></i> Vercel Active
         </a>
       </div>
-    </header>
+    <!-- Main Navigation Bar -->
+    <nav class="main-nav-bar">
+      <button class="main-nav-btn active" id="nav-terminal-btn" data-target="terminal-view">
+        <i class="fa-solid fa-headset"></i> AI Telefon Terminali & Muloqot
+      </button>
+      <button class="main-nav-btn" id="nav-operators-btn" data-target="operators-view">
+        <i class="fa-solid fa-users-gear"></i> Operatorlar Bo'limi Markazi (3D / 2D & Jadval)
+      </button>
+    </nav>
 
-    <!-- Main Dashboard Grid -->
-    <main class="dashboard-grid">
+    <!-- Section 1: AI Telefon Terminali View -->
+    <main class="dashboard-grid view-section active" id="terminal-view">
       <!-- Left Panel: Phone Terminal & Audio Wave -->
       <section class="card terminal-card">
         <div class="card-header">
@@ -309,6 +317,247 @@ YETKAZIB BERISH:
           <div class="handoff-alert" id="handoff-alert" style="display: none;">
             <i class="fa-solid fa-user-headset"></i>
             <span><strong>Ogohlantirish:</strong> Mijoz inson operatorga uzatilishini so'ramoqda!</span>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Section 2: Operatorlar Bo'limi Markazi View -->
+    <main class="operators-center-grid view-section" id="operators-view" style="display: none;">
+      <section class="card operators-main-card">
+        <div class="card-header">
+          <h2><i class="fa-solid fa-users-gear"></i> Admiral Group — Operatorlar Bo'limi Markazi</h2>
+          <!-- 3 Mode Switcher Buttons -->
+          <div class="mode-switcher-bar">
+            <button class="mode-btn active" data-mode="table-mode">
+              <i class="fa-solid fa-table-list"></i> Hisobotlar Jadvali
+            </button>
+            <button class="mode-btn" data-mode="mode-2d">
+              <i class="fa-solid fa-display"></i> 2D Real-Vaqt Vizual
+            </button>
+            <button class="mode-btn" data-mode="mode-3d">
+              <i class="fa-solid fa-cube"></i> 3D Shaxsiy Xona Vizual
+            </button>
+          </div>
+        </div>
+
+        <!-- Mode 1: Hisobotlar Jadvali (Table Report View) -->
+        <div class="op-mode-content active" id="table-mode">
+          <div class="table-responsive">
+            <table class="operators-table">
+              <thead>
+                <tr>
+                  <th>Operator Ismi</th>
+                  <th>Telefon Liniyasi</th>
+                  <th>Bo'limi & Mutaxassisligi</th>
+                  <th>Status</th>
+                  <th>Qo'ng'iroqlar</th>
+                  <th>O'rtacha Muloqot</th>
+                  <th>Harajat Rate</th>
+                  <th>Aniqlik Darajasi</th>
+                  <th>Harakat</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    <div class="op-cell-user">
+                      <div class="op-avatar op1-bg"><i class="fa-solid fa-user-tie"></i></div>
+                      <div>
+                        <strong>Malika</strong>
+                        <span class="sub-text">Bosh Operator</span>
+                      </div>
+                    </div>
+                  </td>
+                  <td><span class="code-pill">+998 (71) 200-01-01</span></td>
+                  <td>Sotuv va Buyurtmalar Bo'limi</td>
+                  <td><span class="status-badge online"><span class="pulse-dot"></span> Online (Kutmoqda)</span></td>
+                  <td id="op1-calls-count">142</td>
+                  <td>01:45 min</td>
+                  <td>$0.00018 / min</td>
+                  <td>99.6%</td>
+                  <td><button class="btn-xs select-op-btn" data-op="op1">Ulanish</button></td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="op-cell-user">
+                      <div class="op-avatar op2-bg"><i class="fa-solid fa-headset"></i></div>
+                      <div>
+                        <strong>Jasur</strong>
+                        <span class="sub-text">Texnik Mutaxassis</span>
+                      </div>
+                    </div>
+                  </td>
+                  <td><span class="code-pill">+998 (71) 200-01-02</span></td>
+                  <td>Texnik Qo'llab-quvvatlash</td>
+                  <td><span class="status-badge online"><span class="pulse-dot"></span> Online (Kutmoqda)</span></td>
+                  <td id="op2-calls-count">98</td>
+                  <td>02:10 min</td>
+                  <td>$0.00018 / min</td>
+                  <td>99.2%</td>
+                  <td><button class="btn-xs select-op-btn" data-op="op2">Ulanish</button></td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="op-cell-user">
+                      <div class="op-avatar op3-bg"><i class="fa-solid fa-user-gear"></i></div>
+                      <div>
+                        <strong>Nigora</strong>
+                        <span class="sub-text">Servis Menejeri</span>
+                      </div>
+                    </div>
+                  </td>
+                  <td><span class="code-pill">+998 (71) 200-01-03</span></td>
+                  <td>Mijozlar Servisi & Shikoyatlar</td>
+                  <td><span class="status-badge online"><span class="pulse-dot"></span> Online (Kutmoqda)</span></td>
+                  <td id="op3-calls-count">76</td>
+                  <td>01:20 min</td>
+                  <td>$0.00018 / min</td>
+                  <td>99.9%</td>
+                  <td><button class="btn-xs select-op-btn" data-op="op3">Ulanish</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Mode 2: 2D Real-Vaqt Vizual (2D Interactive Floor Layout) -->
+        <div class="op-mode-content" id="mode-2d" style="display: none;">
+          <div class="floor-2d-container">
+            <div class="floor-title">
+              <span><i class="fa-solid fa-border-all"></i> Call Center Real-Vaqt Zal Xaritasi (2D Animated Floor)</span>
+              <span class="pulse-badge"><span class="pulse-dot"></span> Live Audio Signals</span>
+            </div>
+            
+            <div class="desk-grid-2d">
+              <!-- Desk 1: Malika -->
+              <div class="desk-card op1-desk active-call">
+                <div class="desk-header">
+                  <span class="desk-number">STANSIYA #01</span>
+                  <span class="status-pill live">🔴 SUHBATDA</span>
+                </div>
+                <div class="desk-avatar-box">
+                  <div class="avatar-2d op1-avatar">
+                    <i class="fa-solid fa-user-tie"></i>
+                  </div>
+                  <div class="equalizer-bar">
+                    <span></span><span></span><span></span><span></span><span></span>
+                  </div>
+                </div>
+                <div class="desk-details">
+                  <h3>Malika</h3>
+                  <p class="role-lbl">Sotuv va Buyurtma Bo'limi</p>
+                  <p class="phone-lbl"><i class="fa-solid fa-phone"></i> +998 71 200-01-01</p>
+                </div>
+                <div class="desk-metrics">
+                  <div><span>Buyurtmalar:</span> <strong>28 ta</strong></div>
+                  <div><span>Suhbat vaqti:</span> <strong>01:12</strong></div>
+                </div>
+              </div>
+
+              <!-- Desk 2: Jasur -->
+              <div class="desk-card op2-desk">
+                <div class="desk-header">
+                  <span class="desk-number">STANSIYA #02</span>
+                  <span class="status-pill idle">🟢 KUTMOQDA</span>
+                </div>
+                <div class="desk-avatar-box">
+                  <div class="avatar-2d op2-avatar">
+                    <i class="fa-solid fa-headset"></i>
+                  </div>
+                  <div class="equalizer-bar idle-eq">
+                    <span></span><span></span><span></span><span></span><span></span>
+                  </div>
+                </div>
+                <div class="desk-details">
+                  <h3>Jasur</h3>
+                  <p class="role-lbl">Texnik Konsultatsiya</p>
+                  <p class="phone-lbl"><i class="fa-solid fa-phone"></i> +998 71 200-01-02</p>
+                </div>
+                <div class="desk-metrics">
+                  <div><span>Yechimlar:</span> <strong>19 ta</strong></div>
+                  <div><span>Suhbat vaqti:</span> <strong>00:00</strong></div>
+                </div>
+              </div>
+
+              <!-- Desk 3: Nigora -->
+              <div class="desk-card op3-desk">
+                <div class="desk-header">
+                  <span class="desk-number">STANSIYA #03</span>
+                  <span class="status-pill idle">🟢 KUTMOQDA</span>
+                </div>
+                <div class="desk-avatar-box">
+                  <div class="avatar-2d op3-avatar">
+                    <i class="fa-solid fa-user-gear"></i>
+                  </div>
+                  <div class="equalizer-bar idle-eq">
+                    <span></span><span></span><span></span><span></span><span></span>
+                  </div>
+                </div>
+                <div class="desk-details">
+                  <h3>Nigora</h3>
+                  <p class="role-lbl">Mijozlar Servisi</p>
+                  <p class="phone-lbl"><i class="fa-solid fa-phone"></i> +998 71 200-01-03</p>
+                </div>
+                <div class="desk-metrics">
+                  <div><span>Murojaatlar:</span> <strong>14 ta</strong></div>
+                  <div><span>Suhbat vaqti:</span> <strong>00:00</strong></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mode 3: 3D Shaxsiy Xona Vizual (3D Operator Personal Room View) -->
+        <div class="op-mode-content" id="mode-3d" style="display: none;">
+          <div class="room-3d-wrapper">
+            <!-- Operator Room Selector Tabs -->
+            <div class="room-selector-tabs">
+              <button class="room-tab active" data-room="room-malika">
+                🏢 Malika — Sotuv Xonasi (3D Office)
+              </button>
+              <button class="room-tab" data-room="room-jasur">
+                🔬 Jasur — Texnik Laboratoriya (3D Lab)
+              </button>
+              <button class="room-tab" data-room="room-nigora">
+                🛋️ Nigora — Servis Lounge (3D Lounge)
+              </button>
+            </div>
+
+            <!-- 3D Room Stage Container -->
+            <div class="room-stage-3d">
+              <div class="room-3d-box" id="room-3d-box">
+                <!-- 3D Room Walls & Floor -->
+                <div class="room-wall back-wall"></div>
+                <div class="room-wall left-wall"></div>
+                <div class="room-floor"></div>
+
+                <!-- 3D Workstation Desk & Objects -->
+                <div class="desk-3d-object">
+                  <div class="desk-top"></div>
+                  <div class="monitor-3d">
+                    <div class="screen-content" id="room-screen-content">
+                      <span class="code-line">SYS_CALL_CENTER_v2.0</span>
+                      <span class="code-line glow">LINIYA: +998 (71) 200-01-01</span>
+                      <span class="code-line">STATUS: ONLINE 24/7</span>
+                    </div>
+                  </div>
+                  <div class="hologram-avatar-3d" id="room-avatar-3d">
+                    <i class="fa-solid fa-user-tie"></i>
+                  </div>
+                </div>
+
+                <!-- Floating Hologram Stats Display in 3D Room -->
+                <div class="room-stats-overlay" id="room-stats-overlay">
+                  <h3 id="room-title">Malika — Sotuv & Buyurtmalar Bo'limi</h3>
+                  <div class="room-stat-pills">
+                    <span class="room-pill">📍 Toshkent HQ Office</span>
+                    <span class="room-pill glow-green">🟢 Liniya 1 (+998 71 200-01-01)</span>
+                    <span class="room-pill">📦 Bugungi Buyurtmalar: 34 ta</span>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
