@@ -163,7 +163,20 @@ function init() {
   elements.startCallBtn.addEventListener('click', startCall);
   elements.endCallBtn.addEventListener('click', endCall);
   elements.muteBtn.addEventListener('click', toggleMute);
-  elements.testVoiceBtn.addEventListener('click', () => speakResponse("Assalomu alaykum! AI Call Center tayyor. Qanday yordam bera olaman?"));
+  elements.testVoiceBtn.addEventListener('click', () => {
+    const opId = state.currentOperatorId || 'op1';
+    const activeOp = operators[opId] || operators.op1;
+
+    const testPhrases = {
+      op1: "Assalomu alaykum! Men Malika. Sotuv va buyurtmalar bo'limi bosh operatoriman. Admiral Group mahsulotlari narxlari va zakaz berishda sizga qanday yordam bera olaman?",
+      op2: "Assalomu alaykum! Men Jasur. Texnik qo'llab-quvvatlash va konsultatsiya bo'limi operatoriman. Admiral Group xizmatlarining texnik masalalarida qanday yordam kerak?",
+      op3: "Assalomu alaykum! Men Nigora. Mijozlar servisi va murojaatlar bo'limi menejeriman. Taklifingiz yoki savolingiz bo'lsa, mamnuniyat bilan yordam beraman."
+    };
+
+    const textToSpeak = testPhrases[opId] || testPhrases.op1;
+    showNotification(`🎙️ ${activeOp.name} (${activeOp.role}) Neiron AI Ovozi Sinanmoqda...`);
+    speakResponse(textToSpeak, opId);
+  });
   
   elements.sendTextBtn.addEventListener('click', handleManualSend);
   elements.manualTextInput.addEventListener('keypress', (e) => {
