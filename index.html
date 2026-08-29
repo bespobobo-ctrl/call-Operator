@@ -228,6 +228,29 @@
           </div>
 
           <div class="form-group">
+            <label for="voice-engine-select"><i class="fa-solid fa-microphone-lines"></i> AI Operator Ovoz Tizimi (Uzbek Voice Engine):</label>
+            <select id="voice-engine-select" class="operator-select-dropdown" style="width: 100%;">
+              <option value="google-uz" selected>✨ Google Native Uzbek HD Voice (Tavsiya etiladi — Tabiiy O'zbekcha)</option>
+              <option value="browser-tts">🔊 Web Speech Browser TTS (Standart Brauzer)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label><i class="fa-solid fa-volume-high"></i> Operatorlar Ovozini Sinash:</label>
+            <div class="voice-test-grid" style="display: flex; gap: 8px; flex-wrap: wrap;">
+              <button type="button" class="sim-chip voice-test-btn" data-op="op1" style="flex: 1; justify-content: center;">
+                🟢 Malika Ovozi
+              </button>
+              <button type="button" class="sim-chip voice-test-btn" data-op="op2" style="flex: 1; justify-content: center;">
+                🔵 Jasur Ovozi
+              </button>
+              <button type="button" class="sim-chip voice-test-btn" data-op="op3" style="flex: 1; justify-content: center;">
+                🟣 Nigora Ovozi
+              </button>
+            </div>
+          </div>
+
+          <div class="form-group">
             <label for="tg-bot-token-input"><i class="fa-brands fa-telegram"></i> Telegram Bot Token:</label>
             <input type="password" id="tg-bot-token-input" placeholder="7849201842:AAH939..." autocomplete="off">
           </div>

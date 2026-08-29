@@ -13,6 +13,10 @@ const state = {
   animFrameId: null,
   recognition: null,
   speechSynth: window.speechSynthesis,
+  currentAudio: null,
+  voiceQueue: [],
+  isPlayingQueue: false,
+  voiceEngine: 'google-uz',
   sentiment: 'neutral',
   companyName: 'Admiral Group Official',
   currentOperatorId: 'op1',
@@ -144,7 +148,8 @@ const elements = {
   tgBotTokenInput: document.getElementById('tg-bot-token-input'),
   tgChatIdInput: document.getElementById('tg-chat-id-input'),
   agent3dCore: document.getElementById('agent-3d-core'),
-  agentNameDisplay: document.getElementById('agent-name-display')
+  agentNameDisplay: document.getElementById('agent-name-display'),
+  voiceEngineSelect: document.getElementById('voice-engine-select')
 };
 
 // Initialize Application
@@ -173,6 +178,26 @@ function init() {
   if (elements.operatorSelect) {
     elements.operatorSelect.addEventListener('change', handleOperatorChange);
   }
+  if (elements.voiceEngineSelect) {
+    elements.voiceEngineSelect.addEventListener('change', (e) => {
+      state.voiceEngine = e.target.value;
+      showNotification(`Ovoz tizimi almashdi: ${e.target.options[e.target.selectedIndex].text}`);
+    });
+  }
+
+  // Voice Test Buttons for 3 Operators
+  document.querySelectorAll('.voice-test-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const opId = btn.getAttribute('data-op');
+      const testTexts = {
+        op1: "Assalomu alaykum! Men Malika. Sotuv va buyurtmalar bo'limi operatoriman. Admiral Group mahsulotlari bo'yicha qanday yordam bera olaman?",
+        op2: "Assalomu alaykum! Men Jasur. Texnik qo'llab-quvvatlash bo'limi operatoriman. Mahsulotlarimiz texnik xususiyatlari bo'yicha savolingiz bormi?",
+        op3: "Assalomu alaykum! Men Nigora. Mijozlar servis bo'limidanman. Taklif yoki murojaatingiz bo'lsa, mamnuniyat bilan tinglayman."
+      };
+      speakResponse(testTexts[opId] || testTexts.op1, opId);
+    });
+  });
 
   // Load default Operator (Malika op1)
   switchOperator('op1');
@@ -455,9 +480,7 @@ function endCall() {
     } catch (e) {}
   }
 
-  if (state.speechSynth) {
-    state.speechSynth.cancel();
-  }
+  stopAllSpeech();
 
   addSystemMessage("Qo'ng'iroq yakunlandi. Muloqot vaqti: " + elements.callTimer.textContent);
 }
@@ -660,21 +683,179 @@ async function checkOrderKeywords(clientText, aiText) {
     }
   }
 }
-function speakResponse(text) {
+// Stop any active speech (Google Audio & Browser Speech)
+function stopAllSpeech() {
+  if (state.currentAudio) {
+    try {
+      state.currentAudio.pause();
+      state.currentAudio.currentTime = 0;
+    } catch (e) {}
+    state.currentAudio = null;
+  }
+  state.voiceQueue = [];
+  state.isPlayingQueue = false;
+
+  if (state.speechSynth) {
+    try { state.speechSynth.cancel(); } catch (e) {}
+  }
+}
+
+// High-Definition Uzbek Speech Engine with Per-Operator Voice Tuning
+function speakResponse(text, customOpId = null) {
+  stopAllSpeech();
+
+  if (!text) return;
+
+  const activeOpId = customOpId || state.currentOperatorId || 'op1';
+  
+  // Clean markdown symbols & links for natural speech
+  const cleanText = text
+    .replace(/\*\*([^*]+)\*\*/g, '$1')
+    .replace(/\*([^*]+)\*/g, '$1')
+    .replace(/#+/g, '')
+    .replace(/https?:\/\/\S+/g, '')
+    .replace(/[\n\r]+/g, '. ')
+    .replace(/\s+/g, ' ')
+    .trim();
+
+  if (!cleanText) return;
+
+  // Option 1: Native Uzbek Google HD Audio Engine (Default)
+  if (state.voiceEngine === 'google-uz') {
+    speakGoogleUzbekVoice(cleanText, activeOpId);
+  } else {
+    // Option 2: Web Speech Synthesis Fallback
+    speakBrowserSpeech(cleanText, activeOpId);
+  }
+}
+
+// Native Uzbek HD Audio Stream via Sequential Queue
+function speakGoogleUzbekVoice(text, opId) {
+  // Split long response into natural sentences (max 140 chars per chunk)
+  const chunks = splitTextIntoSentences(text, 140);
+  state.voiceQueue = chunks;
+  state.isPlayingQueue = true;
+
+  playNextAudioChunk(opId);
+}
+
+function playNextAudioChunk(opId) {
+  if (!state.isPlayingQueue || state.voiceQueue.length === 0) {
+    state.isPlayingQueue = false;
+    if (elements.avatarRing && !state.isCallActive) elements.avatarRing.className = 'avatar-ring';
+    if (elements.agent3dCore) elements.agent3dCore.classList.remove('speaking');
+    return;
+  }
+
+  const chunk = state.voiceQueue.shift();
+  const encodedText = encodeURIComponent(chunk);
+  const audioUrl = `https://translate.google.com/translate_tts?ie=UTF-8&q=${encodedText}&tl=uz&client=tw-ob`;
+
+  const audio = new Audio(audioUrl);
+  state.currentAudio = audio;
+
+  // Operator-specific acoustic tuning
+  if (opId === 'op2') {
+    // Jasur (Texnik) — Deeper, calm tone
+    audio.playbackRate = 0.95;
+  } else if (opId === 'op3') {
+    // Nigora (Servis) — Soft, gentle pace
+    audio.playbackRate = 0.92;
+  } else {
+    // Malika (Sotuv) — Dynamic, clear female voice
+    audio.playbackRate = 1.02;
+  }
+
+  if (elements.avatarRing) elements.avatarRing.className = 'avatar-ring active speaking';
+  if (elements.agent3dCore) elements.agent3dCore.classList.add('speaking');
+
+  audio.onended = () => {
+    state.currentAudio = null;
+    playNextAudioChunk(opId);
+  };
+
+  audio.onerror = () => {
+    console.warn("Google TTS audio error, falling back to browser speech synthesis...");
+    state.currentAudio = null;
+    speakBrowserSpeech(chunk, opId);
+  };
+
+  audio.play().catch(err => {
+    console.warn("Audio play blocked by browser, trying Web Speech fallback:", err);
+    speakBrowserSpeech(chunk, opId);
+  });
+}
+
+// Split text by punctuation (. ! ? , ;) into chunks <= maxLen
+function splitTextIntoSentences(text, maxLen = 140) {
+  const parts = text.split(/(?<=[.!?])\s+/);
+  const result = [];
+  let current = '';
+
+  for (const part of parts) {
+    if ((current + ' ' + part).length <= maxLen) {
+      current = current ? current + ' ' + part : part;
+    } else {
+      if (current) result.push(current);
+      if (part.length > maxLen) {
+        // Sub-split by commas if still too long
+        const subParts = part.split(/(?<=[,;])\s+/);
+        for (const sub of subParts) {
+          if (sub.length <= maxLen) {
+            result.push(sub);
+          } else {
+            result.push(sub.substring(0, maxLen));
+          }
+        }
+        current = '';
+      } else {
+        current = part;
+      }
+    }
+  }
+  if (current) result.push(current);
+  return result;
+}
+
+// Browser Web Speech Synthesis Fallback
+function speakBrowserSpeech(text, opId) {
   if (!state.speechSynth) return;
 
-  state.speechSynth.cancel(); // Stop current speech
   const utterance = new SpeechSynthesisUtterance(text);
-  
-  // Try finding Uzbek or Russian/Turkish voice for closest natural accent
   const voices = state.speechSynth.getVoices();
-  const uzVoice = voices.find(v => v.lang.includes('uz') || v.lang.includes('tr') || v.lang.includes('ru'));
+
+  // Find best phonetic voice match (uz, tr, ru)
+  const uzVoice = voices.find(v => v.lang.includes('uz') || v.lang.includes('UZ')) ||
+                 voices.find(v => v.lang.includes('tr') || v.lang.includes('TR')) ||
+                 voices.find(v => v.lang.includes('ru') || v.lang.includes('RU'));
+
   if (uzVoice) {
     utterance.voice = uzVoice;
   }
-  
-  utterance.rate = 1.0;
-  utterance.pitch = 1.0;
+
+  // Operator-specific pitch & rate tuning
+  if (opId === 'op2') {
+    // Jasur — Male tone
+    utterance.pitch = 0.85;
+    utterance.rate = 0.95;
+  } else if (opId === 'op3') {
+    // Nigora — Warm female tone
+    utterance.pitch = 1.20;
+    utterance.rate = 0.92;
+  } else {
+    // Malika — Energetic female tone
+    utterance.pitch = 1.05;
+    utterance.rate = 1.00;
+  }
+
+  if (elements.avatarRing) elements.avatarRing.className = 'avatar-ring active speaking';
+  if (elements.agent3dCore) elements.agent3dCore.classList.add('speaking');
+
+  utterance.onend = () => {
+    if (elements.avatarRing && !state.isCallActive) elements.avatarRing.className = 'avatar-ring';
+    if (elements.agent3dCore) elements.agent3dCore.classList.remove('speaking');
+  };
+
   state.speechSynth.speak(utterance);
 }
 
