@@ -759,6 +759,88 @@ body {
   margin-top: 4px;
 }
 
+/* Cost & Token Tracker Card */
+.cost-tracker-card {
+  background: linear-gradient(135deg, rgba(0, 242, 254, 0.08) 0%, rgba(157, 78, 221, 0.08) 100%);
+  border: 1px solid var(--border-highlight);
+  border-radius: var(--radius-md);
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 4px 20px rgba(0, 242, 254, 0.1);
+}
+
+.cost-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--accent-cyan);
+}
+
+.cost-main-display {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+}
+
+.cost-main-display .currency {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--success-green);
+}
+
+.cost-value {
+  font-family: var(--font-heading);
+  font-size: 28px;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: 1px;
+}
+
+.cost-unit {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.cost-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(0, 230, 118, 0.15);
+  border: 1px solid rgba(0, 230, 118, 0.3);
+  color: var(--success-green);
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.token-details {
+  width: 100%;
+  border-top: 1px dashed var(--border-color);
+  padding-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.token-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.token-row strong {
+  color: var(--accent-cyan);
+  font-family: monospace;
+}
+
 .handoff-alert {
   display: flex;
   align-items: center;

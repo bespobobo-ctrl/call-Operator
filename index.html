@@ -170,8 +170,38 @@ Kompaniya ma'lumotlari:
           </button>
         </div>
 
-        <!-- Tab 2: Analytics & Stats -->
+        <!-- Tab 2: Analytics & Stats & Cost Tracker -->
         <div class="tab-content" id="stats-tab">
+          <div class="cost-tracker-card">
+            <div class="cost-header">
+              <i class="fa-solid fa-coins"></i>
+              <span>API Harajatlari Tracker (Gemini 2.0)</span>
+            </div>
+            <div class="cost-main-display">
+              <span class="currency">$</span>
+              <span id="stat-total-cost" class="cost-value">0.00000</span>
+              <span class="cost-unit">USD</span>
+            </div>
+            <div class="cost-badge" id="plan-badge">
+              <i class="fa-solid fa-gift"></i> Google AI Studio Free Tier ($0.00)
+            </div>
+            
+            <div class="token-details">
+              <div class="token-row">
+                <span>Kiruvchi Tokenlar (Input):</span>
+                <strong id="stat-input-tokens">0</strong>
+              </div>
+              <div class="token-row">
+                <span>Chiquvchi Tokenlar (Output):</span>
+                <strong id="stat-output-tokens">0</strong>
+              </div>
+              <div class="token-row">
+                <span>Jami Tokenlar:</span>
+                <strong id="stat-total-tokens">0</strong>
+              </div>
+            </div>
+          </div>
+
           <div class="stats-grid">
             <div class="stat-box">
               <i class="fa-solid fa-phone-slash stat-icon"></i>

@@ -16,7 +16,11 @@ const state = {
   sentiment: 'neutral',
   companyName: 'TechCorp Uzbekistan',
   systemPrompt: '',
-  chatHistory: []
+  chatHistory: [],
+  inputTokens: 0,
+  outputTokens: 0,
+  totalTokens: 0,
+  totalCostUSD: 0
 };
 
 // DOM Elements
@@ -49,6 +53,11 @@ const elements = {
   statAvgDuration: document.getElementById('stat-avg-duration'),
   statLatency: document.getElementById('stat-latency'),
   handoffAlert: document.getElementById('handoff-alert'),
+  
+  statTotalCost: document.getElementById('stat-total-cost'),
+  statInputTokens: document.getElementById('stat-input-tokens'),
+  statOutputTokens: document.getElementById('stat-output-tokens'),
+  statTotalTokens: document.getElementById('stat-total-tokens'),
   
   canvas: document.getElementById('audio-wave-canvas'),
   tabBtns: document.querySelectorAll('.tab-btn'),
@@ -334,13 +343,45 @@ async function queryGeminiAPI(userQuery) {
     }
 
     const data = await response.json();
+    
+    // Track Usage Metadata (Token Count & Cost Calculation)
+    if (data.usageMetadata) {
+      const pTokens = data.usageMetadata.promptTokenCount || 0;
+      const cTokens = data.usageMetadata.candidatesTokenCount || 0;
+      trackTokenUsage(pTokens, cTokens);
+    } else {
+      // Estimate if metadata not present
+      trackTokenUsage(Math.round(userQuery.length / 4), 60);
+    }
+
     const answer = data.candidates?.[0]?.content?.parts?.[0]?.text || "Tushundim, yana qanday savolingiz bor?";
     return answer;
 
   } else {
     // Intelligent Offline / Demo Rules Engine for Uzbek Call Center
-    return generateDemoUzbekResponse(userQuery);
+    const answer = generateDemoUzbekResponse(userQuery);
+    trackTokenUsage(Math.round(userQuery.length / 4), Math.round(answer.length / 4));
+    return answer;
   }
+}
+
+// Track Token Usage and Realtime Cost ($ USD)
+function trackTokenUsage(inputCount, outputCount) {
+  state.inputTokens += inputCount;
+  state.outputTokens += outputCount;
+  state.totalTokens = state.inputTokens + state.outputTokens;
+
+  // Gemini 2.0 Flash Pricing:
+  // Input: $0.075 per 1,000,000 tokens ($0.000000075 per token)
+  // Output: $0.30 per 1,000,000 tokens ($0.00000030 per token)
+  const inputCost = (inputCount / 1000000) * 0.075;
+  const outputCost = (outputCount / 1000000) * 0.30;
+  state.totalCostUSD += (inputCost + outputCost);
+
+  if (elements.statTotalCost) elements.statTotalCost.textContent = state.totalCostUSD.toFixed(5);
+  if (elements.statInputTokens) elements.statInputTokens.textContent = state.inputTokens.toLocaleString();
+  if (elements.statOutputTokens) elements.statOutputTokens.textContent = state.outputTokens.toLocaleString();
+  if (elements.statTotalTokens) elements.statTotalTokens.textContent = state.totalTokens.toLocaleString();
 }
 
 // Intelligent Offline Fallback for Uzbek Call Center testing without API Key
