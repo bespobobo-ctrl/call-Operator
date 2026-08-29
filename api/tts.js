@@ -168,8 +168,16 @@ export default async function handler(req, res) {
       voiceName = 'uz-UZ-SardorNeural'; // Male voice (Farruh style)
       rate = 1.12;
       pitch = '+2Hz';
+    } else if (opId === 'op3') {
+      voiceName = 'uz-UZ-MadinaNeural'; // Female voice (Nigora distinct style - Soft, Calm, Sweet)
+      rate = 0.98;
+      pitch = '-1Hz';
+    } else if (opId === 'op_head') {
+      voiceName = 'uz-UZ-MadinaNeural'; // Female voice (Kamola distinct style - Professional, Balanced)
+      rate = 1.01;
+      pitch = '+1Hz';
     } else {
-      voiceName = 'uz-UZ-MadinaNeural'; // Female voice (Malika style)
+      voiceName = 'uz-UZ-MadinaNeural'; // Female voice (Malika style - Upbeat, Energetic)
       rate = 1.05;
       pitch = '+3Hz';
     }
