@@ -149,7 +149,9 @@ const elements = {
   tgChatIdInput: document.getElementById('tg-chat-id-input'),
   agent3dCore: document.getElementById('agent-3d-core'),
   agentNameDisplay: document.getElementById('agent-name-display'),
-  voiceEngineSelect: document.getElementById('voice-engine-select')
+  voiceEngineSelect: document.getElementById('voice-engine-select'),
+  elevenKeyInput: document.getElementById('eleven-key-input'),
+  openaiKeyInput: document.getElementById('openai-key-input')
 };
 
 // Initialize Application
@@ -760,7 +762,11 @@ function playNextAudioChunk(opId) {
   }
 
   const chunk = state.voiceQueue.shift();
-  const audioUrl = `/api/tts?text=${encodeURIComponent(chunk)}&opId=${opId}&t=${Date.now()}`;
+  const eKey = elements.elevenKeyInput ? elements.elevenKeyInput.value.trim() : '';
+  const oKey = elements.openaiKeyInput ? elements.openaiKeyInput.value.trim() : '';
+  const gKey = state.apiKey || '';
+
+  const audioUrl = `/api/tts?text=${encodeURIComponent(chunk)}&opId=${opId}&elevenKey=${encodeURIComponent(eKey)}&openaiKey=${encodeURIComponent(oKey)}&geminiKey=${encodeURIComponent(gKey)}&t=${Date.now()}`;
 
   const audio = new Audio();
   audio.crossOrigin = "anonymous";
