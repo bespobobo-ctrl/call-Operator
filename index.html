@@ -120,33 +120,57 @@
         </div>
 
         <!-- Phone Action Controls -->
-        <div class="call-controls">
-          <button id="start-call-btn" class="btn btn-call">
-            <i class="fa-solid fa-phone"></i>
-            <span>Qo'ng'iroq qilish</span>
-          </button>
-          
-          <button id="end-call-btn" class="btn btn-end" disabled>
-            <i class="fa-solid fa-phone-slash"></i>
-            <span>Tugatish</span>
-          </button>
+        <div class="controls-section">
+          <div class="controls-label">
+            <span class="controls-label-line"></span>
+            <span class="controls-label-text"><i class="fa-solid fa-tower-broadcast"></i> Qo'ng'iroq Boshqaruvi</span>
+            <span class="controls-label-line"></span>
+          </div>
 
-          <button id="mute-btn" class="btn btn-icon" disabled title="Mikrofonni o'chirish">
-            <i class="fa-solid fa-microphone"></i>
-          </button>
-          
-          <button id="test-voice-btn" class="btn btn-icon" title="Ovozni sinash (TTS)">
-            <i class="fa-solid fa-volume-high"></i>
-          </button>
+          <div class="call-controls">
+            <button id="start-call-btn" class="btn btn-call">
+              <span class="btn-glow-ring"></span>
+              <i class="fa-solid fa-phone"></i>
+              <span>Qo'ng'iroq</span>
+            </button>
+            
+            <button id="end-call-btn" class="btn btn-end" disabled>
+              <i class="fa-solid fa-phone-slash"></i>
+              <span>Tugatish</span>
+            </button>
+
+            <div class="icon-btns-group">
+              <button id="mute-btn" class="btn btn-icon-premium" disabled title="Mikrofonni o'chirish">
+                <i class="fa-solid fa-microphone"></i>
+                <span class="icon-btn-label">Mikrofon</span>
+              </button>
+              
+              <button id="test-voice-btn" class="btn btn-icon-premium" title="Ovozni sinash (TTS)">
+                <i class="fa-solid fa-volume-high"></i>
+                <span class="icon-btn-label">Sinash</span>
+              </button>
+            </div>
+          </div>
         </div>
 
         <div class="quick-sim-container">
-          <p class="sim-title">Tezkor Sinov Savollari (Klik qiling):</p>
+          <div class="sim-header">
+            <i class="fa-solid fa-bolt"></i>
+            <span>Tezkor Sinov Savollari</span>
+          </div>
           <div class="sim-chips">
-            <button class="sim-chip" data-msg="Assalomu alaykum, ish vaqtingiz soat nechagacha?">⏰ Ish vaqti</button>
-            <button class="sim-chip" data-msg="Xizmat ko'rsatish narxlaringiz qancha?">💰 Narxlar</button>
-            <button class="sim-chip" data-msg="Ofisingiz manzili qayerda joylashgan?">📍 Manzil</button>
-            <button class="sim-chip" data-msg="Men inson operator bilan gaplashmoqchiman.">👤 Inson Operator</button>
+            <button class="sim-chip" data-msg="Assalomu alaykum, ish vaqtingiz soat nechagacha?">
+              <i class="fa-regular fa-clock"></i> Ish vaqti
+            </button>
+            <button class="sim-chip" data-msg="Xizmat ko'rsatish narxlaringiz qancha?">
+              <i class="fa-solid fa-coins"></i> Narxlar
+            </button>
+            <button class="sim-chip" data-msg="Ofisingiz manzili qayerda joylashgan?">
+              <i class="fa-solid fa-location-dot"></i> Manzil
+            </button>
+            <button class="sim-chip" data-msg="Men inson operator bilan gaplashmoqchiman.">
+              <i class="fa-solid fa-user-tie"></i> Inson Operator
+            </button>
           </div>
         </div>
       </section>
