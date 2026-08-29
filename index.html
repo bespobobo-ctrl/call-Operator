@@ -61,6 +61,16 @@
           <div class="call-timer" id="call-timer">00:00</div>
           <div class="call-status" id="call-status">Qo'ng'iroq qilish uchun tugmani bosing</div>
           
+          <!-- Live Per-Minute Cost Rate Bar -->
+          <div class="live-cost-indicator">
+            <div class="rate-pill">
+              <i class="fa-solid fa-chart-line"></i> Harajat tezligi: <span id="live-minute-rate">$0.0000 / min</span>
+            </div>
+            <div class="session-cost-pill">
+              Muloqot harajati: <span id="live-session-cost">$0.00000</span> (<span id="live-session-uzs">0 So'm</span>)
+            </div>
+          </div>
+
           <!-- Audio Wave Visualizer -->
           <div class="visualizer-container">
             <canvas id="audio-wave-canvas" width="300" height="70"></canvas>
@@ -168,19 +178,29 @@ Kompaniya ma'lumotlari:
         <div class="tab-content" id="stats-tab">
           <div class="cost-tracker-card">
             <div class="cost-header">
-              <i class="fa-solid fa-coins"></i>
-              <span>API Harajatlari Tracker (Gemini 2.0)</span>
+              <i class="fa-solid fa-calculator"></i>
+              <span>API Harajatlari Avto-Kalkulyatori (Gemini 2.0)</span>
             </div>
+            
             <div class="cost-main-display">
               <span class="currency">$</span>
               <span id="stat-total-cost" class="cost-value">0.00000</span>
               <span class="cost-unit">USD</span>
             </div>
+            
+            <div class="uzs-converted-display">
+              <i class="fa-solid fa-money-bill-wave"></i> Taxminiy So'mdagi rasxod: <strong id="stat-total-uzs">0.00 So'm</strong>
+            </div>
+
             <div class="cost-badge" id="plan-badge">
-              <i class="fa-solid fa-gift"></i> Google AI Studio Free Tier ($0.00)
+              <i class="fa-solid fa-gift"></i> Google AI Studio Free Tier ($0.00) / Paid Rate Active
             </div>
             
             <div class="token-details">
+              <div class="token-row">
+                <span><i class="fa-solid fa-clock"></i> O'rtacha minutlik harajat:</span>
+                <strong id="stat-per-min-rate">$0.0000 / min</strong>
+              </div>
               <div class="token-row">
                 <span>Kiruvchi Tokenlar (Input):</span>
                 <strong id="stat-input-tokens">0</strong>
@@ -193,6 +213,15 @@ Kompaniya ma'lumotlari:
                 <span>Jami Tokenlar:</span>
                 <strong id="stat-total-tokens">0</strong>
               </div>
+            </div>
+
+            <div class="tariff-formula-box">
+              <p class="formula-title"><i class="fa-solid fa-circle-info"></i> API Tarif Stavkasi:</p>
+              <ul>
+                <li>🎤 Audio Kirish (Mikrofon): <strong>$0.00013 / min</strong></li>
+                <li>🔊 Audio Chiquvchi (AI Ovoz): <strong>$0.02000 / min</strong></li>
+                <li>📝 Text Tokenlar: <strong>$0.075 / 1M input, $0.30 / 1M output</strong></li>
+              </ul>
             </div>
           </div>
 

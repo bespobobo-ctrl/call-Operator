@@ -20,7 +20,9 @@ const state = {
   inputTokens: 0,
   outputTokens: 0,
   totalTokens: 0,
-  totalCostUSD: 0
+  totalCostUSD: 0,
+  currentSessionCostUSD: 0,
+  USD_TO_UZS: 12850
 };
 
 // DOM Elements
@@ -58,7 +60,13 @@ const elements = {
   statInputTokens: document.getElementById('stat-input-tokens'),
   statOutputTokens: document.getElementById('stat-output-tokens'),
   statTotalTokens: document.getElementById('stat-total-tokens'),
-  
+  statTotalUzs: document.getElementById('stat-total-uzs'),
+  statPerMinRate: document.getElementById('stat-per-min-rate'),
+
+  liveMinuteRate: document.getElementById('live-minute-rate'),
+  liveSessionCost: document.getElementById('live-session-cost'),
+  liveSessionUzs: document.getElementById('live-session-uzs'),
+
   canvas: document.getElementById('audio-wave-canvas'),
   tabBtns: document.querySelectorAll('.tab-btn'),
   tabContents: document.querySelectorAll('.tab-content'),
@@ -187,6 +195,7 @@ function startCall() {
 
   state.isCallActive = true;
   state.callDurationSeconds = 0;
+  state.currentSessionCostUSD = 0;
   state.totalCalls++;
   localStorage.setItem('total_calls', state.totalCalls);
   elements.statTotalCalls.textContent = state.totalCalls;
@@ -198,13 +207,20 @@ function startCall() {
   elements.callStatus.textContent = "Muloqot ulangan. O'zbek tilida gapirishingiz mumkin...";
   elements.handoffAlert.style.display = 'none';
 
-  // Start timer
+  // Start timer & realtime cost accumulator (Audio streaming: ~$0.000003 USD per sec = $0.00018 / min)
+  const secRateUSD = 0.000003;
   state.timerInterval = setInterval(() => {
     state.callDurationSeconds++;
+    state.currentSessionCostUSD += secRateUSD;
+    state.totalCostUSD += secRateUSD;
+
     const mins = String(Math.floor(state.callDurationSeconds / 60)).padStart(2, '0');
     const secs = String(state.callDurationSeconds % 60).padStart(2, '0');
     elements.callTimer.textContent = `${mins}:${secs}`;
     elements.statAvgDuration.textContent = `${state.callDurationSeconds}s`;
+
+    // Update Live Cost Indicators
+    updateCostUI(secRateUSD * 60);
   }, 1000);
 
   // Start Speech Recognition
@@ -347,7 +363,7 @@ async function queryGeminiAPI(userQuery) {
   }
 }
 
-// Track Token Usage and Realtime Cost ($ USD)
+// Track Token Usage and Realtime Cost ($ USD and UZS)
 function trackTokenUsage(inputCount, outputCount) {
   state.inputTokens += inputCount;
   state.outputTokens += outputCount;
@@ -358,12 +374,33 @@ function trackTokenUsage(inputCount, outputCount) {
   // Output: $0.30 per 1,000,000 tokens ($0.00000030 per token)
   const inputCost = (inputCount / 1000000) * 0.075;
   const outputCost = (outputCount / 1000000) * 0.30;
-  state.totalCostUSD += (inputCost + outputCost);
+  const tokenCost = inputCost + outputCost;
+
+  state.currentSessionCostUSD += tokenCost;
+  state.totalCostUSD += tokenCost;
+
+  updateCostUI(0.00018);
+}
+
+// Refresh all Cost & Spending UI Elements
+function updateCostUI(perMinRate) {
+  const uzsTotal = (state.totalCostUSD * state.USD_TO_UZS).toFixed(2);
+  const uzsSession = (state.currentSessionCostUSD * state.USD_TO_UZS).toFixed(2);
+  
+  const avgMinRate = state.callDurationSeconds > 0 
+    ? ((state.totalCostUSD / state.callDurationSeconds) * 60).toFixed(5)
+    : perMinRate.toFixed(5);
 
   if (elements.statTotalCost) elements.statTotalCost.textContent = state.totalCostUSD.toFixed(5);
+  if (elements.statTotalUzs) elements.statTotalUzs.textContent = `${uzsTotal} So'm`;
+  if (elements.statPerMinRate) elements.statPerMinRate.textContent = `$${avgMinRate} / min`;
   if (elements.statInputTokens) elements.statInputTokens.textContent = state.inputTokens.toLocaleString();
   if (elements.statOutputTokens) elements.statOutputTokens.textContent = state.outputTokens.toLocaleString();
   if (elements.statTotalTokens) elements.statTotalTokens.textContent = state.totalTokens.toLocaleString();
+
+  if (elements.liveMinuteRate) elements.liveMinuteRate.textContent = `$${avgMinRate} / min`;
+  if (elements.liveSessionCost) elements.liveSessionCost.textContent = `$${state.currentSessionCostUSD.toFixed(5)}`;
+  if (elements.liveSessionUzs) elements.liveSessionUzs.textContent = `${uzsSession} So'm`;
 }
 
 // Intelligent Offline Fallback for Uzbek Call Center testing without API Key

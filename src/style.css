@@ -841,6 +841,83 @@ body {
   font-family: monospace;
 }
 
+/* Live Per-Minute Cost Rate Bar */
+.live-cost-indicator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  margin-top: 10px;
+  width: 100%;
+}
+
+.rate-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(0, 242, 254, 0.12);
+  border: 1px solid rgba(0, 242, 254, 0.25);
+  color: var(--accent-cyan);
+  padding: 4px 14px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.session-cost-pill {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.session-cost-pill span {
+  color: var(--success-green);
+  font-weight: 600;
+  font-family: monospace;
+}
+
+.uzs-converted-display {
+  font-size: 13px;
+  color: var(--warning-amber);
+  background: rgba(255, 183, 3, 0.1);
+  border: 1px solid rgba(255, 183, 3, 0.25);
+  padding: 6px 14px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 500;
+}
+
+.tariff-formula-box {
+  width: 100%;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 12px;
+  font-size: 11px;
+  color: var(--text-muted);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.formula-title {
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.tariff-formula-box ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-left: 4px;
+}
+
+.tariff-formula-box li strong {
+  color: var(--accent-cyan);
+}
+
 .handoff-alert {
   display: flex;
   align-items: center;
