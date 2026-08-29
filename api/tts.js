@@ -42,7 +42,7 @@ export default async function handler(req, res) {
     try {
       const elevenVoiceMap = {
         op1: '21m00Tcm4TlvDq8ikWAM', // Rachel (Female)
-        op2: 'ErXwobaYiN019PkySvjV', // Antoni (Deep Male)
+        op2: 'N2lVS1w4GcCO15B0PvC9', // Eric (Energetic Male - same as Farruh!)
         op3: 'EXAVITQu4vr4xnSDxMaL', // Bella (Soft Female)
         op4: 'N2lVS1w4GcCO15B0PvC9', // Eric (Energetic Male)
         op_head: 'AZnzlk1XvdvUeBnXmlld' // Domi (Professional Female)
@@ -82,7 +82,7 @@ export default async function handler(req, res) {
     try {
       const openAiVoiceMap = {
         op1: 'nova',    // Upbeat Female
-        op2: 'onyx',    // Deep Male
+        op2: 'alloy',   // Energetic Male (same as Farruh!)
         op3: 'shimmer', // Soft Female
         op4: 'alloy',   // Neutral Male/Energetic
         op_head: 'alloy' // Authoritative Supervisor
@@ -121,7 +121,7 @@ export default async function handler(req, res) {
     try {
       const geminiVoiceMap = { 
         op1: 'Puck', 
-        op2: 'Charon', 
+        op2: 'Fenrir', // Energetic Male (same as Farruh!)
         op3: 'Kore', 
         op4: 'Fenrir', 
         op_head: 'Aoede' 
