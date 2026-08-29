@@ -967,17 +967,8 @@ async function playNextAudioChunk(opId) {
     audio.src = blobUrl;
     state.currentAudio = audio;
 
-    // Operator-specific acoustic speed tuning
-    if (opId === 'op2') {
-      // Jasur (Texnik Erkak)
-      audio.playbackRate = 0.88;
-    } else if (opId === 'op3') {
-      // Nigora (Servis Ayol Soft)
-      audio.playbackRate = 0.94;
-    } else {
-      // Malika (Sotuv Ayol Dynamic)
-      audio.playbackRate = 1.04;
-    }
+    // Play at the server-synthesized high-definition speed
+    audio.playbackRate = 1.0;
 
     return new Promise((resolve) => {
       audio.onended = () => {
