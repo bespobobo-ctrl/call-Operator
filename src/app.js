@@ -16,7 +16,7 @@ const state = {
   currentAudio: null,
   voiceQueue: [],
   isPlayingQueue: false,
-  voiceEngine: 'google-uz',
+  voiceEngine: 'gemini-neural',
   sentiment: 'neutral',
   companyName: 'Admiral Group Official',
   currentOperatorId: 'op1',
@@ -720,12 +720,11 @@ function speakResponse(text, customOpId = null) {
 
   if (!cleanText) return;
 
-  // Option 1: Native Uzbek Google HD Audio Engine (Default)
-  if (state.voiceEngine === 'google-uz') {
-    speakGoogleUzbekVoice(cleanText, activeOpId);
-  } else {
-    // Option 2: Web Speech Synthesis Fallback
+  // Option 1 & 2: Gemini 2.0 Neural AI Voice or Google Uzbek HD Stream
+  if (state.voiceEngine === 'browser-tts') {
     speakBrowserSpeech(cleanText, activeOpId);
+  } else {
+    speakGoogleUzbekVoice(cleanText, activeOpId);
   }
 }
 
