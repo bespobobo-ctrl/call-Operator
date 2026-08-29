@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Call Center — O'zbekcha AI Operator (Gemini Live)</title>
+  <meta name="description" content="Google AI Studio Gemini Live texnologiyasiga asoslangan O'zbekcha AI Call-Center operatori va boshqaruv paneli.">
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <link rel="stylesheet" href="/src/style.css">
+</head>
+<body>
+  <div id="app" class="app-container">
+    <!-- Navbar -->
+    <header class="navbar">
+      <div class="logo-group">
+        <div class="logo-icon">
+          <i class="fa-solid fa-headset"></i>
+        </div>
+        <div class="logo-text">
+          <h1>AI Call Center <span>Uzbekistan</span></h1>
+          <p class="subtitle">Gemini 2.0 Flash Voice AI Operator</p>
+        </div>
+      </div>
+      
+      <div class="header-actions">
+        <div class="status-chip offline" id="connection-chip">
+          <span class="pulse-dot"></span>
+          <span id="chip-text">Oflayn</span>
+        </div>
+        
+        <div class="api-key-container">
+          <i class="fa-solid fa-key"></i>
+          <input type="password" id="api-key-input" placeholder="Google AI Studio API Key kiritish..." autocomplete="off">
+          <button id="save-key-btn" title="Saqlash"><i class="fa-solid fa-check"></i></button>
+        </div>
+        
+        <a href="https://vercel.com" target="_blank" class="vercel-badge">
+          <i class="fa-solid fa-triangle-exclamation"></i> Vercel Ready
+        </a>
+      </div>
+    </header>
+
+    <!-- Main Dashboard Grid -->
+    <main class="dashboard-grid">
+      <!-- Left Panel: Phone Terminal & Audio Wave -->
+      <section class="card terminal-card">
+        <div class="card-header">
+          <h2><i class="fa-solid fa-phone-volume"></i> AI Telefon Terminali</h2>
+          <span class="phone-number">+998 (71) 200-00-99</span>
+        </div>
+        
+        <div class="phone-display">
+          <div class="avatar-ring" id="avatar-ring">
+            <div class="ai-avatar">
+              <i class="fa-solid fa-robot"></i>
+            </div>
+          </div>
+          
+          <div class="call-timer" id="call-timer">00:00</div>
+          <div class="call-status" id="call-status">Qo'ng'iroq qilish uchun tugmani bosing</div>
+          
+          <!-- Audio Wave Visualizer -->
+          <div class="visualizer-container">
+            <canvas id="audio-wave-canvas" width="300" height="70"></canvas>
+          </div>
+
+          <!-- Sentiment Indicator -->
+          <div class="sentiment-bar">
+            <span>Mijoz Kayfiyati:</span>
+            <div class="sentiment-tag neutral" id="sentiment-tag">
+              <i class="fa-solid fa-face-meh"></i> Neytral
+            </div>
+          </div>
+        </div>
+
+        <!-- Phone Action Controls -->
+        <div class="call-controls">
+          <button id="start-call-btn" class="btn btn-call">
+            <i class="fa-solid fa-phone"></i>
+            <span>Qo'ng'iroq qilish</span>
+          </button>
+          
+          <button id="end-call-btn" class="btn btn-end" disabled>
+            <i class="fa-solid fa-phone-slash"></i>
+            <span>Tugatish</span>
+          </button>
+
+          <button id="mute-btn" class="btn btn-icon" disabled title="Mikrofonni o'chirish">
+            <i class="fa-solid fa-microphone"></i>
+          </button>
+          
+          <button id="test-voice-btn" class="btn btn-icon" title="Ovozni sinash (TTS)">
+            <i class="fa-solid fa-volume-high"></i>
+          </button>
+        </div>
+
+        <div class="quick-sim-container">
+          <p class="sim-title">Tezkor Sinov Savollari (Klik qiling):</p>
+          <div class="sim-chips">
+            <button class="sim-chip" data-msg="Assalomu alaykum, ish vaqtingiz soat nechagacha?">⏰ Ish vaqti</button>
+            <button class="sim-chip" data-msg="Xizmat ko'rsatish narxlaringiz qancha?">💰 Narxlar</button>
+            <button class="sim-chip" data-msg="Ofisingiz manzili qayerda joylashgan?">📍 Manzil</button>
+            <button class="sim-chip" data-msg="Men inson operator bilan gaplashmoqchiman.">👤 Inson Operator</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Middle Panel: Realtime Call Transcript & Audio Stream -->
+      <section class="card transcript-card">
+        <div class="card-header">
+          <h2><i class="fa-solid fa-comments"></i> Jonli Muloqot Stenogrammasi</h2>
+          <button id="clear-log-btn" class="btn-text" title="Tozalash"><i class="fa-solid fa-trash"></i></button>
+        </div>
+        
+        <div class="chat-log" id="chat-log">
+          <div class="system-msg">
+            <i class="fa-solid fa-circle-info"></i>
+            <span>AI Call Center tayyor. Mikrofonni yoqib AI bilan O'zbek tilida muloqot qilishingiz mumkin.</span>
+          </div>
+        </div>
+
+        <div class="manual-input-box">
+          <input type="text" id="manual-text-input" placeholder="Yoki matn shaklida savol bering..." autocomplete="off">
+          <button id="send-text-btn"><i class="fa-solid fa-paper-plane"></i></button>
+        </div>
+      </section>
+
+      <!-- Right Panel: Settings, Prompt & Stats -->
+      <section class="card settings-card">
+        <div class="card-header">
+          <h2><i class="fa-solid fa-sliders"></i> AI Operator Sozlamalari</h2>
+        </div>
+
+        <div class="settings-tabs">
+          <button class="tab-btn active" data-tab="prompt-tab">Promt & Bilimlar</button>
+          <button class="tab-btn" data-tab="stats-tab">Analitika</button>
+        </div>
+
+        <!-- Tab 1: Prompt & Knowledge Base -->
+        <div class="tab-content active" id="prompt-tab">
+          <div class="form-group">
+            <label for="company-name-input"><i class="fa-solid fa-building"></i> Kompaniya Nomi:</label>
+            <input type="text" id="company-name-input" value="TechCorp Uzbekistan">
+          </div>
+
+          <div class="form-group">
+            <label for="system-instruction-input"><i class="fa-solid fa-brain"></i> AI Operator Tizim Instruksiyasi (Prompt):</label>
+            <textarea id="system-instruction-input" rows="7">Siz "TechCorp Uzbekistan" kompaniyasining malakali va xushmuomala AI Call-markaz operatorisiz.
+Ismingiz: Malika.
+Vazifangiz: Mijozlarga O'zbek tilida ravon, samimiy va qisqa javob berish.
+
+Kompaniya ma'lumotlari:
+- Ish vaqti: Dushanba-Shanba, 09:00 dan 18:00 gacha.
+- Manzil: Toshkent shahri, Amir Temur ko'chasi 45-uy.
+- Xizmatlar: Veb-saytlar va AI botlar yaratish (boshlang'ich narx 500$).
+- Inson operatorga uzatish: Agar mijoz operatorni so'rasa, "Sizni inson operatorimizga ulashimga ruxsat bering" deb ayting.
+- Qoida: Har doim o'zbek tilida xushmuomala so'zlashing!</textarea>
+          </div>
+
+          <button id="save-prompt-btn" class="btn btn-primary">
+            <i class="fa-solid fa-floppy-disk"></i> Sozlamalarni Saqlash
+          </button>
+        </div>
+
+        <!-- Tab 2: Analytics & Stats -->
+        <div class="tab-content" id="stats-tab">
+          <div class="stats-grid">
+            <div class="stat-box">
+              <i class="fa-solid fa-phone-slash stat-icon"></i>
+              <div class="stat-val" id="stat-total-calls">0</div>
+              <div class="stat-lbl">Jami Qo'ng'iroqlar</div>
+            </div>
+            
+            <div class="stat-box">
+              <i class="fa-solid fa-clock stat-icon"></i>
+              <div class="stat-val" id="stat-avg-duration">0s</div>
+              <div class="stat-lbl">O'rtacha Vaqt</div>
+            </div>
+
+            <div class="stat-box">
+              <i class="fa-solid fa-bolt stat-icon"></i>
+              <div class="stat-val" id="stat-latency">~450ms</div>
+              <div class="stat-lbl">AI Tezligi (Latency)</div>
+            </div>
+
+            <div class="stat-box">
+              <i class="fa-solid fa-face-smile stat-icon"></i>
+              <div class="stat-val">98%</div>
+              <div class="stat-lbl">Mijoz Mamnunligi</div>
+            </div>
+          </div>
+          
+          <div class="handoff-alert" id="handoff-alert" style="display: none;">
+            <i class="fa-solid fa-user-headset"></i>
+            <span><strong>Ogohlantirish:</strong> Mijoz inson operatorga uzatilishini so'ramoqda!</span>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <p>AI Call Center Prototipi — Google AI Studio (Gemini Flash) & Vercel uchun loyihalangan.</p>
+    </footer>
+  </div>
+
+  <script type="module" src="/src/app.js"></script>
+</body>
+</html>
