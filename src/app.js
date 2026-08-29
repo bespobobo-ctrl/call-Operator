@@ -748,22 +748,23 @@ function playNextAudioChunk(opId) {
   }
 
   const chunk = state.voiceQueue.shift();
-  const encodedText = encodeURIComponent(chunk);
-  const audioUrl = `https://translate.google.com/translate_tts?ie=UTF-8&q=${encodedText}&tl=uz&client=tw-ob`;
+  const audioUrl = `/api/tts?text=${encodeURIComponent(chunk)}&opId=${opId}&t=${Date.now()}`;
 
-  const audio = new Audio(audioUrl);
+  const audio = new Audio();
+  audio.crossOrigin = "anonymous";
+  audio.src = audioUrl;
   state.currentAudio = audio;
 
   // Operator-specific acoustic tuning
   if (opId === 'op2') {
-    // Jasur (Texnik) — Deeper, calm tone
-    audio.playbackRate = 0.95;
+    // Jasur (Texnik) — Deeper male voice rate
+    audio.playbackRate = 0.88;
   } else if (opId === 'op3') {
-    // Nigora (Servis) — Soft, gentle pace
-    audio.playbackRate = 0.92;
+    // Nigora (Servis) — Soft, gentle female pace
+    audio.playbackRate = 0.94;
   } else {
     // Malika (Sotuv) — Dynamic, clear female voice
-    audio.playbackRate = 1.02;
+    audio.playbackRate = 1.04;
   }
 
   if (elements.avatarRing) elements.avatarRing.className = 'avatar-ring active speaking';
@@ -774,8 +775,8 @@ function playNextAudioChunk(opId) {
     playNextAudioChunk(opId);
   };
 
-  audio.onerror = () => {
-    console.warn("Google TTS audio error, falling back to browser speech synthesis...");
+  audio.onerror = (e) => {
+    console.warn("Proxy TTS audio error, trying Web Speech fallback:", e);
     state.currentAudio = null;
     speakBrowserSpeech(chunk, opId);
   };
