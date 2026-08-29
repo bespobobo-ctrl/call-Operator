@@ -14,6 +14,7 @@ const state = {
   recognition: null,
   speechSynth: window.speechSynthesis,
   currentAudio: null,
+  sharedAudioPlayer: null,
   voiceQueue: [],
   isPlayingQueue: false,
   voiceEngine: 'gemini-neural',
@@ -698,15 +699,25 @@ async function checkOrderKeywords(clientText, aiText) {
     }
   }
 }
+// Unlock Browser Audio Autoplay Policy on User Gesture
+function unlockAudio() {
+  if (!state.sharedAudioPlayer) {
+    state.sharedAudioPlayer = new Audio();
+  }
+  try {
+    state.sharedAudioPlayer.play().catch(() => {});
+  } catch (e) {}
+}
+
 // Stop any active speech (Google Audio & Browser Speech)
 function stopAllSpeech() {
-  if (state.currentAudio) {
+  if (state.sharedAudioPlayer) {
     try {
-      state.currentAudio.pause();
-      state.currentAudio.currentTime = 0;
+      state.sharedAudioPlayer.pause();
+      state.sharedAudioPlayer.currentTime = 0;
     } catch (e) {}
-    state.currentAudio = null;
   }
+  state.currentAudio = null;
   state.voiceQueue = [];
   state.isPlayingQueue = false;
 
@@ -717,6 +728,7 @@ function stopAllSpeech() {
 
 // High-Definition Uzbek Speech Engine with Per-Operator Voice Tuning
 function speakResponse(text, customOpId = null) {
+  unlockAudio();
   stopAllSpeech();
 
   if (!text) return;
@@ -725,6 +737,7 @@ function speakResponse(text, customOpId = null) {
   
   // Clean markdown symbols & links for natural speech
   const cleanText = text
+    .replace(/['`ʻ’"]/g, '')
     .replace(/\*\*([^*]+)\*\*/g, '$1')
     .replace(/\*([^*]+)\*/g, '$1')
     .replace(/#+/g, '')
@@ -735,12 +748,8 @@ function speakResponse(text, customOpId = null) {
 
   if (!cleanText) return;
 
-  // Option 1 & 2: Gemini 2.0 Neural AI Voice or Google Uzbek HD Stream
-  if (state.voiceEngine === 'browser-tts') {
-    speakBrowserSpeech(cleanText, activeOpId);
-  } else {
-    speakGoogleUzbekVoice(cleanText, activeOpId);
-  }
+  // Native Uzbek Neural HD Audio Stream
+  speakGoogleUzbekVoice(cleanText, activeOpId);
 }
 
 // Native Uzbek HD Audio Stream via Sequential Queue
@@ -779,7 +788,12 @@ async function playNextAudioChunk(opId) {
     const blob = await res.blob();
     const blobUrl = URL.createObjectURL(blob);
 
-    const audio = new Audio(blobUrl);
+    if (!state.sharedAudioPlayer) {
+      state.sharedAudioPlayer = new Audio();
+    }
+
+    const audio = state.sharedAudioPlayer;
+    audio.src = blobUrl;
     state.currentAudio = audio;
 
     // Operator-specific acoustic speed tuning
@@ -794,20 +808,27 @@ async function playNextAudioChunk(opId) {
       audio.playbackRate = 1.04;
     }
 
-    audio.onended = () => {
-      URL.revokeObjectURL(blobUrl);
-      state.currentAudio = null;
-      playNextAudioChunk(opId);
-    };
+    return new Promise((resolve) => {
+      audio.onended = () => {
+        URL.revokeObjectURL(blobUrl);
+        state.currentAudio = null;
+        playNextAudioChunk(opId).then(resolve);
+      };
 
-    audio.onerror = (e) => {
-      console.warn("Audio Blob playback error:", e);
-      URL.revokeObjectURL(blobUrl);
-      state.currentAudio = null;
-      playNextAudioChunk(opId);
-    };
+      audio.onerror = (e) => {
+        console.warn("Audio Blob playback error:", e);
+        URL.revokeObjectURL(blobUrl);
+        state.currentAudio = null;
+        playNextAudioChunk(opId).then(resolve);
+      };
 
-    await audio.play();
+      audio.play().then(resolve).catch(err => {
+        console.warn("Audio play error:", err);
+        URL.revokeObjectURL(blobUrl);
+        state.currentAudio = null;
+        playNextAudioChunk(opId).then(resolve);
+      });
+    });
 
   } catch (err) {
     console.warn("TTS Fetch/Play Error:", err);
