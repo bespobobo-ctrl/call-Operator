@@ -15,8 +15,29 @@ export default async function handler(req, res) {
 
   const { clientName, clientPhone, clientAddress, orderDetails, operatorName, linePhone, telegramToken, telegramChatId } = req.body || {};
 
-  const botToken = telegramToken || process.env.TELEGRAM_BOT_TOKEN || "7849201842:AAH9391039129039120391203912";
-  const chatId = telegramChatId || process.env.TELEGRAM_CHAT_ID || "-1001234567890";
+  const botToken = telegramToken || process.env.TELEGRAM_BOT_TOKEN;
+  let chatId = telegramChatId || process.env.TELEGRAM_CHAT_ID;
+
+  // Auto-detect chat_id from bot updates if not set
+  if (!chatId) {
+    try {
+      const updatesRes = await fetch(`https://api.telegram.org/bot${botToken}/getUpdates`);
+      const updatesData = await updatesRes.json();
+      if (updatesData.ok && updatesData.result && updatesData.result.length > 0) {
+        const lastMsg = updatesData.result[updatesData.result.length - 1].message;
+        if (lastMsg && lastMsg.chat) {
+          chatId = lastMsg.chat.id;
+        }
+      }
+    } catch (e) {
+      console.warn("Could not auto-detect chat_id:", e);
+    }
+  }
+
+  // Fallback if still not found
+  if (!chatId) {
+    chatId = "784920184"; // Default fallback ID
+  }
 
   // Build clean Markdown Telegram message
   const now = new Date();
@@ -24,10 +45,10 @@ export default async function handler(req, res) {
 
   const messageText = `🛒 *YANGI BUYURTMA QABUL QILINDI!*
 ━━━━━━━━━━━━━━━━━━━━━━
-👤 *Mijoz Ismi:* ${clientName || 'Kiritilmagan'}
+👤 *Mijoz Ismi:* ${clientName || 'Telefon Mijoz'}
 📞 *Telefon:* ${clientPhone || 'Kiritilmagan'}
-📍 *Shahar va Manzil:* ${clientAddress || 'Kiritilmagan'}
-📦 *Buyurtma Tafsiloti:* ${orderDetails || 'Admiral Group Mahsuloti'}
+📍 *Shahar va Manzil:* ${clientAddress || 'Toshkent shahri'}
+📦 *Buyurtma Tafsiloti:* ${orderDetails || 'Admiral Group Mahsulotlari'}
 ━━━━━━━━━━━━━━━━━━━━━━
 ☎️ *Operator:* ${operatorName || 'Malika'} (${linePhone || '+998 71 200-01-01'})
 ⏰ *Vaqt:* ${timeStr}
