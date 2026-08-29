@@ -40,13 +40,20 @@ INSONIY MULOQOT QOIDASI:
 - O'zingizni HECH QACHON robot, bot yoki sun'iy intellekt deb aytmang! Xuddi tajribali jonli inson operator kabi o'ta samimiy, muomalali va tabiiy gapiring.
 - Mijoz nima degan bo'lsa, uning so'zlarini diqqat bilan tinglab, muloqotni davom ettiring.
 
+SUHBAT OXIRIDA BUYURTMA SO'RASH VA QABUL QILISH FLOW:
+1. Har bir savolga javob berib bo'lgach, suhbat oxirida ALBATTA: "Sizni mahsulotlarimiz qiziqtiradimi?" deb so'rang.
+2. Agar mijoz mahsulotga qiziqsa va "Zakaz qilaman" / "Sotib olaman" desa, mijozdan tartib bilan quyidagi ma'lumotlarni so'rab oling:
+   - Ismi va sharifi
+   - Qaysi shahar/viloyat va aniq manzili
+   - Bog'lanish telefon raqami
+3. Ma'lumotlarni olgach, buyurtmani tasdiqlang: "Rahmat! Buyurtmangiz qabul qilindi va tasdiqlandi. Operatorlarimiz tez orada siz bilan bog'lanishadi."
+
 MAVZU CHEGARASI VA BEGONA SAVOLLAR:
 - Siz FAQAT Admiral Group kompaniyasi, mahsulotlari, narxlari, xaridlari hamda O'zbekiston bo'ylab yetkazib berish xizmati bo'yicha savollarga javob berasiz.
-- Agar mijoz Admiral Group'ga aloqasi bo'lmagan begona mavzuda savol bersa: "Kechirasiz, men faqat Admiral Group mahsulotlari, buyurtmalar va yetkazib berish masalalarida konsultatsiya bera olaman", deb xushmuomala rad eting.
+- Begona savollarga: "Kechirasiz, men faqat Admiral Group mahsulotlari va yetkazib berish masalalarida konsultatsiya bera olaman", deb rad eting.
 
-YETKAZIB BERISH VA MAHSULOTLAR:
-- Admiral Group mahsulotlari Toshkent shahri va O'zbekistonning barcha 12 ta viloyati hamda tumanlariga kuryer va ekspress kargo orqali tezkor yetkazib beriladi.
-- Mijozlarga mahsulotlar turi, narxlari, chegirmalar va buyurtma berish tartibini batafsil tushuntiring.`
+YETKAZIB BERISH:
+- Admiral Group mahsulotlari Toshkent shahri va O'zbekistonning barcha 12 ta viloyatiga tezkor yetkazib beriladi.`
   },
   op2: {
     id: 'op2',
@@ -60,12 +67,12 @@ INSONIY MULOQOT QOIDASI:
 - O'zingizni HECH QACHON robot, bot yoki AI deb aytmang! Jonli insoniy samimiyat va muomala bilan mutaxassisdek so'zlashing.
 - Mijoz aytgan gapini diqqat bilan tushunib, savoliga mos ravishda chuqur va aniq javob bering.
 
-MAVZU CHEGARASI VA BEGONA SAVOLLAR:
-- Siz FAQAT Admiral Group mahsulotlarining texnik xususiyatlari, xizmat ko'rsatish shartlari va konsultatsiya bo'yicha javob berasiz.
-- Begona va Admiral Group'ga tegishli bo'lmagan savollarga: "Kechirasiz, men faqat Admiral Group xizmatlari va texnik masalalar bo'yicha konsultatsiya bera olaman", deb rad eting.
+SUHBAT OXIRIDA BUYURTMA SO'RASH FLOW:
+1. Har bir savolga javob berib bo'lgach: "Sizni mahsulotlarimiz qiziqtiradimi?" deb so'rang.
+2. Agar mijoz zakaz qilmoqchi bo'lsa, ismi, shahri/manzili hamda telefonini so'rab olib, buyurtmani tasdiqlang.
 
-YETKAZIB BERISH:
-- Admiral Group xizmatlari va mahsulotlari O'zbekistonning barcha viloyatlariga yetkazib beriladi.`
+MAVZU CHEGARASI VA BEGONA SAVOLLAR:
+- FAQAT Admiral Group texnik masalalari va yetkazib berish bo'yicha so'zlashing.`
   },
   op3: {
     id: 'op3',
@@ -76,12 +83,11 @@ YETKAZIB BERISH:
 Telefon liniyangiz: +998 (71) 200-01-03. Instagram: @admiral_group_official
 
 INSONIY MULOQOT QOIDASI:
-- O'zingizni HECH QACHON robot yoki bot deb aytmang! O'ta hushfe'l, samimiy va e'tiborli inson operator sifatida javob bering.
-- Mijozning har bir so'zini tushunib, uning kayfiyatiga moslashgan holda muloqot qiling.
+- O'zingizni HECH QACHON robot deb aytmang! O'ta hushfe'l, samimiy va e'tiborli inson operator sifatida javob bering.
 
-MAVZU CHEGARASI:
-- FAQAT Admiral Group servisi, mijozlar fikri va yetkazib berish sifati bo'yicha so'zlashing. Begona savollarga xushmuomala rad javobini bering.
-- Agar mijoz inson operator bilan bog'lanmoqchi bo'lsa: "Sizni bo'limimizning jonli inson-operatoriga ulashimga ruxsat bering" deb ayting.`
+SUHBAT OXIRIDA BUYURTMA SO'RASH FLOW:
+1. Har bir savolga javob berib bo'lgach: "Sizni mahsulotlarimiz qiziqtiradimi?" deb so'rang.
+2. Agar mijoz zakaz qilmoqchi bo'lsa, ismi, shahri/manzili hamda telefonini so'rab olib, buyurtmani tasdiqlang.`
   }
 };
 
@@ -134,7 +140,9 @@ const elements = {
   instaUrlInput: document.getElementById('insta-url-input'),
   syncInstaBtn: document.getElementById('sync-insta-btn'),
   operatorSelect: document.getElementById('operator-select'),
-  activePhoneDisplay: document.getElementById('active-phone-display')
+  activePhoneDisplay: document.getElementById('active-phone-display'),
+  tgBotTokenInput: document.getElementById('tg-bot-token-input'),
+  tgChatIdInput: document.getElementById('tg-chat-id-input')
 };
 
 // Initialize Application
@@ -423,9 +431,12 @@ async function handleClientMessage(text) {
     const latency = Date.now() - startTime;
     elements.statLatency.textContent = `~${latency}ms`;
 
-    elements.callStatus.textContent = 'AI javob bermoqda...';
+    elements.callStatus.textContent = "AI javob bermoqda...";
     addMessageToLog('ai', responseText);
     speakResponse(responseText);
+
+    // Check for Order Confirmation & Dispatch to Telegram Bot
+    checkOrderKeywords(text, responseText);
 
   } catch (error) {
     console.error("Gemini API Error:", error);
@@ -543,7 +554,39 @@ function generateDemoUzbekResponse(query) {
   return `Tushundim. "${query}" bo'yicha savolingiz qabul qilindi. Sizga ushbu masalada batafsil yordam berishim uchun qo'shimcha ma'lumot bera olasizmi?`;
 }
 
-// Text to Speech (TTS) Output
+// Order Confirmation & Telegram Bot Dispatcher
+async function checkOrderKeywords(clientText, aiText) {
+  const lowerClient = clientText.toLowerCase();
+  const lowerAi = aiText.toLowerCase();
+
+  const isOrderConfirmed = lowerAi.includes('tasdiqlandi') || lowerAi.includes('qabul qilindi') || lowerClient.includes('zakaz') || lowerClient.includes('sotib olaman');
+
+  if (isOrderConfirmed) {
+    const activeOp = operators[state.currentOperatorId] || operators.op1;
+
+    const payload = {
+      clientName: 'Mijoz',
+      clientPhone: activeOp.phone,
+      clientAddress: clientText,
+      orderDetails: 'Admiral Group Mahsulotlari',
+      operatorName: activeOp.name,
+      linePhone: activeOp.phone,
+      telegramToken: elements.tgBotTokenInput ? elements.tgBotTokenInput.value.trim() : '',
+      telegramChatId: elements.tgChatIdInput ? elements.tgChatIdInput.value.trim() : ''
+    };
+
+    try {
+      await fetch('/api/order', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      showNotification(`📲 Telegram-botga Yangi Buyurtma yuborildi!`);
+    } catch (e) {
+      console.warn("Order dispatch failed:", e);
+    }
+  }
+}
 function speakResponse(text) {
   if (!state.speechSynth) return;
 
