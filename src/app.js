@@ -188,6 +188,26 @@ const elements = {
 function init() {
   setConnectionState(true, '🔒 Gemini 2.0 API Ulangan (Maxfiy)');
 
+  // Load saved keys from localStorage
+  if (elements.elevenKeyInput) {
+    elements.elevenKeyInput.value = localStorage.getItem('elevenlabs_api_key') || '';
+  }
+  if (elements.openaiKeyInput) {
+    elements.openaiKeyInput.value = localStorage.getItem('openai_api_key') || '';
+  }
+
+  // Auto-save keys to localStorage on input change
+  if (elements.elevenKeyInput) {
+    elements.elevenKeyInput.addEventListener('input', (e) => {
+      localStorage.setItem('elevenlabs_api_key', e.target.value.trim());
+    });
+  }
+  if (elements.openaiKeyInput) {
+    elements.openaiKeyInput.addEventListener('input', (e) => {
+      localStorage.setItem('openai_api_key', e.target.value.trim());
+    });
+  }
+
   state.systemPrompt = elements.systemInstructionInput.value;
   elements.statTotalCalls.textContent = state.totalCalls;
 
