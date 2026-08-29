@@ -193,7 +193,17 @@ const elements = {
   modalCancelBtn: document.getElementById('modal-cancel-btn'),
   modalSaveBtn: document.getElementById('modal-save-btn'),
   modalResetBtn: document.getElementById('modal-reset-btn'),
-  modalTestVoiceBtn: document.getElementById('modal-test-voice-btn')
+  modalTestVoiceBtn: document.getElementById('modal-test-voice-btn'),
+
+  // QA Rules Modal controls
+  qaRulesModal: document.getElementById('qa-rules-modal'),
+  qaModalOpAvatar: document.getElementById('qa-modal-op-avatar'),
+  qaModalOpName: document.getElementById('qa-modal-op-name'),
+  qaRulesContainer: document.getElementById('qa-rules-container'),
+  qaAddRuleBtn: document.getElementById('qa-add-rule-btn'),
+  qaModalCloseBtn: document.getElementById('qa-modal-close-btn'),
+  qaModalCancelBtn: document.getElementById('qa-modal-cancel-btn'),
+  qaModalSaveBtn: document.getElementById('qa-modal-save-btn')
 };
 
 // Initialize Application
@@ -311,6 +321,156 @@ function init() {
         showNotification(`🎙️ ${operators[opId]?.name || 'Operator'} ovozi sinanmoqda...`);
         speakResponse(text, opId);
       }
+    });
+  }
+
+  // Load Custom Operator Q&A Rules (n8n bypass tejamkorlik)
+  const defaultQARules = {
+    op1: [
+      { trigger: "kafolat, garantiya", response: "Admiral Group barcha mahsulotlariga 1 yillik rasmiy kafolat beradi." },
+      { trigger: "dostavka, yetkazib", response: "O'zbekiston bo'ylab barcha 12 ta viloyatga yetkazib berish xizmati 24 soat ichida mutlaqo bepul amalga oshiriladi." }
+    ],
+    op2: [
+      { trigger: "narxi, qancha", response: "Xizmatlarimiz narxi loyihaning murakkabligiga qarab 500 AQSh dollaridan boshlanadi. Bepul hisob-kitob qilishimiz mumkin." }
+    ],
+    op3: [
+      { trigger: "manzil, ofis", response: "Bosh ofisimiz Toshkent shahri, Amir Temur ko'chasi 45-uy manzilida joylashgan. Mo'ljal: Oloy bozori ro'parasida." }
+    ],
+    op4: [
+      { trigger: "chegirma, skidka", response: "Hozirda Admiral Group-da maxsus bayram chegirmalari ketyapti! Xarid qilsangiz 15 foiz chegirma qilib beramiz." }
+    ],
+    op_head: [
+      { trigger: "hamkorlik, sherik", response: "Hamkorlik masalalari bo'yicha taklifingizni elektron pochtamizga yuboring yoki men sizni bosh direktor bilan bog'layman." }
+    ]
+  };
+  
+  state.operatorQA = JSON.parse(localStorage.getItem('operator_qa_rules') || '{}');
+  for (const opId in defaultQARules) {
+    if (!state.operatorQA[opId]) {
+      state.operatorQA[opId] = defaultQARules[opId];
+    }
+  }
+
+  // Update rule counter badges in table
+  const updateRuleCounts = () => {
+    for (const opId in state.operatorQA) {
+      const countEl = document.getElementById(`rule-count-${opId}`);
+      if (countEl) {
+        countEl.textContent = (state.operatorQA[opId] || []).length;
+      }
+    }
+  };
+  updateRuleCounts();
+
+  // Wire QA Rules Modal Event Handlers
+  let currentEditingQAPhases = [];
+
+  document.querySelectorAll('.rule-manage-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const opId = btn.getAttribute('data-op');
+      const op = operators[opId] || operators.op1;
+      
+      state.editingQAOpId = opId;
+      currentEditingQAPhases = JSON.parse(JSON.stringify(state.operatorQA[opId] || []));
+      
+      if (elements.qaModalOpName) elements.qaModalOpName.textContent = op.name;
+      
+      if (elements.qaModalOpAvatar) {
+        if (opId === 'op_head') {
+          elements.qaModalOpAvatar.innerHTML = '<i class="fa-solid fa-crown"></i>';
+          elements.qaModalOpAvatar.style.background = 'linear-gradient(135deg, #a855f7, #7c3aed)';
+        } else {
+          elements.qaModalOpAvatar.innerHTML = '<i class="fa-solid fa-network-wired"></i>';
+          const bgMap = { op1: 'var(--success-green)', op2: 'var(--accent-cyan)', op3: 'var(--purple-accent)', op4: 'var(--warning-amber)' };
+          elements.modalOpAvatar.style.background = bgMap[opId] || 'var(--accent-cyan)';
+        }
+      }
+
+      renderQARulesList();
+      if (elements.qaRulesModal) elements.qaRulesModal.classList.add('active');
+    });
+  });
+
+  const renderQARulesList = () => {
+    if (!elements.qaRulesContainer) return;
+    elements.qaRulesContainer.innerHTML = '';
+    
+    if (currentEditingQAPhases.length === 0) {
+      elements.qaRulesContainer.innerHTML = '<div style="text-align: center; padding: 20px; color: var(--text-muted); font-size: 11px; border: 1px dashed rgba(255,255,255,0.08); border-radius: 4px;">Hali hech qanday qoidalar yo\'q. Yangi qoida qo\'shish tugmasini bosing.</div>';
+      return;
+    }
+
+    currentEditingQAPhases.forEach((rule, index) => {
+      const card = document.createElement('div');
+      card.className = 'workflow-rule-card';
+      card.innerHTML = `
+        <div class="rule-delete-btn" data-index="${index}">&times;</div>
+        
+        <div class="flow-node">
+          <span class="flow-badge badge-if">IF Trigger</span>
+          <div class="flow-input-container">
+            <input type="text" class="rule-input qa-trigger-input" data-index="${index}" value="${rule.trigger}" placeholder="Kalit so'zlar (vergul bilan ajratilgan: chegirma, skidka)">
+          </div>
+        </div>
+        
+        <div class="flow-arrow"><i class="fa-solid fa-arrow-down-long"></i></div>
+        
+        <div class="flow-node">
+          <span class="flow-badge badge-then">THEN Reply</span>
+          <div class="flow-input-container">
+            <textarea class="rule-input qa-response-input" data-index="${index}" rows="2" style="resize: vertical; padding: 8px 10px;" placeholder="Mijozga qaytariladigan aniq javob...">${rule.response}</textarea>
+          </div>
+        </div>
+      `;
+      
+      card.querySelector('.rule-delete-btn').addEventListener('click', () => {
+        currentEditingQAPhases.splice(index, 1);
+        renderQARulesList();
+      });
+      
+      card.querySelector('.qa-trigger-input').addEventListener('input', (e) => {
+        currentEditingQAPhases[index].trigger = e.target.value;
+      });
+      card.querySelector('.qa-response-input').addEventListener('input', (e) => {
+        currentEditingQAPhases[index].response = e.target.value;
+      });
+
+      elements.qaRulesContainer.appendChild(card);
+    });
+  };
+
+  if (elements.qaAddRuleBtn) {
+    elements.qaAddRuleBtn.addEventListener('click', () => {
+      currentEditingQAPhases.push({ trigger: '', response: '' });
+      renderQARulesList();
+      if (elements.qaRulesContainer) {
+        setTimeout(() => {
+          elements.qaRulesContainer.parentElement.scrollTop = elements.qaRulesContainer.parentElement.scrollHeight;
+        }, 50);
+      }
+    });
+  }
+
+  const closeQAModal = () => {
+    if (elements.qaRulesModal) elements.qaRulesModal.classList.remove('active');
+    state.editingQAOpId = null;
+    currentEditingQAPhases = [];
+  };
+
+  if (elements.qaModalCloseBtn) elements.qaModalCloseBtn.addEventListener('click', closeQAModal);
+  if (elements.qaModalCancelBtn) elements.qaModalCancelBtn.addEventListener('click', closeQAModal);
+
+  if (elements.qaModalSaveBtn) {
+    elements.qaModalSaveBtn.addEventListener('click', () => {
+      if (state.editingQAOpId) {
+        const opId = state.editingQAOpId;
+        state.operatorQA[opId] = currentEditingQAPhases.filter(r => r.trigger.trim() && r.response.trim());
+        localStorage.setItem('operator_qa_rules', JSON.stringify(state.operatorQA));
+        updateRuleCounts();
+      }
+      closeQAModal();
+      showNotification("Qoidalar muvaffaqiyatli saqlandi! ⚡");
     });
   }
 
@@ -802,6 +962,32 @@ async function handleClientMessage(text) {
       elements.costGuardAlertMsg.textContent = "Kamola operatorlar suhbatini nazorat qilmoqda. Mavzudan tashqari (off-topic) savollar berilganda, u xarajatlarni tejash uchun ogohlantirish beradi yoki suhbatni tugatadi.";
       elements.costGuardAlertMsg.style.color = "var(--text-muted)";
     }
+  }
+
+  // Custom Operator Q&A Rules (n8n bypass tejamkorlik)
+  const opId = state.currentOperatorId || 'op1';
+  const rules = state.operatorQA[opId] || [];
+  let matchedRule = null;
+  
+  for (const rule of rules) {
+    if (!rule.trigger || !rule.response) continue;
+    const keywords = rule.trigger.toLowerCase().split(',').map(kw => kw.trim()).filter(Boolean);
+    if (keywords.some(kw => text.toLowerCase().includes(kw))) {
+      matchedRule = rule;
+      break;
+    }
+  }
+
+  if (matchedRule) {
+    const responseText = matchedRule.response;
+    elements.statLatency.textContent = `~0ms (⚡ QA Rule)`;
+    elements.callStatus.textContent = "AI javob bermoqda...";
+    addMessageToLog('ai', responseText);
+    showNotification("⚡ Avtomatik Qoida Faollashdi (Tejamkorlik!)");
+    addSystemMessage(`[TEJAMKORLIK]: "${text}" savoliga QA Qoidasi bo'yicha javob qaytarildi.`);
+    speakResponse(responseText, opId);
+    checkOrderKeywords(text, responseText);
+    return;
   }
 
   elements.callStatus.textContent = "AI o'ylamoqda va javob tayyorlamoqda...";

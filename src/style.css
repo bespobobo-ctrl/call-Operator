@@ -2265,3 +2265,102 @@ body {
   color: var(--accent-cyan);
   font-size: 10px;
 }
+
+/* n8n-Style Workflow Rule Card styling */
+.workflow-rule-card {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  transition: border-color 0.25s, box-shadow 0.25s;
+}
+
+.workflow-rule-card:hover {
+  border-color: rgba(168, 85, 247, 0.4);
+  box-shadow: 0 0 15px rgba(168, 85, 247, 0.1);
+}
+
+.rule-delete-btn {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #f87171;
+  width: 26px;
+  height: 26px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.rule-delete-btn:hover {
+  background: var(--danger-red);
+  color: #fff;
+  border-color: var(--danger-red);
+}
+
+.flow-node {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.flow-badge {
+  font-size: 10px;
+  font-weight: 800;
+  padding: 3px 8px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  min-width: 60px;
+  text-align: center;
+}
+
+.flow-badge.badge-if {
+  background: rgba(168, 85, 247, 0.15);
+  color: #c084fc;
+  border: 1px solid rgba(168, 85, 247, 0.3);
+}
+
+.flow-badge.badge-then {
+  background: rgba(0, 242, 254, 0.15);
+  color: var(--accent-cyan);
+  border: 1px solid rgba(0, 242, 254, 0.3);
+}
+
+.flow-arrow {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: var(--text-muted);
+  font-size: 12px;
+  margin: -2px 0;
+  padding-left: 72px; /* aligns with badge width */
+}
+
+.flow-input-container {
+  flex: 1;
+}
+
+.rule-input {
+  width: 100%;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  color: #fff;
+  padding: 6px 10px;
+  font-size: 12px;
+  transition: border-color 0.2s;
+}
+
+.rule-input:focus {
+  border-color: var(--accent-cyan);
+  outline: none;
+}

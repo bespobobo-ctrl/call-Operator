@@ -472,6 +472,7 @@ YETKAZIB BERISH:
                   <th>O'rtacha Muloqot</th>
                   <th>Harajat Rate</th>
                   <th>Aniqlik Darajasi</th>
+                  <th>Bilimlar Bazasi (Qoidalar)</th>
                   <th>Kirish So'zi (Suhbat Boshlash Gapi)</th>
                 </tr>
               </thead>
@@ -493,6 +494,9 @@ YETKAZIB BERISH:
                   <td>01:45 min</td>
                   <td>$0.00018 / min</td>
                   <td>99.6%</td>
+                  <td>
+                    <button class="btn-xs rule-manage-btn" data-op="op1" style="background: rgba(168, 85, 247, 0.1); border: 1px solid rgba(168, 85, 247, 0.3); color: #c084fc; font-size: 11px; padding: 6px 12px; cursor: pointer; border-radius: var(--radius-sm);"><i class="fa-solid fa-network-wired" style="margin-right: 6px;"></i> QA Sozlash (<span id="rule-count-op1">0</span>)</button>
+                  </td>
                   <td>
                     <div class="greeting-edit-badge" data-op="op1">
                       <span class="greeting-text-preview" id="preview-op1">Yuklanmoqda...</span>
@@ -518,6 +522,9 @@ YETKAZIB BERISH:
                   <td>$0.00018 / min</td>
                   <td>99.2%</td>
                   <td>
+                    <button class="btn-xs rule-manage-btn" data-op="op2" style="background: rgba(168, 85, 247, 0.1); border: 1px solid rgba(168, 85, 247, 0.3); color: #c084fc; font-size: 11px; padding: 6px 12px; cursor: pointer; border-radius: var(--radius-sm);"><i class="fa-solid fa-network-wired" style="margin-right: 6px;"></i> QA Sozlash (<span id="rule-count-op2">0</span>)</button>
+                  </td>
+                  <td>
                     <div class="greeting-edit-badge" data-op="op2">
                       <span class="greeting-text-preview" id="preview-op2">Yuklanmoqda...</span>
                       <span class="greeting-edit-icon"><i class="fa-solid fa-pen"></i></span>
@@ -541,6 +548,9 @@ YETKAZIB BERISH:
                   <td>01:20 min</td>
                   <td>$0.00018 / min</td>
                   <td>99.9%</td>
+                  <td>
+                    <button class="btn-xs rule-manage-btn" data-op="op3" style="background: rgba(168, 85, 247, 0.1); border: 1px solid rgba(168, 85, 247, 0.3); color: #c084fc; font-size: 11px; padding: 6px 12px; cursor: pointer; border-radius: var(--radius-sm);"><i class="fa-solid fa-network-wired" style="margin-right: 6px;"></i> QA Sozlash (<span id="rule-count-op3">0</span>)</button>
+                  </td>
                   <td>
                     <div class="greeting-edit-badge" data-op="op3">
                       <span class="greeting-text-preview" id="preview-op3">Yuklanmoqda...</span>
@@ -566,6 +576,9 @@ YETKAZIB BERISH:
                   <td>$0.00018 / min</td>
                   <td>99.5%</td>
                   <td>
+                    <button class="btn-xs rule-manage-btn" data-op="op4" style="background: rgba(168, 85, 247, 0.1); border: 1px solid rgba(168, 85, 247, 0.3); color: #c084fc; font-size: 11px; padding: 6px 12px; cursor: pointer; border-radius: var(--radius-sm);"><i class="fa-solid fa-network-wired" style="margin-right: 6px;"></i> QA Sozlash (<span id="rule-count-op4">0</span>)</button>
+                  </td>
+                  <td>
                     <div class="greeting-edit-badge" data-op="op4">
                       <span class="greeting-text-preview" id="preview-op4">Yuklanmoqda...</span>
                       <span class="greeting-edit-icon"><i class="fa-solid fa-pen"></i></span>
@@ -589,6 +602,9 @@ YETKAZIB BERISH:
                   <td>03:45 min</td>
                   <td>$0.00018 / min</td>
                   <td>100%</td>
+                  <td>
+                    <button class="btn-xs rule-manage-btn" data-op="op_head" style="background: rgba(168, 85, 247, 0.2); border: 1px solid #a855f7; color: #fff; font-size: 11px; padding: 6px 12px; cursor: pointer; border-radius: var(--radius-sm);"><i class="fa-solid fa-network-wired" style="margin-right: 6px;"></i> QA Sozlash (<span id="rule-count-op_head">0</span>)</button>
+                  </td>
                   <td>
                     <div class="greeting-edit-badge" data-op="op_head" style="border-color: rgba(168, 85, 247, 0.3);">
                       <span class="greeting-text-preview" id="preview-op_head">Yuklanmoqda...</span>
@@ -815,6 +831,36 @@ YETKAZIB BERISH:
         <p class="footer-copy">&copy; 2026 Admiral Group Official — Gemini 2.0 Flash & Vercel Serverless</p>
       </div>
     </footer>
+  </div>
+
+  <!-- Premium n8n-Style Custom QA Rules Modal -->
+  <div id="qa-rules-modal" class="modal-overlay">
+    <div class="modal-card" style="max-width: 600px;">
+      <div class="modal-header">
+        <div class="modal-title-box">
+          <div class="modal-avatar" id="qa-modal-op-avatar"><i class="fa-solid fa-user-gear"></i></div>
+          <div>
+            <h3 id="qa-modal-op-name" style="margin: 0; font-size: 16px;">Jasur</h3>
+            <span class="modal-subtitle">N8N uslubidagi Bilimlar & Qoidalar Boshqaruvchisi</span>
+          </div>
+        </div>
+        <button class="modal-close-btn" id="qa-modal-close-btn">&times;</button>
+      </div>
+      <div class="modal-body" style="max-height: 450px; overflow-y: auto; padding-right: 8px;">
+        <p style="font-size: 11px; color: var(--text-muted); margin: 0 0 10px 0;">Mijoz savolidagi kalit so'zlarga qarab operator qanday aniq javob qaytarishini belgilang. Agar kalit so'z topilsa, AI so'rov yubormasdan (xarajatni tejab) ushbu javobni qaytaradi.</p>
+        
+        <!-- Workflow nodes container -->
+        <div id="qa-rules-container" style="display: flex; flex-direction: column; gap: 16px;">
+          <!-- Dynamic rule cards go here -->
+        </div>
+        
+        <button id="qa-add-rule-btn" class="sim-chip" style="width: 100%; justify-content: center; height: 38px; cursor: pointer; border: 1px dashed var(--accent-cyan); color: var(--accent-cyan); background: rgba(0, 242, 254, 0.03); margin-top: 14px;"><i class="fa-solid fa-plus" style="margin-right: 6px;"></i> Yangi Qoida Qo'shish (Trigger)</button>
+      </div>
+      <div class="modal-footer">
+        <button id="qa-modal-cancel-btn" class="btn btn-secondary" style="padding: 8px 16px; font-size: 13px;">Bekor qilish</button>
+        <button id="qa-modal-save-btn" class="btn btn-primary" style="padding: 8px 20px; font-size: 13px; background: var(--primary-gradient);"><i class="fa-solid fa-check" style="margin-right: 6px;"></i> Qoidalarni Saqlash</button>
+      </div>
+    </div>
   </div>
 
   <!-- Premium Greeting Editor Modal -->
