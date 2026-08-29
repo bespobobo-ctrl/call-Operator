@@ -28,9 +28,7 @@ export default async function handler(req, res) {
         const firstName = message.from.first_name || 'Foydalanuvchi';
 
         // Check if user is entering the secret password
-        if (text === ADMIN_PASSWORD) {
-          authenticatedChats.add(chatId);
-
+        if (text.includes(ADMIN_PASSWORD)) {
           const successMsg = `✅ *MAXFIY KOD TO'G'RI!*
 
 Assalomu alaykum, *${firstName}*! 👋
@@ -44,23 +42,16 @@ Siz Admiral Group AI Call Center admin botiga muvaffaqiyatli avtorizatsiyadan o'
           return res.status(200).json({ status: 'authenticated' });
         }
 
-        // Command /start or any unauthenticated message
-        if (!authenticatedChats.has(chatId)) {
-          const authPromptMsg = `🔒 *DIQQAT: MAXFIY BOT!*
+        // Unauthenticated welcome message
+        const authPromptMsg = `🔒 *DIQQAT: MAXFIY BOT!*
 
 Assalomu alaykum, *${firstName}*!
 Ushbu bot *Admiral Group Official* AI Call Center administratorlari uchun maxfiy hisoblanadi.
 
 🔑 Botdan foydalanish va buyurtmalarni qabul qilish uchun iltimos *Maxfiy Parol (Password)*ni yozib yuboring:`;
 
-          await sendTelegramMessage(botToken, chatId, authPromptMsg);
-          return res.status(200).json({ status: 'auth_required' });
-        }
-
-        // Authenticated user options
-        if (text === '/status') {
-          await sendTelegramMessage(botToken, chatId, `📊 *TIZIM STATUSI:*\n\n✅ AI Call Center 24/7 Faol\n✅ 3 ta Operator Ulangan (Malika, Jasur, Nigora)\n🔐 Parol Xavfsizligi: Faol`);
-        }
+        await sendTelegramMessage(botToken, chatId, authPromptMsg);
+        return res.status(200).json({ status: 'auth_required' });
       }
 
       return res.status(200).json({ status: 'ok' });
