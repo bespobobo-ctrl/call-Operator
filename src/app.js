@@ -773,16 +773,47 @@ function playNextAudioChunk(opId) {
   audio.src = audioUrl;
   state.currentAudio = audio;
 
-  // Operator-specific acoustic tuning
+  // Operator-specific acoustic tuning & speed
   if (opId === 'op2') {
     // Jasur (Texnik) — Deeper male voice rate
-    audio.playbackRate = 0.88;
+    audio.playbackRate = 0.85;
   } else if (opId === 'op3') {
     // Nigora (Servis) — Soft, gentle female pace
-    audio.playbackRate = 0.94;
+    audio.playbackRate = 0.92;
   } else {
     // Malika (Sotuv) — Dynamic, clear female voice
-    audio.playbackRate = 1.04;
+    audio.playbackRate = 1.05;
+  }
+
+  // Web Audio BiquadFilter acoustic pitch & tone shaping
+  try {
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    if (AudioCtx) {
+      if (!state.audioCtx) state.audioCtx = new AudioCtx();
+      if (state.audioCtx.state === 'suspended') state.audioCtx.resume();
+      
+      const source = state.audioCtx.createMediaElementSource(audio);
+      const filter = state.audioCtx.createBiquadFilter();
+
+      if (opId === 'op2') {
+        filter.type = 'lowshelf';
+        filter.frequency.value = 350;
+        filter.gain.value = 7;
+      } else if (opId === 'op3') {
+        filter.type = 'peaking';
+        filter.frequency.value = 1200;
+        filter.gain.value = -3;
+      } else {
+        filter.type = 'highshelf';
+        filter.frequency.value = 2400;
+        filter.gain.value = 4;
+      }
+
+      source.connect(filter);
+      filter.connect(state.audioCtx.destination);
+    }
+  } catch (e) {
+    // If MediaElement already connected to node, proceed directly
   }
 
   if (elements.avatarRing) elements.avatarRing.className = 'avatar-ring active speaking';

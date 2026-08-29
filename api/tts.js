@@ -3,7 +3,7 @@ export default async function handler(req, res) {
   // CORS Headers
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, X-ElevenLabs-Key, X-OpenAI-Key, X-Gemini-Key');
 
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
@@ -143,7 +143,7 @@ export default async function handler(req, res) {
     }
   }
 
-  // Engine 4: Microsoft Uzbek Neural Voice Stream (uz-UZ-SardorNeural Male & uz-UZ-MadinaNeural Female)
+  // Engine 4: Microsoft Uzbek Neural Voice Stream with TrustedClientToken Header
   try {
     let voiceName = 'uz-UZ-MadinaNeural';
     let rate = '+0%';
@@ -151,16 +151,16 @@ export default async function handler(req, res) {
 
     if (opId === 'op2') {
       voiceName = 'uz-UZ-SardorNeural'; // Male Uzbek Voice!
-      rate = '-3%';
-      pitch = '-2Hz';
+      rate = '-4%';
+      pitch = '-4Hz';
     } else if (opId === 'op3') {
       voiceName = 'uz-UZ-MadinaNeural';
       rate = '-6%';
-      pitch = '-4Hz';
+      pitch = '-3Hz';
     } else {
       voiceName = 'uz-UZ-MadinaNeural';
-      rate = '+2%';
-      pitch = '+2Hz';
+      rate = '+3%';
+      pitch = '+3Hz';
     }
 
     const ssml = `<speak version='1.0' xmlns='http://www.w3.org/2001/10/synthesis' xml:lang='uz-UZ'>
@@ -178,7 +178,8 @@ export default async function handler(req, res) {
       headers: {
         'Content-Type': 'application/ssml+xml',
         'X-Microsoft-OutputFormat': 'audio-24khz-96kbitrate-mono-mp3',
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36 Edge/122.0.0.0'
+        'TrustedClientToken': '6A5AA1D4EA6349499216C73808555020',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36 Edg/122.0.0.0'
       },
       body: ssml
     });
