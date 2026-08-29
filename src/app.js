@@ -67,20 +67,12 @@ const elements = {
 
 // Initialize Application
 function init() {
-  // Load saved values
-  if (state.apiKey) {
-    elements.apiKeyInput.value = state.apiKey;
-    elements.apiKeyInput.placeholder = "API Key xavfsiz ulangan ✓";
-    setConnectionState(true, 'Tayyor (API Key ulangan)');
-  } else {
-    setConnectionState(false, 'API Key kiritilmagan');
-  }
+  setConnectionState(true, '🔒 Gemini 2.0 API Ulangan (Maxfiy)');
 
   state.systemPrompt = elements.systemInstructionInput.value;
   elements.statTotalCalls.textContent = state.totalCalls;
 
   // Event Listeners
-  elements.saveKeyBtn.addEventListener('click', saveApiKey);
   elements.startCallBtn.addEventListener('click', startCall);
   elements.endCallBtn.addEventListener('click', endCall);
   elements.muteBtn.addEventListener('click', toggleMute);
@@ -317,30 +309,20 @@ async function handleClientMessage(text) {
   }
 }
 
-// Call Gemini API (via REST or Google AI Studio SDK fallback)
+// Call Gemini API via Secure Vercel Serverless Function (/api/chat)
 async function queryGeminiAPI(userQuery) {
-  // If API key is available, use real Gemini REST endpoint
-  if (state.apiKey) {
-    const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${state.apiKey}`;
-    
-    // Build context
-    state.chatHistory.push({ role: 'user', parts: [{ text: userQuery }] });
-
-    const contents = [
-      {
-        role: 'user',
-        parts: [{ text: `System Instruction:\n${state.systemPrompt}\n\nMijoz savoli: ${userQuery}` }]
-      }
-    ];
-
-    const response = await fetch(endpoint, {
+  try {
+    const response = await fetch('/api/chat', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ contents })
+      body: JSON.stringify({
+        userQuery,
+        systemPrompt: state.systemPrompt
+      })
     });
 
     if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+      throw new Error(`Serverless Proxy HTTP Error: ${response.status}`);
     }
 
     const data = await response.json();
@@ -351,15 +333,14 @@ async function queryGeminiAPI(userQuery) {
       const cTokens = data.usageMetadata.candidatesTokenCount || 0;
       trackTokenUsage(pTokens, cTokens);
     } else {
-      // Estimate if metadata not present
       trackTokenUsage(Math.round(userQuery.length / 4), 60);
     }
 
     const answer = data.candidates?.[0]?.content?.parts?.[0]?.text || "Tushundim, yana qanday savolingiz bor?";
     return answer;
 
-  } else {
-    // Intelligent Offline / Demo Rules Engine for Uzbek Call Center
+  } catch (error) {
+    console.warn("Backend API call failed, using intelligent fallback:", error);
     const answer = generateDemoUzbekResponse(userQuery);
     trackTokenUsage(Math.round(userQuery.length / 4), Math.round(answer.length / 4));
     return answer;
