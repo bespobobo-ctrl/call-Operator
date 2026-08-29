@@ -142,7 +142,9 @@ const elements = {
   operatorSelect: document.getElementById('operator-select'),
   activePhoneDisplay: document.getElementById('active-phone-display'),
   tgBotTokenInput: document.getElementById('tg-bot-token-input'),
-  tgChatIdInput: document.getElementById('tg-chat-id-input')
+  tgChatIdInput: document.getElementById('tg-chat-id-input'),
+  agent3dCore: document.getElementById('agent-3d-core'),
+  agentNameDisplay: document.getElementById('agent-name-display')
 };
 
 // Initialize Application
@@ -361,6 +363,8 @@ function switchOperator(opId) {
 
   if (elements.activePhoneDisplay) elements.activePhoneDisplay.textContent = op.phone;
   if (elements.systemInstructionInput) elements.systemInstructionInput.value = op.prompt;
+  if (elements.agentNameDisplay) elements.agentNameDisplay.textContent = `${op.name} (${op.role})`;
+  if (elements.agent3dCore) elements.agent3dCore.className = `sphere-3d-core ${opId}-theme`;
 
   addSystemMessage(`Liniya almashdi: ${op.phone} (AI Operator: ${op.name} — ${op.role})`);
 }
@@ -423,7 +427,8 @@ async function handleClientMessage(text) {
   }
 
   elements.callStatus.textContent = "AI o'ylamoqda va javob tayyorlamoqda...";
-  elements.avatarRing.className = 'avatar-ring active speaking';
+  if (elements.avatarRing) elements.avatarRing.className = 'avatar-ring active speaking';
+  if (elements.agent3dCore) elements.agent3dCore.classList.add('speaking');
 
   try {
     const startTime = Date.now();
@@ -446,7 +451,8 @@ async function handleClientMessage(text) {
   } finally {
     setTimeout(() => {
       if (state.isCallActive) {
-        elements.avatarRing.className = 'avatar-ring active';
+        if (elements.avatarRing) elements.avatarRing.className = 'avatar-ring active';
+        if (elements.agent3dCore) elements.agent3dCore.classList.remove('speaking');
         elements.callStatus.textContent = 'Muloqot ulangan. Sizni eshitmoqdaman...';
       }
     }, 2000);
