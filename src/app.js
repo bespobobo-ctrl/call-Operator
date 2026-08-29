@@ -208,6 +208,33 @@ function init() {
     });
   }
 
+  // Load Custom Operator Greetings
+  const defaultGreetings = {
+    op1: "Assalomu alaykum! Men Malika. Sotuv va buyurtmalar bo'limi bosh operatoriman. Admiral Group mahsulotlari narxlari va zakaz berishda sizga qanday yordam bera olaman?",
+    op2: "Assalomu alaykum! Men Jasur. Sotuv bo'limi operatoriman. Admiral Group xizmatlarining texnik masalalarida va buyurtmalarda qanday yordam kerak?",
+    op3: "Assalomu alaykum! Men Nigora. Sotuv bo'limi operatoriman. Taklifingiz yoki zakaz berish bo'yicha savolingiz bo'lsa, mamnuniyat bilan yordam beraman.",
+    op4: "Assalomu alaykum! Men Farruh. Sotuv bo'limi operatoriman. Admiral Group loyihalari va buyurtma qilish bo'yicha qanday masalada yordam beray?",
+    op_head: "Assalomu alaykum! Men Kamola. Sotuv bo'limi boshlig'iman. Operatorlarimiz muloqoti bo'yicha yoki yirik buyurtmalar bo'yicha qanday yordam bera olaman?"
+  };
+
+  state.greetingPhrases = JSON.parse(localStorage.getItem('operator_greeting_phrases') || '{}');
+  for (const opId in defaultGreetings) {
+    if (!state.greetingPhrases[opId]) {
+      state.greetingPhrases[opId] = defaultGreetings[opId];
+    }
+  }
+
+  // Bind to DOM inputs and listen for changes
+  document.querySelectorAll('.op-greeting-input').forEach(input => {
+    const opId = input.getAttribute('data-op');
+    input.value = state.greetingPhrases[opId] || '';
+
+    input.addEventListener('input', (e) => {
+      state.greetingPhrases[opId] = e.target.value;
+      localStorage.setItem('operator_greeting_phrases', JSON.stringify(state.greetingPhrases));
+    });
+  });
+
   state.systemPrompt = elements.systemInstructionInput.value;
   elements.statTotalCalls.textContent = state.totalCalls;
 
@@ -218,14 +245,7 @@ function init() {
   elements.testVoiceBtn.addEventListener('click', () => {
     const opId = state.currentOperatorId || 'op1';
     const activeOp = operators[opId] || operators.op1;
-
-    const testPhrases = {
-      op1: "Assalomu alaykum! Men Malika. Sotuv va buyurtmalar bo'limi bosh operatoriman. Admiral Group mahsulotlari narxlari va zakaz berishda sizga qanday yordam bera olaman?",
-      op2: "Assalomu alaykum! Men Jasur. Texnik qo'llab-quvvatlash va konsultatsiya bo'limi operatoriman. Admiral Group xizmatlarining texnik masalalarida qanday yordam kerak?",
-      op3: "Assalomu alaykum! Men Nigora. Mijozlar servisi va murojaatlar bo'limi menejeriman. Taklifingiz yoki savolingiz bo'lsa, mamnuniyat bilan yordam beraman."
-    };
-
-    const textToSpeak = testPhrases[opId] || testPhrases.op1;
+    const textToSpeak = state.greetingPhrases[opId] || `Assalomu alaykum! Men ${activeOp.name}man. Qanday yordam bera olaman?`;
     showNotification(`🎙️ ${activeOp.name} (${activeOp.role}) Neiron AI Ovozi Sinanmoqda...`);
     speakResponse(textToSpeak, opId);
   });
@@ -255,12 +275,8 @@ function init() {
     btn.addEventListener('click', (e) => {
       e.preventDefault();
       const opId = btn.getAttribute('data-op');
-      const testTexts = {
-        op1: "Assalomu alaykum! Men Malika. Sotuv va buyurtmalar bo'limi operatoriman. Admiral Group mahsulotlari bo'yicha qanday yordam bera olaman?",
-        op2: "Assalomu alaykum! Men Jasur. Texnik qo'llab-quvvatlash bo'limi operatoriman. Mahsulotlarimiz texnik xususiyatlari bo'yicha savolingiz bormi?",
-        op3: "Assalomu alaykum! Men Nigora. Mijozlar servis bo'limidanman. Taklif yoki murojaatingiz bo'lsa, mamnuniyat bilan tinglayman."
-      };
-      speakResponse(testTexts[opId] || testTexts.op1, opId);
+      const textToSpeak = state.greetingPhrases[opId] || `Assalomu alaykum! Men ${operators[opId]?.name || 'operator'}man. Qanday yordam bera olaman?`;
+      speakResponse(textToSpeak, opId);
     });
   });
 
@@ -417,20 +433,6 @@ function init() {
       roomBox.style.transition = 'none';
     });
   }
-
-  // Table "Ulanish" Buttons
-  document.querySelectorAll('.select-op-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const opId = btn.getAttribute('data-op');
-      if (elements.operatorSelect) {
-        elements.operatorSelect.value = opId;
-        switchOperator(opId);
-        // Switch back to terminal
-        const termNav = document.getElementById('nav-terminal-btn');
-        if (termNav) termNav.click();
-      }
-    });
-  });
 
   // Tab switching
   elements.tabBtns.forEach(btn => {
@@ -598,10 +600,10 @@ function startCall() {
 
   // AI Welcome Greeting for Active Operator
   setTimeout(() => {
-    const activeOp = operators[state.currentOperatorId] || operators.op1;
-    const welcome = `Assalomu alaykum! Admiral Group Official ${activeOp.role} liniyasiga xush kelibsiz. Men AI operator ${activeOp.name}man. Sizga qanday yordam bera olaman?`;
+    const opId = state.currentOperatorId || 'op1';
+    const welcome = state.greetingPhrases[opId] || `Assalomu alaykum! Men ${operators[opId]?.name || 'operator'}man. Qanday yordam bera olaman?`;
     addMessageToLog('ai', welcome);
-    speakResponse(welcome);
+    speakResponse(welcome, opId);
   }, 600);
 }
 

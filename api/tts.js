@@ -164,24 +164,12 @@ export default async function handler(req, res) {
     let rate = 1.0;
     let pitch = '+0Hz';
 
-    if (opId === 'op2') {
-      voiceName = 'uz-UZ-SardorNeural'; // Male Uzbek Voice!
-      rate = 1.06;
-      pitch = '+1Hz';
-    } else if (opId === 'op3') {
-      voiceName = 'uz-UZ-MadinaNeural';
-      rate = 0.96;
-      pitch = '-1Hz';
-    } else if (opId === 'op4') {
-      voiceName = 'uz-UZ-SardorNeural'; // Male Uzbek Voice!
+    if (opId === 'op2' || opId === 'op4') {
+      voiceName = 'uz-UZ-SardorNeural'; // Male voice (Farruh style)
       rate = 1.12;
       pitch = '+2Hz';
-    } else if (opId === 'op_head') {
-      voiceName = 'uz-UZ-MadinaNeural'; // Supervisor Female
-      rate = 1.00;
-      pitch = '+1Hz';
     } else {
-      voiceName = 'uz-UZ-MadinaNeural';
+      voiceName = 'uz-UZ-MadinaNeural'; // Female voice (Malika style)
       rate = 1.05;
       pitch = '+3Hz';
     }
