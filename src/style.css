@@ -1607,6 +1607,7 @@ body {
   justify-content: center;
 }
 
+/* Premium 3D Room Themes & Hologram projections */
 .room-3d-box {
   width: 320px;
   height: 220px;
@@ -1614,34 +1615,69 @@ body {
   transform-style: preserve-3d;
   transform: rotateX(25deg) rotateY(-30deg) translateZ(-20px);
   transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  
+  /* Default Theme Variables */
+  --theme-color: #00f2fe;
+  --theme-color-glow: rgba(0, 242, 254, 0.35);
+}
+
+.room-3d-box.theme-room-malika {
+  --theme-color: #10b981;
+  --theme-color-glow: rgba(16, 185, 129, 0.35);
+}
+.room-3d-box.theme-room-jasur {
+  --theme-color: #3b82f6;
+  --theme-color-glow: rgba(59, 130, 246, 0.35);
+}
+.room-3d-box.theme-room-nigora {
+  --theme-color: #06b6d4;
+  --theme-color-glow: rgba(6, 182, 212, 0.35);
+}
+.room-3d-box.theme-room-farruh {
+  --theme-color: #f59e0b;
+  --theme-color-glow: rgba(245, 158, 11, 0.35);
+}
+.room-3d-box.theme-room-kamola {
+  --theme-color: #a855f7;
+  --theme-color-glow: rgba(168, 85, 247, 0.35);
 }
 
 .room-wall {
   position: absolute;
-  background: rgba(0, 242, 254, 0.05);
-  border: 1px solid rgba(0, 242, 254, 0.2);
+  background: rgba(18, 26, 43, 0.85);
+  border: 1px solid var(--theme-color);
+  box-shadow: 0 0 15px var(--theme-color-glow);
 }
 
 .back-wall {
   width: 320px;
   height: 180px;
   transform: translateZ(-100px);
-  background: linear-gradient(180deg, rgba(0,242,254,0.1), rgba(0,0,0,0.5));
+  background: linear-gradient(180deg, var(--theme-color-glow), rgba(5, 10, 20, 0.95));
 }
 
 .left-wall {
   width: 200px;
   height: 180px;
   transform: rotateY(90deg) translateZ(-100px);
-  background: linear-gradient(90deg, rgba(157,78,221,0.1), rgba(0,0,0,0.5));
+  background: linear-gradient(90deg, var(--theme-color-glow), rgba(5, 10, 20, 0.95));
 }
 
 .room-floor {
   width: 320px;
   height: 200px;
   transform: rotateX(90deg) translateZ(80px);
-  background: repeating-linear-gradient(0deg, rgba(0, 242, 254, 0.08) 0px, rgba(0, 242, 254, 0.08) 1px, transparent 1px, transparent 20px),
-              repeating-linear-gradient(90deg, rgba(0, 242, 254, 0.08) 0px, rgba(0, 242, 254, 0.08) 1px, transparent 1px, transparent 20px);
+  background: repeating-linear-gradient(0deg, var(--theme-color-glow) 0px, var(--theme-color-glow) 1px, transparent 1px, transparent 20px),
+              repeating-linear-gradient(90deg, var(--theme-color-glow) 0px, var(--theme-color-glow) 1px, transparent 1px, transparent 20px);
+  border: 1px solid var(--theme-color);
+}
+
+.room-floor:after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  box-shadow: inset 0 0 40px var(--theme-color-glow);
+  pointer-events: none;
 }
 
 .desk-3d-object {
@@ -1656,10 +1692,10 @@ body {
 .desk-top {
   width: 140px;
   height: 70px;
-  background: rgba(18, 26, 43, 0.9);
-  border: 2px solid var(--accent-cyan);
+  background: rgba(10, 15, 30, 0.95);
+  border: 2px solid var(--theme-color);
   border-radius: 8px;
-  box-shadow: 0 0 25px rgba(0, 242, 254, 0.4);
+  box-shadow: 0 0 25px var(--theme-color-glow);
 }
 
 .monitor-3d {
@@ -1668,10 +1704,10 @@ body {
   height: 55px;
   top: -45px;
   left: 25px;
-  background: rgba(5, 10, 20, 0.95);
-  border: 1px solid var(--accent-cyan);
+  background: #000;
+  border: 1px solid var(--theme-color);
   border-radius: 4px;
-  box-shadow: 0 0 15px rgba(0, 242, 254, 0.5);
+  box-shadow: 0 0 15px var(--theme-color-glow);
   padding: 6px;
 }
 
@@ -1693,15 +1729,35 @@ body {
   width: 45px;
   height: 45px;
   border-radius: 50%;
-  background: var(--primary-gradient);
+  background: linear-gradient(135deg, var(--theme-color), #050a14);
   border: 2px solid #fff;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 20px;
   color: #fff;
-  box-shadow: 0 0 20px rgba(0, 242, 254, 0.6);
-  animation: roomFloat 4s ease-in-out infinite;
+  box-shadow: 0 0 30px var(--theme-color-glow);
+  animation: roomFloat 3s ease-in-out infinite;
+}
+
+/* 3D Holographic Projector Cone Effect */
+.hologram-cone {
+  position: absolute;
+  width: 140px;
+  height: 120px;
+  left: 0px;
+  top: -60px;
+  background: linear-gradient(to top, var(--theme-color-glow), transparent);
+  clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+  opacity: 0.3;
+  transform: translateZ(-30px);
+  pointer-events: none;
+  animation: pulseCone 2s ease-in-out infinite;
+}
+
+@keyframes pulseCone {
+  0%, 100% { opacity: 0.25; }
+  50% { opacity: 0.5; }
 }
 
 @keyframes roomFloat {

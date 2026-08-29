@@ -310,29 +310,93 @@ function init() {
       const titleEl = document.getElementById('room-title');
       const avatarEl = document.getElementById('room-avatar-3d');
 
+      const roomBox = document.getElementById('room-3d-box');
+      if (roomBox) roomBox.className = `room-3d-box theme-${room}`;
+
+      const pillsEl = document.getElementById('room-stat-pills');
+
       if (room === 'room-malika') {
         if (titleEl) titleEl.textContent = "Malika — Sotuv Xonasi 1";
         if (avatarEl) avatarEl.innerHTML = '<i class="fa-solid fa-user-tie"></i>';
         if (screenEl) screenEl.innerHTML = '<span class="code-line">SYS_CALL_CENTER_v2.0</span><span class="code-line glow">LINIYA: +998 (71) 200-01-01</span><span class="code-line">BO\'LIM: SOTUV LINIYASI 1</span>';
+        if (pillsEl) {
+          pillsEl.innerHTML = `
+            <span class="room-pill">📍 Toshkent HQ</span>
+            <span class="room-pill glow-green" style="background: rgba(16, 185, 129, 0.15); color: #10b981;">🟢 Liniya 1 (+998 71 200-01-01)</span>
+            <span class="room-pill">📦 Bugungi Buyurtmalar: 34 ta</span>
+          `;
+        }
       } else if (room === 'room-jasur') {
         if (titleEl) titleEl.textContent = "Jasur — Sotuv Xonasi 2";
         if (avatarEl) avatarEl.innerHTML = '<i class="fa-solid fa-user-tie"></i>';
         if (screenEl) screenEl.innerHTML = '<span class="code-line">SYS_CALL_CENTER_v2.0</span><span class="code-line glow">LINIYA: +998 (71) 200-01-02</span><span class="code-line">BO\'LIM: SOTUV LINIYASI 2</span>';
+        if (pillsEl) {
+          pillsEl.innerHTML = `
+            <span class="room-pill">📍 Samarqand Office</span>
+            <span class="room-pill glow-green" style="background: rgba(59, 130, 246, 0.15); color: #3b82f6;">🔵 Liniya 2 (+998 71 200-01-02)</span>
+            <span class="room-pill">📦 Bugungi Buyurtmalar: 26 ta</span>
+          `;
+        }
       } else if (room === 'room-nigora') {
         if (titleEl) titleEl.textContent = "Nigora — Sotuv Xonasi 3";
         if (avatarEl) avatarEl.innerHTML = '<i class="fa-solid fa-user-tie"></i>';
         if (screenEl) screenEl.innerHTML = '<span class="code-line">SYS_CALL_CENTER_v2.0</span><span class="code-line glow">LINIYA: +998 (71) 200-01-03</span><span class="code-line">BO\'LIM: SOTUV LINIYASI 3</span>';
+        if (pillsEl) {
+          pillsEl.innerHTML = `
+            <span class="room-pill">📍 Buxoro Office</span>
+            <span class="room-pill glow-green" style="background: rgba(6, 182, 212, 0.15); color: #06b6d4;">🟣 Liniya 3 (+998 71 200-01-03)</span>
+            <span class="room-pill">📦 Bugungi Buyurtmalar: 21 ta</span>
+          `;
+        }
       } else if (room === 'room-farruh') {
         if (titleEl) titleEl.textContent = "Farruh — Sotuv Xonasi 4";
         if (avatarEl) avatarEl.innerHTML = '<i class="fa-solid fa-user-tie"></i>';
         if (screenEl) screenEl.innerHTML = '<span class="code-line">SYS_CALL_CENTER_v2.0</span><span class="code-line glow">LINIYA: +998 (71) 200-01-04</span><span class="code-line">BO\'LIM: SOTUV LINIYASI 4</span>';
+        if (pillsEl) {
+          pillsEl.innerHTML = `
+            <span class="room-pill">📍 Farg'ona Office</span>
+            <span class="room-pill glow-green" style="background: rgba(245, 158, 11, 0.15); color: #f59e0b;">🟠 Liniya 4 (+998 71 200-01-04)</span>
+            <span class="room-pill">📦 Bugungi Buyurtmalar: 18 ta</span>
+          `;
+        }
       } else if (room === 'room-kamola') {
         if (titleEl) titleEl.textContent = "Kamola — Supervisor Boshliq Suite";
         if (avatarEl) avatarEl.innerHTML = '<i class="fa-solid fa-crown"></i>';
         if (screenEl) screenEl.innerHTML = '<span class="code-line">SYS_SUPERVISOR_v2.0</span><span class="code-line glow" style="color:#c084fc;">LINIYA: +998 (71) 200-01-00</span><span class="code-line">STATUS: AUTOPILOT ACTIVE</span>';
+        if (pillsEl) {
+          pillsEl.innerHTML = `
+            <span class="room-pill" style="border: 1px solid rgba(168, 85, 247, 0.3); color: #c084fc;">👑 HQ Executive Suite</span>
+            <span class="room-pill glow-green" style="background: rgba(168, 85, 247, 0.15); color: #c084fc;">👑 Liniya 0 (+998 71 200-01-00)</span>
+            <span class="room-pill">🛡️ Jamoa: 4 ta sotuv stansiyalari</span>
+          `;
+        }
       }
     });
   });
+
+  // Mouse-Parallax Room Camera Rotation (Ultra-Premium interactive touch)
+  const roomStage = document.querySelector('.room-stage-3d');
+  const roomBox = document.getElementById('room-3d-box');
+  if (roomStage && roomBox) {
+    roomStage.addEventListener('mousemove', (e) => {
+      const rect = roomStage.getBoundingClientRect();
+      const x = e.clientX - rect.left - rect.width / 2;
+      const y = e.clientY - rect.top - rect.height / 2;
+
+      const rotateX = 25 - (y / rect.height) * 20; // pitch
+      const rotateY = -30 + (x / rect.width) * 30; // yaw
+      roomBox.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateZ(-20px)`;
+    });
+
+    roomStage.addEventListener('mouseleave', () => {
+      roomBox.style.transform = `rotateX(25deg) rotateY(-30deg) translateZ(-20px)`;
+      roomBox.style.transition = 'transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+    });
+
+    roomStage.addEventListener('mouseenter', () => {
+      roomBox.style.transition = 'none';
+    });
+  }
 
   // Table "Ulanish" Buttons
   document.querySelectorAll('.select-op-btn').forEach(btn => {
