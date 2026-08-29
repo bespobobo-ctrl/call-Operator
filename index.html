@@ -847,7 +847,21 @@ YETKAZIB BERISH:
         <button class="modal-close-btn" id="qa-modal-close-btn">&times;</button>
       </div>
       <div class="modal-body" style="max-height: 450px; overflow-y: auto; padding-right: 8px;">
-        <p style="font-size: 11px; color: var(--text-muted); margin: 0 0 10px 0;">Mijoz savolidagi kalit so'zlarga qarab operator qanday aniq javob qaytarishini belgilang. Agar kalit so'z topilsa, AI so'rov yubormasdan (xarajatni tejab) ushbu javobni qaytaradi.</p>
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+          <p style="font-size: 11px; color: var(--text-muted); margin: 0; max-width: 70%;">Mijoz savollariga qarab qoidalarni belgilang. Kalit so'z mos kelsa, AI xarajatisiz tezkor javob qaytariladi.</p>
+          <button id="qa-guide-toggle-btn" class="sim-chip" style="height: 28px; font-size: 11px; border: 1px solid var(--accent-cyan); color: var(--accent-cyan); background: rgba(0, 242, 254, 0.05); padding: 0 10px; cursor: pointer;"><i class="fa-solid fa-book-open" style="margin-right: 6px;"></i> Qo'llanma</button>
+        </div>
+        
+        <!-- Interactive Help Manual Box -->
+        <div id="qa-guide-box" style="display: none; background: rgba(168, 85, 247, 0.05); border: 1px solid rgba(168, 85, 247, 0.2); border-radius: var(--radius-sm); padding: 14px; margin-bottom: 16px; font-size: 12px; line-height: 1.5; color: var(--text-main); position: relative; animation: fadeIn 0.3s ease;">
+          <h4 style="margin: 0 0 8px 0; color: #c084fc; display: flex; align-items: center; gap: 8px;"><i class="fa-solid fa-graduation-cap"></i> Bilimlar Bazasi Yo'riqnomasi</h4>
+          <ul style="margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 6px; color: var(--text-muted);">
+            <li><strong>IF Trigger (Mijoz savoli):</strong> Mijoz gapida qatnashishi kerak bo'lgan kalit so'zlarni kiriting. Masalan: <code style="color: #fff; background: rgba(255,255,255,0.1); padding: 2px 4px; border-radius: 2px;">kafolat, garantiya</code>. Vergul orqali bir nechta kalit so'z yozish mumkin.</li>
+            <li><strong>THEN Reply (Operator javobi):</strong> Mos keluvchi kalit so'z aytilganda operator aytishi kerak bo'lgan aniq va to'liq gapni yozing. Masalan: <span style="color: var(--accent-cyan);">"Admiral Group mahsulotlariga 1 yil kafolat beriladi."</span></li>
+            <li><strong>⚡ Tejamkorlik Qoidasi:</strong> Tizim mijoz nutqida kalit so'zni aniqlasa, Gemini AI API-ga murojaat qilmaydi (xarajat 0$ bo'ladi) va zudlik bilan ushbu tayyor javobni o'qiydi.</li>
+            <li><strong>➕ Yangi Qoida Qo'shish:</strong> Quyidagi firuza rangli ramkali tugmani bosing, trigger va javob qismlarini to'ldiring, so'ngra <strong>"Qoidalarni Saqlash"</strong> tugmasi orqali saqlang.</li>
+          </ul>
+        </div>
         
         <!-- Workflow nodes container -->
         <div id="qa-rules-container" style="display: flex; flex-direction: column; gap: 16px;">

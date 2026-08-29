@@ -203,7 +203,9 @@ const elements = {
   qaAddRuleBtn: document.getElementById('qa-add-rule-btn'),
   qaModalCloseBtn: document.getElementById('qa-modal-close-btn'),
   qaModalCancelBtn: document.getElementById('qa-modal-cancel-btn'),
-  qaModalSaveBtn: document.getElementById('qa-modal-save-btn')
+  qaModalSaveBtn: document.getElementById('qa-modal-save-btn'),
+  qaGuideToggleBtn: document.getElementById('qa-guide-toggle-btn'),
+  qaGuideBox: document.getElementById('qa-guide-box')
 };
 
 // Initialize Application
@@ -452,10 +454,24 @@ function init() {
     });
   }
 
+  if (elements.qaGuideToggleBtn && elements.qaGuideBox) {
+    elements.qaGuideToggleBtn.addEventListener('click', () => {
+      const isVisible = elements.qaGuideBox.style.display === 'block';
+      elements.qaGuideBox.style.display = isVisible ? 'none' : 'block';
+      elements.qaGuideToggleBtn.innerHTML = isVisible 
+        ? '<i class="fa-solid fa-book-open" style="margin-right: 6px;"></i> Qo\'llanma' 
+        : '<i class="fa-solid fa-xmark" style="margin-right: 6px;"></i> Yopish';
+    });
+  }
+
   const closeQAModal = () => {
     if (elements.qaRulesModal) elements.qaRulesModal.classList.remove('active');
     state.editingQAOpId = null;
     currentEditingQAPhases = [];
+    if (elements.qaGuideBox) elements.qaGuideBox.style.display = 'none';
+    if (elements.qaGuideToggleBtn) {
+      elements.qaGuideToggleBtn.innerHTML = '<i class="fa-solid fa-book-open" style="margin-right: 6px;"></i> Qo\'llanma';
+    }
   };
 
   if (elements.qaModalCloseBtn) elements.qaModalCloseBtn.addEventListener('click', closeQAModal);
