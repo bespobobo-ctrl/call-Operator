@@ -493,7 +493,12 @@ YETKAZIB BERISH:
                   <td>01:45 min</td>
                   <td>$0.00018 / min</td>
                   <td>99.6%</td>
-                  <td><input type="text" class="op-greeting-input" data-op="op1" style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 4px; color: #fff; padding: 6px 10px; font-size: 11px; width: 100%; min-width: 280px;" placeholder="Malika kirish so'zi..."></td>
+                  <td>
+                    <div class="greeting-edit-badge" data-op="op1">
+                      <span class="greeting-text-preview" id="preview-op1">Yuklanmoqda...</span>
+                      <span class="greeting-edit-icon"><i class="fa-solid fa-pen"></i></span>
+                    </div>
+                  </td>
                 </tr>
                 <tr>
                   <td>
@@ -512,7 +517,12 @@ YETKAZIB BERISH:
                   <td>02:10 min</td>
                   <td>$0.00018 / min</td>
                   <td>99.2%</td>
-                  <td><input type="text" class="op-greeting-input" data-op="op2" style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 4px; color: #fff; padding: 6px 10px; font-size: 11px; width: 100%; min-width: 280px;" placeholder="Jasur kirish so'zi..."></td>
+                  <td>
+                    <div class="greeting-edit-badge" data-op="op2">
+                      <span class="greeting-text-preview" id="preview-op2">Yuklanmoqda...</span>
+                      <span class="greeting-edit-icon"><i class="fa-solid fa-pen"></i></span>
+                    </div>
+                  </td>
                 </tr>
                 <tr>
                   <td>
@@ -531,7 +541,12 @@ YETKAZIB BERISH:
                   <td>01:20 min</td>
                   <td>$0.00018 / min</td>
                   <td>99.9%</td>
-                  <td><input type="text" class="op-greeting-input" data-op="op3" style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(6, 182, 212, 0.3); border-radius: 4px; color: #fff; padding: 6px 10px; font-size: 11px; width: 100%; min-width: 280px;" placeholder="Nigora kirish so'zi..."></td>
+                  <td>
+                    <div class="greeting-edit-badge" data-op="op3">
+                      <span class="greeting-text-preview" id="preview-op3">Yuklanmoqda...</span>
+                      <span class="greeting-edit-icon"><i class="fa-solid fa-pen"></i></span>
+                    </div>
+                  </td>
                 </tr>
                 <tr>
                   <td>
@@ -550,7 +565,12 @@ YETKAZIB BERISH:
                   <td>01:35 min</td>
                   <td>$0.00018 / min</td>
                   <td>99.5%</td>
-                  <td><input type="text" class="op-greeting-input" data-op="op4" style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(245, 158, 11, 0.3); border-radius: 4px; color: #fff; padding: 6px 10px; font-size: 11px; width: 100%; min-width: 280px;" placeholder="Farruh kirish so'zi..."></td>
+                  <td>
+                    <div class="greeting-edit-badge" data-op="op4">
+                      <span class="greeting-text-preview" id="preview-op4">Yuklanmoqda...</span>
+                      <span class="greeting-edit-icon"><i class="fa-solid fa-pen"></i></span>
+                    </div>
+                  </td>
                 </tr>
                 <tr class="supervisor-row" style="background: rgba(147, 51, 234, 0.08); border-left: 3px solid var(--purple-accent, #a855f7);">
                   <td>
@@ -569,7 +589,12 @@ YETKAZIB BERISH:
                   <td>03:45 min</td>
                   <td>$0.00018 / min</td>
                   <td>100%</td>
-                  <td><input type="text" class="op-greeting-input" data-op="op_head" style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(168, 85, 247, 0.4); border-radius: 4px; color: #fff; padding: 6px 10px; font-size: 11px; width: 100%; min-width: 280px;" placeholder="Kamola kirish so'zi..."></td>
+                  <td>
+                    <div class="greeting-edit-badge" data-op="op_head" style="border-color: rgba(168, 85, 247, 0.3);">
+                      <span class="greeting-text-preview" id="preview-op_head">Yuklanmoqda...</span>
+                      <span class="greeting-edit-icon" style="color: #c084fc;"><i class="fa-solid fa-pen"></i></span>
+                    </div>
+                  </td>
                 </tr>
               </tbody>
             </table>
@@ -790,6 +815,36 @@ YETKAZIB BERISH:
         <p class="footer-copy">&copy; 2026 Admiral Group Official — Gemini 2.0 Flash & Vercel Serverless</p>
       </div>
     </footer>
+  </div>
+
+  <!-- Premium Greeting Editor Modal -->
+  <div id="greeting-modal" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title-box">
+          <div class="modal-avatar" id="modal-op-avatar"><i class="fa-solid fa-user-tie"></i></div>
+          <div>
+            <h3 id="modal-op-name" style="margin: 0; font-size: 16px;">Malika</h3>
+            <span class="modal-subtitle" id="modal-op-role">Sotuv Operator #1</span>
+          </div>
+        </div>
+        <button class="modal-close-btn" id="modal-close-btn">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group" style="margin: 0;">
+          <label for="modal-greeting-textarea" style="display: block; margin-bottom: 8px; font-size: 12px; color: var(--text-muted);"><i class="fa-solid fa-quote-left"></i> Suhbatni boshlash jumlalari (Kirish so'zi):</label>
+          <textarea id="modal-greeting-textarea" rows="4" style="width: 100%; padding: 12px; background: rgba(0,0,0,0.3); border: 1px solid var(--border-color); border-radius: var(--radius-sm); color: #fff; font-size: 13px; line-height: 1.5; resize: vertical;" placeholder="Operator suhbatni boshlaydigan kirish gapi..."></textarea>
+        </div>
+        <div class="modal-actions-row">
+          <button id="modal-test-voice-btn" class="sim-chip" style="flex: 1; justify-content: center; height: 38px; cursor: pointer; border: 1px solid var(--accent-cyan); color: var(--accent-cyan); background: rgba(0, 242, 254, 0.05);"><i class="fa-solid fa-play" style="margin-right: 6px;"></i> Ovozni sinash</button>
+          <button id="modal-reset-btn" class="sim-chip" style="flex: 1; justify-content: center; height: 38px; cursor: pointer; border: 1px solid rgba(239, 68, 68, 0.3); color: #f87171; background: rgba(239, 68, 68, 0.05);"><i class="fa-solid fa-rotate-left" style="margin-right: 6px;"></i> Defaultga qaytarish</button>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id="modal-cancel-btn" class="btn btn-secondary" style="padding: 8px 16px; font-size: 13px;">Bekor qilish</button>
+        <button id="modal-save-btn" class="btn btn-primary" style="padding: 8px 20px; font-size: 13px; background: var(--primary-gradient);"><i class="fa-solid fa-check" style="margin-right: 6px;"></i> Saqlash va Tatbiq etish</button>
+      </div>
+    </div>
   </div>
 
   <script type="module" src="/src/app.js"></script>

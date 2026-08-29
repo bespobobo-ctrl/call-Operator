@@ -181,7 +181,19 @@ const elements = {
   costGuardAlertMsg: document.getElementById('cost-guard-alert-msg'),
   supervisorWarnBtn: document.getElementById('supervisor-warn-btn'),
   supervisorHangupBtn: document.getElementById('supervisor-hangup-btn'),
-  supervisorNotes: document.getElementById('supervisor-notes')
+  supervisorNotes: document.getElementById('supervisor-notes'),
+
+  // Greeting Modal controls
+  greetingModal: document.getElementById('greeting-modal'),
+  modalOpAvatar: document.getElementById('modal-op-avatar'),
+  modalOpName: document.getElementById('modal-op-name'),
+  modalOpRole: document.getElementById('modal-op-role'),
+  modalGreetingTextarea: document.getElementById('modal-greeting-textarea'),
+  modalCloseBtn: document.getElementById('modal-close-btn'),
+  modalCancelBtn: document.getElementById('modal-cancel-btn'),
+  modalSaveBtn: document.getElementById('modal-save-btn'),
+  modalResetBtn: document.getElementById('modal-reset-btn'),
+  modalTestVoiceBtn: document.getElementById('modal-test-voice-btn')
 };
 
 // Initialize Application
@@ -224,16 +236,83 @@ function init() {
     }
   }
 
-  // Bind to DOM inputs and listen for changes
-  document.querySelectorAll('.op-greeting-input').forEach(input => {
-    const opId = input.getAttribute('data-op');
-    input.value = state.greetingPhrases[opId] || '';
+  // Populate Table Preview text strings
+  for (const opId in state.greetingPhrases) {
+    const previewEl = document.getElementById(`preview-${opId}`);
+    if (previewEl) {
+      previewEl.textContent = state.greetingPhrases[opId];
+    }
+  }
 
-    input.addEventListener('input', (e) => {
-      state.greetingPhrases[opId] = e.target.value;
-      localStorage.setItem('operator_greeting_phrases', JSON.stringify(state.greetingPhrases));
+  // Wire Modal Editor Event Listeners
+  document.querySelectorAll('.greeting-edit-badge').forEach(badge => {
+    badge.addEventListener('click', () => {
+      const opId = badge.getAttribute('data-op');
+      const op = operators[opId] || operators.op1;
+      
+      state.editingOpId = opId;
+      
+      if (elements.modalOpName) elements.modalOpName.textContent = op.name;
+      if (elements.modalOpRole) elements.modalOpRole.textContent = op.role;
+      if (elements.modalGreetingTextarea) elements.modalGreetingTextarea.value = state.greetingPhrases[opId] || '';
+      
+      if (elements.modalOpAvatar) {
+        if (opId === 'op_head') {
+          elements.modalOpAvatar.innerHTML = '<i class="fa-solid fa-crown"></i>';
+          elements.modalOpAvatar.style.background = 'linear-gradient(135deg, #a855f7, #7c3aed)';
+        } else {
+          elements.modalOpAvatar.innerHTML = '<i class="fa-solid fa-user-tie"></i>';
+          const bgMap = { op1: 'var(--success-green)', op2: 'var(--accent-cyan)', op3: 'var(--purple-accent)', op4: 'var(--warning-amber)' };
+          elements.modalOpAvatar.style.background = bgMap[opId] || 'var(--accent-cyan)';
+        }
+      }
+
+      if (elements.greetingModal) elements.greetingModal.classList.add('active');
     });
   });
+
+  const closeModal = () => {
+    if (elements.greetingModal) elements.greetingModal.classList.remove('active');
+    state.editingOpId = null;
+    stopAllSpeech();
+  };
+
+  if (elements.modalCloseBtn) elements.modalCloseBtn.addEventListener('click', closeModal);
+  if (elements.modalCancelBtn) elements.modalCancelBtn.addEventListener('click', closeModal);
+
+  if (elements.modalSaveBtn) {
+    elements.modalSaveBtn.addEventListener('click', () => {
+      if (state.editingOpId && elements.modalGreetingTextarea) {
+        const opId = state.editingOpId;
+        const text = elements.modalGreetingTextarea.value.trim();
+        state.greetingPhrases[opId] = text;
+        localStorage.setItem('operator_greeting_phrases', JSON.stringify(state.greetingPhrases));
+        
+        const previewEl = document.getElementById(`preview-${opId}`);
+        if (previewEl) previewEl.textContent = text;
+      }
+      closeModal();
+    });
+  }
+
+  if (elements.modalResetBtn) {
+    elements.modalResetBtn.addEventListener('click', () => {
+      if (state.editingOpId && elements.modalGreetingTextarea) {
+        elements.modalGreetingTextarea.value = defaultGreetings[state.editingOpId] || '';
+      }
+    });
+  }
+
+  if (elements.modalTestVoiceBtn) {
+    elements.modalTestVoiceBtn.addEventListener('click', () => {
+      if (state.editingOpId && elements.modalGreetingTextarea) {
+        const opId = state.editingOpId;
+        const text = elements.modalGreetingTextarea.value.trim();
+        showNotification(`🎙️ ${operators[opId]?.name || 'Operator'} ovozi sinanmoqda...`);
+        speakResponse(text, opId);
+      }
+    });
+  }
 
   state.systemPrompt = elements.systemInstructionInput.value;
   elements.statTotalCalls.textContent = state.totalCalls;
