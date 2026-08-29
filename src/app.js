@@ -753,7 +753,7 @@ function speakGoogleUzbekVoice(text, opId) {
   playNextAudioChunk(opId);
 }
 
-function playNextAudioChunk(opId) {
+async function playNextAudioChunk(opId) {
   if (!state.isPlayingQueue || state.voiceQueue.length === 0) {
     state.isPlayingQueue = false;
     if (elements.avatarRing && !state.isCallActive) elements.avatarRing.className = 'avatar-ring';
@@ -766,74 +766,54 @@ function playNextAudioChunk(opId) {
   const oKey = elements.openaiKeyInput ? elements.openaiKeyInput.value.trim() : '';
   const gKey = state.apiKey || '';
 
-  const audioUrl = `/api/tts?text=${encodeURIComponent(chunk)}&opId=${opId}&elevenKey=${encodeURIComponent(eKey)}&openaiKey=${encodeURIComponent(oKey)}&geminiKey=${encodeURIComponent(gKey)}&t=${Date.now()}`;
-
-  const audio = new Audio();
-  audio.crossOrigin = "anonymous";
-  audio.src = audioUrl;
-  state.currentAudio = audio;
-
-  // Operator-specific acoustic tuning & speed
-  if (opId === 'op2') {
-    // Jasur (Texnik) — Deeper male voice rate
-    audio.playbackRate = 0.85;
-  } else if (opId === 'op3') {
-    // Nigora (Servis) — Soft, gentle female pace
-    audio.playbackRate = 0.92;
-  } else {
-    // Malika (Sotuv) — Dynamic, clear female voice
-    audio.playbackRate = 1.05;
-  }
-
-  // Web Audio BiquadFilter acoustic pitch & tone shaping
   try {
-    const AudioCtx = window.AudioContext || window.webkitAudioContext;
-    if (AudioCtx) {
-      if (!state.audioCtx) state.audioCtx = new AudioCtx();
-      if (state.audioCtx.state === 'suspended') state.audioCtx.resume();
-      
-      const source = state.audioCtx.createMediaElementSource(audio);
-      const filter = state.audioCtx.createBiquadFilter();
+    if (elements.avatarRing) elements.avatarRing.className = 'avatar-ring active speaking';
+    if (elements.agent3dCore) elements.agent3dCore.classList.add('speaking');
 
-      if (opId === 'op2') {
-        filter.type = 'lowshelf';
-        filter.frequency.value = 350;
-        filter.gain.value = 7;
-      } else if (opId === 'op3') {
-        filter.type = 'peaking';
-        filter.frequency.value = 1200;
-        filter.gain.value = -3;
-      } else {
-        filter.type = 'highshelf';
-        filter.frequency.value = 2400;
-        filter.gain.value = 4;
-      }
+    const res = await fetch(`/api/tts?text=${encodeURIComponent(chunk)}&opId=${opId}&elevenKey=${encodeURIComponent(eKey)}&openaiKey=${encodeURIComponent(oKey)}&geminiKey=${encodeURIComponent(gKey)}&t=${Date.now()}`);
 
-      source.connect(filter);
-      filter.connect(state.audioCtx.destination);
+    if (!res.ok) {
+      throw new Error(`TTS Fetch Failed: ${res.status}`);
     }
-  } catch (e) {
-    // If MediaElement already connected to node, proceed directly
-  }
 
-  if (elements.avatarRing) elements.avatarRing.className = 'avatar-ring active speaking';
-  if (elements.agent3dCore) elements.agent3dCore.classList.add('speaking');
+    const blob = await res.blob();
+    const blobUrl = URL.createObjectURL(blob);
 
-  audio.onended = () => {
+    const audio = new Audio(blobUrl);
+    state.currentAudio = audio;
+
+    // Operator-specific acoustic speed tuning
+    if (opId === 'op2') {
+      // Jasur (Texnik Erkak)
+      audio.playbackRate = 0.88;
+    } else if (opId === 'op3') {
+      // Nigora (Servis Ayol Soft)
+      audio.playbackRate = 0.94;
+    } else {
+      // Malika (Sotuv Ayol Dynamic)
+      audio.playbackRate = 1.04;
+    }
+
+    audio.onended = () => {
+      URL.revokeObjectURL(blobUrl);
+      state.currentAudio = null;
+      playNextAudioChunk(opId);
+    };
+
+    audio.onerror = (e) => {
+      console.warn("Audio Blob playback error:", e);
+      URL.revokeObjectURL(blobUrl);
+      state.currentAudio = null;
+      playNextAudioChunk(opId);
+    };
+
+    await audio.play();
+
+  } catch (err) {
+    console.warn("TTS Fetch/Play Error:", err);
     state.currentAudio = null;
     playNextAudioChunk(opId);
-  };
-
-  audio.onerror = (e) => {
-    console.warn("Proxy TTS audio error, trying Web Speech fallback:", e);
-    state.currentAudio = null;
-    speakBrowserSpeech(chunk, opId);
-  };
-
-  audio.play().catch(err => {
-    console.warn("Audio play blocked by browser, trying Web Speech fallback:", err);
-    speakBrowserSpeech(chunk, opId);
-  });
+  }
 }
 
 // Split text by punctuation (. ! ? , ;) into chunks <= maxLen
