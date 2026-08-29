@@ -843,26 +843,20 @@ function setupPwaAndDownloadModal() {
     if (elements.downloadModal) elements.downloadModal.classList.remove('active');
   };
 
-  const handleInstallClick = async () => {
+  const handleInstallClick = (e) => {
+    if (e && typeof e.preventDefault === 'function') e.preventDefault();
     openDownloadModal();
-    if (deferredPrompt) {
-      try {
-        deferredPrompt.prompt();
-        const { outcome } = await deferredPrompt.userChoice;
-        if (outcome === 'accepted') {
-          showNotification('Planshetga o\'rnatish tasdiqlandi! 📲');
-        }
-        deferredPrompt = null;
-      } catch (err) {
-        console.warn('Install prompt error:', err);
-      }
-    }
   };
 
   if (elements.btnInstallApp) elements.btnInstallApp.addEventListener('click', handleInstallClick);
   if (elements.downloadAppBtn) elements.downloadAppBtn.addEventListener('click', handleInstallClick);
   if (elements.downloadModalCloseBtn) elements.downloadModalCloseBtn.addEventListener('click', closeDownloadModal);
   if (elements.downloadModalCancelBtn) elements.downloadModalCancelBtn.addEventListener('click', closeDownloadModal);
+  if (elements.downloadModal) {
+    elements.downloadModal.addEventListener('click', (e) => {
+      if (e.target === elements.downloadModal) closeDownloadModal();
+    });
+  }
 
   // Trigger PWA Installation prompt inside modal
   if (elements.pwaInstallTriggerBtn) {
