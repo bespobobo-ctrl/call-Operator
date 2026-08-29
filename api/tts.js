@@ -11,16 +11,18 @@ export default async function handler(req, res) {
 
   const text = req.method === 'POST' ? req.body?.text : req.query?.text;
   const opId = (req.method === 'POST' ? req.body?.opId : req.query?.opId) || 'op1';
-  const customElevenKey = req.headers['x-elevenlabs-key'] || req.query?.elevenKey || process.env.ELEVENLABS_API_KEY;
-  const customOpenAiKey = req.headers['x-openai-key'] || req.query?.openaiKey || process.env.OPENAI_API_KEY;
-  const customGeminiKey = req.headers['x-gemini-key'] || req.query?.geminiKey || process.env.GEMINI_API_KEY || process.env.VITE_GEMINI_API_KEY;
+  
+  const customElevenKey = (req.headers['x-elevenlabs-key'] || req.query?.elevenKey || process.env.ELEVENLABS_API_KEY || '').trim();
+  const customOpenAiKey = (req.headers['x-openai-key'] || req.query?.openaiKey || process.env.OPENAI_API_KEY || '').trim();
+  const customGeminiKey = (req.headers['x-gemini-key'] || req.query?.geminiKey || process.env.GEMINI_API_KEY || process.env.VITE_GEMINI_API_KEY || '').trim();
 
   if (!text) {
     return res.status(400).json({ error: 'Text parameter is required' });
   }
 
-  // Clean markdown & links for crystal-clear natural speech
+  // Clean markdown & Uzbek apostrophes (' ` ʻ ’ ") that break URL encoding and TTS endpoints
   const cleanText = text
+    .replace(/['`ʻ’"]/g, '') // Remove quotes/apostrophes to ensure 100% valid URL query and SSML
     .replace(/\*\*([^*]+)\*\*/g, '$1')
     .replace(/\*([^*]+)\*/g, '$1')
     .replace(/#+/g, '')
@@ -29,8 +31,12 @@ export default async function handler(req, res) {
     .replace(/\s+/g, ' ')
     .trim();
 
+  if (!cleanText) {
+    return res.status(400).json({ error: 'Clean text is empty' });
+  }
+
   // Engine 1: ElevenLabs Multilingual v2 Ultra-Realistic Voice API (If Key Provided)
-  if (customElevenKey) {
+  if (customElevenKey && customElevenKey.length > 10) {
     try {
       const elevenVoiceMap = {
         op1: '21m00Tcm4TlvDq8ikWAM', // Rachel (Female)
@@ -50,10 +56,7 @@ export default async function handler(req, res) {
         body: JSON.stringify({
           text: cleanText,
           model_id: 'eleven_multilingual_v2',
-          voice_settings: {
-            stability: 0.75,
-            similarity_boost: 0.85
-          }
+          voice_settings: { stability: 0.75, similarity_boost: 0.85 }
         })
       });
 
@@ -71,7 +74,7 @@ export default async function handler(req, res) {
   }
 
   // Engine 2: OpenAI High-Definition Audio TTS API (If Key Provided)
-  if (customOpenAiKey) {
+  if (customOpenAiKey && customOpenAiKey.length > 10) {
     try {
       const openAiVoiceMap = {
         op1: 'nova',    // Upbeat Female
@@ -108,7 +111,7 @@ export default async function handler(req, res) {
   }
 
   // Engine 3: Gemini 2.0 Flash Multimodal Audio Generation (If Key Provided)
-  if (customGeminiKey) {
+  if (customGeminiKey && customGeminiKey.length > 10) {
     try {
       const geminiVoiceMap = { op1: 'Puck', op2: 'Charon', op3: 'Kore' };
       const voiceName = geminiVoiceMap[opId] || 'Puck';
@@ -118,7 +121,7 @@ export default async function handler(req, res) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          contents: [{ role: 'user', parts: [{ text: `Say this exact Uzbek phrase naturally: ${cleanText}` }] }],
+          contents: [{ role: 'user', parts: [{ text: `Say this exact phrase naturally: ${cleanText}` }] }],
           generationConfig: {
             responseModalities: ["AUDIO", "TEXT"],
             speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName } } }
@@ -197,19 +200,24 @@ export default async function handler(req, res) {
     console.warn("Microsoft Neural TTS Warning:", err);
   }
 
-  // Fallback Google Uzbek Audio Stream
+  // Engine 5: Fallback Google Uzbek Audio Stream with sanitized text
   try {
-    const googleTtsUrl = `https://translate.google.com/translate_tts?ie=UTF-8&q=${encodeURIComponent(cleanText)}&tl=uz&client=tw-ob`;
+    const safeQuery = encodeURIComponent(cleanText);
+    const googleTtsUrl = `https://translate.google.com/translate_tts?ie=UTF-8&q=${safeQuery}&tl=uz&client=tw-ob`;
     const audioRes = await fetch(googleTtsUrl, {
       headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36' }
     });
 
-    const arrayBuffer = await audioRes.arrayBuffer();
-    const buffer = Buffer.from(arrayBuffer);
+    if (audioRes.ok) {
+      const arrayBuffer = await audioRes.arrayBuffer();
+      const buffer = Buffer.from(arrayBuffer);
 
-    res.setHeader('Content-Type', 'audio/mpeg');
-    res.setHeader('Content-Length', buffer.length);
-    return res.status(200).send(buffer);
+      res.setHeader('Content-Type', 'audio/mpeg');
+      res.setHeader('Content-Length', buffer.length);
+      return res.status(200).send(buffer);
+    } else {
+      throw new Error(`Google TTS status: ${audioRes.status}`);
+    }
   } catch (error) {
     console.error("TTS Fallback error:", error);
     return res.status(500).json({ error: error.message });
