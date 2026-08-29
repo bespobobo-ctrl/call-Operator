@@ -208,6 +208,7 @@ const elements = {
   qaGuideBox: document.getElementById('qa-guide-box'),
 
   // PWA Download & Install Modal controls
+  btnInstallApp: document.getElementById('btn-install-app'),
   downloadAppBtn: document.getElementById('download-app-btn'),
   downloadModal: document.getElementById('download-modal'),
   downloadModalCloseBtn: document.getElementById('download-modal-close-btn'),
@@ -842,11 +843,28 @@ function setupPwaAndDownloadModal() {
     if (elements.downloadModal) elements.downloadModal.classList.remove('active');
   };
 
-  if (elements.downloadAppBtn) elements.downloadAppBtn.addEventListener('click', openDownloadModal);
+  const handleInstallClick = async () => {
+    openDownloadModal();
+    if (deferredPrompt) {
+      try {
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        if (outcome === 'accepted') {
+          showNotification('Planshetga o\'rnatish tasdiqlandi! 📲');
+        }
+        deferredPrompt = null;
+      } catch (err) {
+        console.warn('Install prompt error:', err);
+      }
+    }
+  };
+
+  if (elements.btnInstallApp) elements.btnInstallApp.addEventListener('click', handleInstallClick);
+  if (elements.downloadAppBtn) elements.downloadAppBtn.addEventListener('click', handleInstallClick);
   if (elements.downloadModalCloseBtn) elements.downloadModalCloseBtn.addEventListener('click', closeDownloadModal);
   if (elements.downloadModalCancelBtn) elements.downloadModalCancelBtn.addEventListener('click', closeDownloadModal);
 
-  // Trigger PWA Installation prompt
+  // Trigger PWA Installation prompt inside modal
   if (elements.pwaInstallTriggerBtn) {
     elements.pwaInstallTriggerBtn.addEventListener('click', async () => {
       if (deferredPrompt) {
@@ -860,7 +878,7 @@ function setupPwaAndDownloadModal() {
         // If browser auto-prompt isn't fired yet, show platform guide alert or toast
         const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
         if (isIOS) {
-          alert("iPad iPad-da o'rnatish uchun:\nSafari pastki menyusidagi Ulashish (Share ⎋) tugmasini bosing va 'Bosh ekranga qo'shish (Add to Home Screen)'ni tanlang.");
+          alert("iPad-da o'rnatish uchun:\nSafari pastki menyusidagi Ulashish (Share ⎋) tugmasini bosing va 'Bosh ekranga qo'shish (Add to Home Screen)'ni tanlang.");
         } else {
           showNotification("💡 Planshet brauzeringiz menyusidan (⋮) 'Bosh ekranga qo'shish' yoki 'Ilovani o'rnatish' tugmasini bosing.");
         }
