@@ -70,7 +70,8 @@ function init() {
   // Load saved values
   if (state.apiKey) {
     elements.apiKeyInput.value = state.apiKey;
-    setConnectionState(true, 'Tayyor (Key ulangan)');
+    elements.apiKeyInput.placeholder = "API Key xavfsiz ulangan ✓";
+    setConnectionState(true, 'Tayyor (API Key ulangan)');
   } else {
     setConnectionState(false, 'API Key kiritilmagan');
   }
