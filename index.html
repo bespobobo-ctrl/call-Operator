@@ -11,9 +11,15 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   
-  <!-- FontAwesome Icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  
+  <!-- PWA & Mobile Tablet Install Meta Tags -->
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#0b0f19">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="AI Call Center">
+  <link rel="apple-touch-icon" href="/icons/icon-192.png">
+
   <link rel="stylesheet" href="/src/style.css">
 </head>
 <body>
@@ -36,6 +42,11 @@
           <span id="chip-text">🔒 Gemini 2.0 API Ulangan (Maxfiy)</span>
         </div>
         
+        <button id="download-app-btn" class="btn-download-pwa" title="Loyihani Planshetga Yuklab Olish / O'rnatish">
+          <i class="fa-solid fa-tablet-screen-button"></i>
+          <span>Planshetga Yuklab Olish</span>
+        </button>
+
         <a href="https://vercel.com" target="_blank" class="vercel-badge">
           <i class="fa-solid fa-cloud-arrow-up"></i> Vercel Active
         </a>
@@ -1008,6 +1019,75 @@ YETKAZIB BERISH:
       <div class="modal-footer">
         <button id="modal-cancel-btn" class="btn btn-secondary" style="padding: 8px 16px; font-size: 13px;">Bekor qilish</button>
         <button id="modal-save-btn" class="btn btn-primary" style="padding: 8px 20px; font-size: 13px; background: var(--primary-gradient);"><i class="fa-solid fa-check" style="margin-right: 6px;"></i> Saqlash va Tatbiq etish</button>
+      </div>
+    </div>
+  <!-- Download & Install PWA Modal -->
+  <div id="download-modal" class="modal-overlay">
+    <div class="modal-card download-modal-card">
+      <div class="modal-header">
+        <div class="modal-title-box">
+          <div class="modal-avatar download-modal-avatar"><i class="fa-solid fa-tablet-screen-button"></i></div>
+          <div>
+            <h3 style="margin: 0; font-size: 17px; color: #fff;">Planshetga Yuklab Olish & O'rnatish</h3>
+            <span class="modal-subtitle">AI Call Center ilovasidan planshet va smartfonda avtonom foydalanish</span>
+          </div>
+        </div>
+        <button class="modal-close-btn" id="download-modal-close-btn">&times;</button>
+      </div>
+
+      <div class="modal-body download-modal-body">
+        <!-- PWA Install Card -->
+        <div class="download-option-card highlighted">
+          <div class="option-header">
+            <div class="option-icon pwa-icon"><i class="fa-solid fa-mobile-screen-button"></i></div>
+            <div>
+              <h4>1. Planshet Bosh Ekranga O'rnatish (PWA Ilova - Tavsiya etiladi)</h4>
+              <p>Planshetingizga xuddi noutbuk yoki mobil ilova kabi o'rnatiladi. Brauzer panellarisiz to'liq ekranda ishlaydi!</p>
+            </div>
+          </div>
+          <div class="option-action">
+            <button id="pwa-install-trigger-btn" class="btn btn-primary btn-install-pwa">
+              <i class="fa-solid fa-download"></i> Planshetga O'rnatish
+            </button>
+            <span id="pwa-install-status-text" class="install-status-hint"><i class="fa-solid fa-circle-check"></i> Brauzer PWA rejimida tayyor</span>
+          </div>
+
+          <!-- Platform specific instructions -->
+          <div class="platform-guides">
+            <div class="guide-item">
+              <strong><i class="fa-brands fa-android"></i> Android / Chrome Planshet:</strong>
+              <span>Brauzer menyusidan (<strong>⋮</strong>) <em>"Bosh ekranga qo'shish"</em> yoki <em>"Ilovani o'rnatish"</em>ni bosing.</span>
+            </div>
+            <div class="guide-item">
+              <strong><i class="fa-brands fa-apple"></i> iPad (Safari):</strong>
+              <span>Pastki menyudagi <strong>Ulashish (Share <i class="fa-solid fa-arrow-up-from-bracket"></i>)</strong> tugmasini bosing va <em>"Bosh ekranga qo'shish" (Add to Home Screen)</em>ni tanlang.</span>
+            </div>
+            <div class="guide-item">
+              <strong><i class="fa-brands fa-windows"></i> Windows / Desktop Planshet:</strong>
+              <span>Brauzer manzil satri (URL) o'ng tomonidagi <strong>O'rnatish (Install <i class="fa-solid fa-desktop"></i>)</strong> belgisini bosing.</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- ZIP Package Download Card -->
+        <div class="download-option-card">
+          <div class="option-header">
+            <div class="option-icon zip-icon"><i class="fa-solid fa-file-zipper"></i></div>
+            <div>
+              <h4>2. Offline WEB Jamlanmasi (ZIP Arxiv)</h4>
+              <p>Ushbu loyihaning barcha manba fayllarini ZIP arxiv shaklida planshet xotirasiga yuklab olasiz.</p>
+            </div>
+          </div>
+          <div class="option-action">
+            <a href="/ai-call-center-offline.zip" download="ai-call-center-offline.zip" id="download-zip-btn" class="btn btn-secondary btn-download-zip">
+              <i class="fa-solid fa-file-arrow-down"></i> ZIP Arxivni Yuklab Olish (.zip)
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button id="download-modal-cancel-btn" class="btn btn-secondary" style="padding: 8px 18px; font-size: 13px;">Yopish</button>
       </div>
     </div>
   </div>

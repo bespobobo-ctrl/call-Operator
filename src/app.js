@@ -205,7 +205,15 @@ const elements = {
   qaModalCancelBtn: document.getElementById('qa-modal-cancel-btn'),
   qaModalSaveBtn: document.getElementById('qa-modal-save-btn'),
   qaGuideToggleBtn: document.getElementById('qa-guide-toggle-btn'),
-  qaGuideBox: document.getElementById('qa-guide-box')
+  qaGuideBox: document.getElementById('qa-guide-box'),
+
+  // PWA Download & Install Modal controls
+  downloadAppBtn: document.getElementById('download-app-btn'),
+  downloadModal: document.getElementById('download-modal'),
+  downloadModalCloseBtn: document.getElementById('download-modal-close-btn'),
+  downloadModalCancelBtn: document.getElementById('download-modal-cancel-btn'),
+  pwaInstallTriggerBtn: document.getElementById('pwa-install-trigger-btn'),
+  pwaInstallStatusText: document.getElementById('pwa-install-status-text')
 };
 
 // Initialize Application
@@ -785,9 +793,80 @@ function init() {
     });
   });
 
+  // Setup PWA & Download Modal Event Listeners
+  setupPwaAndDownloadModal();
+
   // Setup Web Speech API for Uzbek recognition
   setupSpeechRecognition();
   initCanvas();
+}
+
+// PWA & Tablet Install Handler
+let deferredPrompt = null;
+
+function setupPwaAndDownloadModal() {
+  // Register Service Worker for offline PWA
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js').then((reg) => {
+        console.log('[PWA] ServiceWorker successfully registered:', reg.scope);
+      }).catch((err) => {
+        console.warn('[PWA] ServiceWorker registration failed:', err);
+      });
+    });
+  }
+
+  // Intercept beforeinstallprompt event
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    if (elements.pwaInstallStatusText) {
+      elements.pwaInstallStatusText.innerHTML = '<i class="fa-solid fa-bolt" style="color:#00f2fe;"></i> Planshetga 1-bosishda o\'rnatish tayyor!';
+    }
+  });
+
+  window.addEventListener('appinstalled', () => {
+    deferredPrompt = null;
+    showNotification('🎉 AI Call Center ilovasi planshetingizga muvaffaqiyatli o\'rnatildi!');
+    if (elements.pwaInstallStatusText) {
+      elements.pwaInstallStatusText.innerHTML = '<i class="fa-solid fa-circle-check" style="color:#10b981;"></i> Ilova planshetga o\'rnatilgan';
+    }
+  });
+
+  // Modal Open / Close Handlers
+  const openDownloadModal = () => {
+    if (elements.downloadModal) elements.downloadModal.classList.add('active');
+  };
+
+  const closeDownloadModal = () => {
+    if (elements.downloadModal) elements.downloadModal.classList.remove('active');
+  };
+
+  if (elements.downloadAppBtn) elements.downloadAppBtn.addEventListener('click', openDownloadModal);
+  if (elements.downloadModalCloseBtn) elements.downloadModalCloseBtn.addEventListener('click', closeDownloadModal);
+  if (elements.downloadModalCancelBtn) elements.downloadModalCancelBtn.addEventListener('click', closeDownloadModal);
+
+  // Trigger PWA Installation prompt
+  if (elements.pwaInstallTriggerBtn) {
+    elements.pwaInstallTriggerBtn.addEventListener('click', async () => {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        if (outcome === 'accepted') {
+          showNotification('Planshetga o\'rnatish tasdiqlandi! 📲');
+        }
+        deferredPrompt = null;
+      } else {
+        // If browser auto-prompt isn't fired yet, show platform guide alert or toast
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+        if (isIOS) {
+          alert("iPad iPad-da o'rnatish uchun:\nSafari pastki menyusidagi Ulashish (Share ⎋) tugmasini bosing va 'Bosh ekranga qo'shish (Add to Home Screen)'ni tanlang.");
+        } else {
+          showNotification("💡 Planshet brauzeringiz menyusidan (⋮) 'Bosh ekranga qo'shish' yoki 'Ilovani o'rnatish' tugmasini bosing.");
+        }
+      }
+    });
+  }
 }
 
 // Connection Chip State
